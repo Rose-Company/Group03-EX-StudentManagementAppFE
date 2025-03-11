@@ -19,8 +19,8 @@
   display: flex;
   justify-content: space-between; /* This already pushes items to opposite ends */
   align-items: center;
-  padding: 0 5%;
-  max-width: 1200px;
+  padding: 0 20px;
+  max-width: 100%;
   margin: 0 auto;
   height: 70px;
 }
@@ -28,8 +28,7 @@
 .logo-container {
   display: flex;
   align-items: center;
-  /* Add margin to push it further left if needed */
-  margin-right: auto; /* This pushes the logo to the far left */
+  margin-right: auto;
 }
 
 .logo {
@@ -51,8 +50,7 @@
 .nav-container {
   display: flex;
   align-items: center;
-  /* Add margin to push it further right */
-  margin-left: auto; /* This pushes the nav to the far right */
+  margin-left: auto;
 }
 
 .nav-links {
@@ -173,6 +171,41 @@
   transform: rotate(-135deg);
 }
 
+.username {
+  margin-right: 10px;
+  font-weight: bold;
+  color: #fff;
+}
+
+.logout-button {
+  background-color: #ff4d4d;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.logout-button:hover {
+  background-color: #ff1a1a;
+}
+
+.user-dropdown .dropdown-menu {
+  background-color: white;
+  border: 1px solid #ddd;
+}
+
+.user-dropdown .dropdown-item {
+  color: black !important;
+  font-size: 14px;
+  padding: 8px 16px;
+  transition: background 0.3s;
+}
+
+.user-dropdown .dropdown-item:hover {
+  background-color: #f0f0f0;
+}
+
 /* Responsive styles */
 @media (max-width: 768px) {
   .menu-toggle {
@@ -216,6 +249,9 @@
 
   .login-button {
     margin-top: 20px;
+    width: 80%;
+  }
+  .logout-button {
     width: 80%;
   }
 }

@@ -14,6 +14,7 @@ function Login() {
     try {
       const userData = await login(username, password);
       localStorage.setItem("token", userData.token);
+      localStorage.setItem("username", username);
 
       navigate("/");
     } catch (error) {

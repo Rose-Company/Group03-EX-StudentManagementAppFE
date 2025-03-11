@@ -1,11 +1,26 @@
 import { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import "./Header.css";
+import { Dropdown } from "react-bootstrap";
+import PropTypes from "prop-types";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [username, setUsername] = useState("");
   const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const storedUsername = localStorage.getItem("username");
+    if (token && storedUsername) {
+      setIsLoggedIn(true);
+      setUsername(storedUsername);
+    }
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -28,6 +43,35 @@ function Header() {
 
   const closeMenu = () => {
     setIsMenuOpen(false);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("username");
+    setIsLoggedIn(false);
+    setUsername("");
+    navigate("/login");
+  };
+
+  const UserDropdown = ({ username, handleLogout }) => {
+    return (
+      <Dropdown className="user-dropdown">
+        <Dropdown.Toggle variant="secondary" id="dropdown-basic">
+          {username}
+        </Dropdown.Toggle>
+
+        <Dropdown.Menu>
+          <Dropdown.Item href="/management">Management</Dropdown.Item>
+          <Dropdown.Item href="/profile">Profile</Dropdown.Item>
+          <Dropdown.Divider />
+          <Dropdown.Item onClick={handleLogout}>Đăng xuất</Dropdown.Item>
+        </Dropdown.Menu>
+      </Dropdown>
+    );
+  };
+  UserDropdown.propTypes = {
+    username: PropTypes.string.isRequired,
+    handleLogout: PropTypes.func.isRequired,
   };
 
   return (
@@ -60,15 +104,6 @@ function Header() {
             </li>
             <li>
               <Link
-                to="/management"
-                className={location.pathname === "/management" ? "active" : ""}
-                onClick={closeMenu}
-              >
-                Management
-              </Link>
-            </li>
-            <li>
-              <Link
                 to="/about"
                 className={location.pathname === "/about" ? "active" : ""}
                 onClick={closeMenu}
@@ -76,17 +111,28 @@ function Header() {
                 About
               </Link>
             </li>
-            <li>
-              <Link
-                to="/login"
-                className={`login-button ${
-                  location.pathname === "/login" ? "active" : ""
-                }`}
-                onClick={closeMenu}
-              >
-                Login
-              </Link>
-            </li>
+            {isLoggedIn ? (
+              <div className="user-dropdown">
+                <li>
+                  <UserDropdown
+                    username={username}
+                    handleLogout={handleLogout}
+                  />
+                </li>
+              </div>
+            ) : (
+              <li>
+                <Link
+                  to="/login"
+                  className={`login-button ${
+                    location.pathname === "/login" ? "active" : ""
+                  }`}
+                  onClick={closeMenu}
+                >
+                  Login
+                </Link>
+              </li>
+            )}
           </ul>
         </nav>
       </div>
