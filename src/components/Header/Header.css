@@ -1,26 +1,221 @@
 .header {
-  background-color: #282c34;
-  padding: 20px;
+  background-color: #1a1a2e;
   color: white;
-  text-align: center;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-.header nav ul {
+.header.scrolled {
+  background-color: rgba(26, 26, 46, 0.95);
+  padding: 10px 0;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.header-container {
+  display: flex;
+  justify-content: space-between; /* This already pushes items to opposite ends */
+  align-items: center;
+  padding: 0 5%;
+  max-width: 1200px;
+  margin: 0 auto;
+  height: 70px;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  /* Add margin to push it further left if needed */
+  margin-right: auto; /* This pushes the logo to the far left */
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: white;
+}
+
+.logo-text {
+  font-size: 24px;
+  font-weight: 700;
+  background: linear-gradient(45deg, #4facfe 0%, #00f2fe 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-left: 10px;
+}
+
+.nav-container {
+  display: flex;
+  align-items: center;
+  /* Add margin to push it further right */
+  margin-left: auto; /* This pushes the nav to the far right */
+}
+
+.nav-links {
+  display: flex;
   list-style-type: none;
   padding: 0;
+  margin: 0;
+  align-items: center;
 }
 
-.header nav ul li {
-  display: inline;
+.nav-links li {
   margin: 0 15px;
 }
 
-.header nav ul li a {
+.nav-links li a {
   color: white;
   text-decoration: none;
-  font-size: 18px;
+  font-size: 16px;
+  font-weight: 500;
+  padding: 8px 12px;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+  position: relative;
 }
 
-.header nav ul li a:hover {
-  text-decoration: underline;
+.nav-links li a:after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: 0;
+  left: 50%;
+  background: linear-gradient(45deg, #4facfe 0%, #00f2fe 100%);
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
+}
+
+.nav-links li a:hover:after,
+.nav-links li a.active:after {
+  width: 80%;
+}
+
+.nav-links li a:hover {
+  color: #4facfe;
+}
+
+.nav-links li a.active {
+  color: #4facfe;
+}
+
+.login-button {
+  background: linear-gradient(45deg, #4facfe 0%, #00f2fe 100%);
+  color: white !important;
+  padding: 10px 20px !important;
+  border-radius: 50px !important;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(79, 172, 254, 0.4);
+}
+
+.login-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(79, 172, 254, 0.6);
+  color: white !important;
+}
+
+.login-button:after {
+  display: none;
+}
+
+.menu-toggle {
+  display: none;
+  cursor: pointer;
+}
+
+.hamburger {
+  width: 30px;
+  height: 20px;
+  position: relative;
+}
+
+.hamburger span {
+  display: block;
+  position: absolute;
+  height: 3px;
+  width: 100%;
+  background: white;
+  border-radius: 3px;
+  opacity: 1;
+  left: 0;
+  transform: rotate(0deg);
+  transition: 0.25s ease-in-out;
+}
+
+.hamburger span:nth-child(1) {
+  top: 0px;
+}
+
+.hamburger span:nth-child(2) {
+  top: 8px;
+}
+
+.hamburger span:nth-child(3) {
+  top: 16px;
+}
+
+.hamburger.active span:nth-child(1) {
+  top: 8px;
+  transform: rotate(135deg);
+}
+
+.hamburger.active span:nth-child(2) {
+  opacity: 0;
+  left: -60px;
+}
+
+.hamburger.active span:nth-child(3) {
+  top: 8px;
+  transform: rotate(-135deg);
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .menu-toggle {
+    display: block;
+    z-index: 1001;
+  }
+
+  .nav-container {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 70%;
+    height: 100vh;
+    background-color: #1a1a2e;
+    flex-direction: column;
+    justify-content: center;
+    transition: all 0.5s ease;
+    box-shadow: -5px 0 15px rgba(0, 0, 0, 0.2);
+  }
+
+  .nav-container.active {
+    right: 0;
+  }
+
+  .nav-links {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .nav-links li {
+    margin: 15px 0;
+    width: 100%;
+    text-align: center;
+  }
+
+  .nav-links li a {
+    display: block;
+    padding: 15px;
+    font-size: 18px;
+  }
+
+  .login-button {
+    margin-top: 20px;
+    width: 80%;
+  }
 }

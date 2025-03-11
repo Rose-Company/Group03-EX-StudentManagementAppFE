@@ -12,7 +12,7 @@ import "./App.css";
 function App() {
   return (
     <Router>
-      <Header />
+      {location.pathname !== "/login" && <Header />}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
