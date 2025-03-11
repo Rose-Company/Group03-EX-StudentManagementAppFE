@@ -6,9 +6,14 @@
 //       username,
 //       password,
 //     });
-//     return response.data;
+
+//     if (response.data?.code === 200 && response.data?.token) {
+//       return { token: response.data.token };
+//     } else {
+//       throw new Error("Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin đăng nhập.");
+//     }
 //   } catch (error) {
-//     throw error;
+//     throw new Error(error.response?.data?.message || "Lỗi khi đăng nhập.");
 //   }
 // };
 
