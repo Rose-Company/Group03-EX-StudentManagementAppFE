@@ -1,6 +1,9 @@
 import "./Home.css";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="home-container">
       <header className="home-header">
@@ -10,10 +13,7 @@ const Home = () => {
         </p>
       </header>
       <main className="home-main">
-        <button
-          className="login-button"
-          onClick={() => alert("Login functionality not implemented yet.")}
-        >
+        <button className="login-button" onClick={() => navigate("/login")}>
           Login
         </button>
       </main>

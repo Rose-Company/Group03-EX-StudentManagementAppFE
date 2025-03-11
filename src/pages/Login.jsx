@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { login } from "../services/authService";
 import "../App.css";
 import "./Login.css";
 
@@ -8,17 +9,23 @@ function Login() {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    console.log("Username:", username);
-    console.log("Password:", password);
-    navigate("/");
+    try {
+      const userData = await login(username, password);
+      localStorage.setItem("token", userData.token);
+
+      navigate("/");
+    } catch (error) {
+      console.error("Login failed:", error);
+      alert("Login failed. Please check your credentials.");
+    }
   };
 
   return (
     <div className="login-container">
-      <h2>Login</h2>
       <form onSubmit={handleLogin}>
+        <h2>Login</h2>
         <div>
           <label htmlFor="username">Username:</label>
           <input
@@ -39,7 +46,9 @@ function Login() {
             required
           />
         </div>
-        <button type="submit">Login</button>
+        <button className="login-button" type="submit">
+          Login
+        </button>
       </form>
     </div>
   );

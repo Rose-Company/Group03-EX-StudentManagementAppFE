@@ -60,6 +60,15 @@ function Header() {
             </li>
             <li>
               <Link
+                to="/management"
+                className={location.pathname === "/management" ? "active" : ""}
+                onClick={closeMenu}
+              >
+                Management
+              </Link>
+            </li>
+            <li>
+              <Link
                 to="/about"
                 className={location.pathname === "/about" ? "active" : ""}
                 onClick={closeMenu}

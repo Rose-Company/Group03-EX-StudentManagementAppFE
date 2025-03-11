@@ -1,13 +1,12 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://your-api-url.com", // Thay bằng URL API của bạn
+  baseURL: "http://localhost:3001",
   headers: {
     "Content-Type": "application/json",
   },
 });
 
-// Thêm interceptors nếu cần (ví dụ: thêm token vào headers)
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
   if (token) {

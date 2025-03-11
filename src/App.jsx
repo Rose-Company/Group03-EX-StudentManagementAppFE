@@ -7,6 +7,8 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
 import Header from "./components/Header/Header";
+import StudentManagement from "./pages/StudentManagement";
+import ProtectedRoute from "./components/common/ProtectedRoute";
 import "./App.css";
 
 function App() {
@@ -20,6 +22,15 @@ function App() {
               <Header />
               <Home />
             </>
+          }
+        />
+        <Route
+          path="/management"
+          element={
+            <ProtectedRoute>
+              <Header />
+              <StudentManagement />
+            </ProtectedRoute>
           }
         />
         <Route path="/login" element={<Login />} />
