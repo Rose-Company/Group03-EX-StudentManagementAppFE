@@ -50,6 +50,9 @@ function Login() {
           Login
         </button>
       </form>
+      <button className="back" onClick={() => navigate("/")}>
+        Back to Home
+      </button>
     </div>
   );
 }

@@ -43,6 +43,7 @@
   box-sizing: border-box;
   background-color: white;
   border: 1px solid #ccc;
+  color: black;
 }
 
 .login-container button {
@@ -78,4 +79,12 @@
 
 .login-button:after {
   display: none;
+}
+
+.back {
+  margin-top: 20px;
+  text-align: center;
+  max-width: 20%;
+  text-decoration: none;
+  font-size: 20px;
 }
