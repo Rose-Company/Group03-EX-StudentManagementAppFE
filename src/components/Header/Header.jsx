@@ -64,7 +64,7 @@ function Header() {
           <Dropdown.Item href="/management">Management</Dropdown.Item>
           <Dropdown.Item href="/profile">Profile</Dropdown.Item>
           <Dropdown.Divider />
-          <Dropdown.Item onClick={handleLogout}>Đăng xuất</Dropdown.Item>
+          <Dropdown.Item onClick={handleLogout}>Log out</Dropdown.Item>
         </Dropdown.Menu>
       </Dropdown>
     );
