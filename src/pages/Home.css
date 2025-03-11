@@ -1,16 +1,25 @@
 .home-container {
-  text-align: center;
-  padding: 20px;
+  background-image: url("/images/background_home.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .home-header {
-  background-color: #282c34;
+  background-color: rgba(40, 44, 52, 0.8);
   padding: 20px;
   color: white;
+  text-align: center;
 }
 
 .home-main {
   margin-top: 20px;
+  color: white;
 }
 
 .login-button {
@@ -25,4 +34,10 @@
 
 .login-button:hover {
   background-color: #21a1f1;
+}
+
+.home-paragraph {
+  margin-top: 20px;
+  font-size: 20px;
+  text-align: center;
 }
