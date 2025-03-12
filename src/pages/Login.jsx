@@ -22,6 +22,7 @@ export default function LoginForm() {
       if (response.status === 200) {
         navigate("/");
       }
+
     } catch (error) {
       alert(error.message);
     } finally {
