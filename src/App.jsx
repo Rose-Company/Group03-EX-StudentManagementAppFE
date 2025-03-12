@@ -30,7 +30,7 @@ function App() {
           path="/management"
           element={
             <ProtectedRoute>
-              <Header />
+              <Header/>
               <StudentManagement />
             </ProtectedRoute>
           }

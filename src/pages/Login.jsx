@@ -20,7 +20,6 @@ export default function LoginForm() {
 
       localStorage.setItem("token", response.token);
       localStorage.setItem("username", username);
-
       navigate("/");
     } catch (error) {
       console.error("Login failed:", error);
