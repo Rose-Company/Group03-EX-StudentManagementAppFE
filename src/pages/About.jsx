@@ -18,11 +18,11 @@ export default function AboutUs() {
       github: "github.com/tranthib",
     },
     {
-      id: "SV003",
-      name: "Le Van C",
-      email: "levanc@example.com",
-      role: "Backend Developer",
-      github: "github.com/levanc",
+      id: "22120255",
+      name: "Trần Thái Nhật",
+      email: "22120255@student.hcmus.edu.vn",
+      role: "Fullstack Developer",
+      github: "github.com/22120255",
     },
     {
       id: "SV004",
