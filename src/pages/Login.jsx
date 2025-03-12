@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { login } from "../services/authService";
 import "./Login.css";
 
 export default function LoginForm() {
@@ -14,17 +15,15 @@ export default function LoginForm() {
     setIsLoading(true);
 
     try {
-      const response = await new Promise((resolve) =>
-        setTimeout(() => resolve({ token: "sample-token" }), 1000)
-      );
-
+      const response = await login(username, password);
       localStorage.setItem("token", response.token);
-      localStorage.setItem("username", username);
-
-      navigate("/");
+      localStorage.setItem("username", response.user.username);
+      localStorage.setItem("role", response.user.role);
+      if (response.status === 200) {
+        navigate("/");
+      }
     } catch (error) {
-      console.error("Login failed:", error);
-      alert("Login failed. Please check your credentials.");
+      alert(error.message);
     } finally {
       setIsLoading(false);
     }

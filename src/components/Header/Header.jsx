@@ -121,7 +121,7 @@ function Header() {
                 </li>
               </div>
             ) : (
-              <li>
+              <li id="login">
                 <Link
                   to="/login"
                   className={`login-button ${

@@ -30,6 +30,7 @@ export const login = async (username, password) => {
         username: "admin",
         role: "admin",
       },
+      status: 200,
     };
   } else {
     throw new Error("Invalid username or password");
