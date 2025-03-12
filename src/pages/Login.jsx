@@ -5,30 +5,52 @@ import { login } from "../services/authService";
 import "./Login.css";
 
 export default function LoginForm() {
-  const [username, setUsername] = useState("");
+  const [email, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
+
+    if (!email || !password) {
+      alert("Vui lòng nhập tên đăng nhập và mật khẩu.");
+      return;
+    }
+
     setIsLoading(true);
 
     try {
-      const response = await login(username, password);
+      const response = await login(email, password);
+
+      if (!response || !response.token) {
+        throw new Error("Phản hồi từ server không hợp lệ.");
+      }
+
       localStorage.setItem("token", response.token);
-      localStorage.setItem("username", response.user.username);
-      localStorage.setItem("role", response.user.role);
-      if (response.status === 200) {
+      localStorage.setItem("email", response.email);
+
+      if (response.code === 200) {
         navigate("/");
+      } else {
+        throw new Error("Đăng nhập không thành công. Vui lòng thử lại.");
       }
     } catch (error) {
-      alert(error.message);
+      console.error("Lỗi đăng nhập:", error);
+
+      localStorage.removeItem("token");
+      localStorage.removeItem("email");
+      localStorage.removeItem("role");
+
+      if (error.message === "Network Error") {
+        alert("Lỗi kết nối mạng. Vui lòng kiểm tra kết nối của bạn.");
+      } else {
+        alert(error.message || "Đã xảy ra lỗi. Vui lòng thử lại.");
+      }
     } finally {
       setIsLoading(false);
     }
   };
-
   useEffect(() => {
     document.getElementById("root").classList.add("background");
 
@@ -72,8 +94,8 @@ export default function LoginForm() {
               <input
                 id="username"
                 type="text"
-                placeholder="Enter your username"
-                value={username}
+                placeholder="Enter your email"
+                value={email}
                 onChange={(e) => setUsername(e.target.value)}
                 required
               />

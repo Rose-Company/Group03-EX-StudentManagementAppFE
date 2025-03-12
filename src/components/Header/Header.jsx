@@ -15,7 +15,7 @@ function Header() {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    const storedUsername = localStorage.getItem("username");
+    const storedUsername = localStorage.getItem("email");
     if (token && storedUsername) {
       setIsLoggedIn(true);
       setUsername(storedUsername);
@@ -79,7 +79,7 @@ function Header() {
       <div className="header-container">
         <div className="logo-container">
           <Link to="/" className="logo">
-            <span className="logo-text">Student-management-system</span>
+            <span className="logo-text">SMS</span>
           </Link>
         </div>
 
