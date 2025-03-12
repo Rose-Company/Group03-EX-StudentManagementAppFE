@@ -241,6 +241,12 @@
     text-align: center;
   }
 
+  #login {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
   .nav-links li a {
     display: block;
     padding: 15px;
