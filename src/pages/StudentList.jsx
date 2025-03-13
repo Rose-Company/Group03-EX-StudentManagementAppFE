@@ -12,6 +12,7 @@ function StudentList({ students, onStudentClick }) {
     }
   };
 
+
   return (
     <div className="student-table">
       <table>
@@ -27,6 +28,7 @@ function StudentList({ students, onStudentClick }) {
         </thead>
         <tbody>
           {students.map((student) => (
+<<<<<<< HEAD
             <tr
               key={student.student_code}
               className="highlight-row"
@@ -40,8 +42,20 @@ function StudentList({ students, onStudentClick }) {
                     .map((word) => word[0])
                     .join("")
                     .toUpperCase()}
+=======
+            <tr 
+              key={student.student_code} 
+              className="highlight-row"
+              onClick={() => onStudentClick(student)}
+              style={{ cursor: 'pointer' }}
+            >
+              <td className="student-name">
+                <button className="student-avatar">
+                  {student.fullname.split(" ").map(word => word[0]).join("").toUpperCase()}
+>>>>>>> 3aeb5e3163d44bec325b0e3dc2f3a0eb6bfdae25
                 </button>
                 {student.fullname}
+
               </td>
               <td>{student.id}</td>
               <td>{student.email}</td>
@@ -49,11 +63,19 @@ function StudentList({ students, onStudentClick }) {
               <td>{student.gender}</td>
               <td></td>
               <td onClick={(e) => e.stopPropagation()}>
+<<<<<<< HEAD
                 <button
                   className="student-edit"
                   onClick={() => onStudentClick(student)}
                 >
                   <i className="bx bx-show"></i>
+=======
+                <button 
+                  className="student-edit"
+                  onClick={() => onStudentClick(student)}
+                >
+                  <i className='bx bx-show'></i>
+>>>>>>> 3aeb5e3163d44bec325b0e3dc2f3a0eb6bfdae25
                 </button>
                 <button className="student-edit">
                   <i className="bx bx-message-square-edit"></i>
@@ -65,6 +87,7 @@ function StudentList({ students, onStudentClick }) {
                   <i className="bx bx-message-square-x"></i>
                 </button>
               </td>
+
             </tr>
           ))}
         </tbody>
@@ -73,19 +96,25 @@ function StudentList({ students, onStudentClick }) {
   );
 }
 
-StudentList.propTypes = {
+StudentTable.propTypes = {
   students: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.string.isRequired,
+<<<<<<< HEAD
       student_code: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
         .isRequired,
+=======
+      student_code: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
+>>>>>>> 3aeb5e3163d44bec325b0e3dc2f3a0eb6bfdae25
       fullname: PropTypes.string.isRequired,
       email: PropTypes.string,
       phone: PropTypes.string,
       gender: PropTypes.string,
+
     })
   ).isRequired,
   onStudentClick: PropTypes.func.isRequired,
 };
 
 export default StudentList;
+
