@@ -2,32 +2,48 @@ import "./StudentManagement.css";
 import StudentList from "./StudentList";
 import React, { useState, useEffect } from "react";
 import StudentModal from "./StudentModal";
-import { getStudents, getFaculties, updateStudent, deleteStudent,getStudentById, getStudentByFullName, getStatuses} from "../services/api";
+import { getStudents, getFaculties, updateStudent, deleteStudent,getStudentById, getStudentByFullName, getStatuses,sortStudent} from "../services/api";
 
 function StudentManagement() {
   const [isPopUpOpened, setIsPopUpOpened] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [faculties, setFaculties] = useState([]);
-  const [status,setStatus] = useState([]);
+  const [statuses,setStatuses] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(2);
   const [students, setStudents] = useState([]);
   const [searchText, setSearchText] = useState("");
+  const [sortField, setSortField] = useState("");
+  const [sortOrder, setSortOrder] = useState("");
   const getTotalPages = (total, pageSize) => Math.ceil(total / pageSize);
-
+  
   useEffect(() => {
     const delayDebounce = setTimeout(async () => {
       try {
         if (searchText.trim() === "") {
-          const data = await getStudents(page, 10);
-          if (data) {
-            setStudents(data.items);
-            setTotalPages(getTotalPages(data.total, 10));
+          // Nếu không tìm kiếm nhưng có sort, thì gọi API sort
+          if (sortField.trim() !== "") {
+            const data = await sortStudent(sortField, sortOrder, page, 10);
+            if (data) {
+              setStudents(data.items);
+              setTotalPages(getTotalPages(data.total, 10));
+            } else {
+              setStudents([]);
+            }
           } else {
-            setStudents([]);
+            // Nếu không có search và không có sort => lấy toàn bộ sinh viên
+            const data = await getStudents(page, 10);
+            if (data) {
+              setStudents(data.items);
+              setTotalPages(getTotalPages(data.total, 10));
+            } else {
+              setStudents([]);
+            }
           }
-        } else {
+        }
+        // Nếu có tìm kiếm
+        else {
           if (/^\d+$/.test(searchText)) {
             const data = await getStudentById(searchText, page, 10);
             if (data && data.items) {
@@ -37,7 +53,7 @@ function StudentManagement() {
               setStudents([]); 
             }
           } else {
-            const data = await getStudentByFullName(searchText,page,10);
+            const data = await getStudentByFullName(searchText, page, 10);
             if (data && data.items) {
               setStudents(data.items);
               setTotalPages(getTotalPages(data.total, 10));
@@ -53,7 +69,8 @@ function StudentManagement() {
     }, 500); 
     
     return () => clearTimeout(delayDebounce);
-  }, [searchText, page]); 
+  }, [searchText, page, sortField, sortOrder]); // ✅ Thêm dependencies để re-run khi sort thay đổi
+
   
   useEffect(() => {
     const fetchFaculties = async () => {
@@ -71,18 +88,20 @@ function StudentManagement() {
   }, []);
 
   useEffect(() => {
-    const fetchFaculties = async () => {
+    const fetchStatuses = async () => {
       try {
         const data = await getStatuses();
-        if (data.code === 200) {
-          setStatus(data.data.items);
+        console.log("Statuses data:", data); 
+  
+        if (Array.isArray(data)) {
+          setStatuses(data); 
         }
       } catch (error) {
         console.error("Error fetching statuses:", error);
       }
     };
-
-    fetchFaculties();
+  
+    fetchStatuses();
   }, []);
 
 
@@ -92,7 +111,7 @@ function StudentManagement() {
   const handleNextPage = () => setPage(page + 1);
   
   const handleStudentClick = (student) => {
-    setSelectedStudent(student.id);
+    setSelectedStudent(student.student_code);
     setIsModalOpen(true);
   };
 
@@ -127,6 +146,29 @@ function StudentManagement() {
   const handleSearchStudent = (event) => {
     setSearchText(event.target.value);
   };
+  const handleSortStudent = (event) => {
+    const selectedIndex = event.target.selectedIndex;
+    switch (selectedIndex) {
+      case 0: 
+        setSortField("fullname");
+        setSortOrder("asc");
+        break;
+      case 1: 
+        setSortField("fullname");
+        setSortOrder("desc");
+        break;
+      case 2: 
+        setSortField("student_code");
+        setSortOrder("asc");
+        break;
+      case 3: 
+        setSortField("student_code");
+        setSortOrder("desc");
+        break;
+      default:
+        break;
+    }
+  };
   
   return (
     <>
@@ -136,9 +178,12 @@ function StudentManagement() {
           <button onClick={handleOpenPopUp} className="add-btn">Add Student</button>
         </div>
         <div className="search-filter">
-          <select className="filter-dropdown">
-            <option>Add filter</option>
-          </select>
+        <select onChange={handleSortStudent} className="filter-dropdown">
+          <option value="name-asc">Full Name A - Z</option>
+          <option value="name-desc">Full Name Z - A</option>
+          <option value="id-asc">Student ID Ascending</option>
+          <option value="id-desc">Student ID Descending</option>
+        </select>
           <input onChange={handleSearchStudent} type="text" className="search-input" placeholder="Search..." />
         </div>
 
@@ -168,48 +213,48 @@ function StudentManagement() {
         <div className="popup-overlay" onClick={handleClosePopUp}>
           <div className="popup-content" onClick={(e) => e.stopPropagation()}>
             <div className="popup-content__top-action">
-              <h3>Thêm sinh viên</h3>
+              <h3>Add Student</h3>
               <button className="popup-close-btn" onClick={handleClosePopUp}>X</button>
             </div>
             <div className="form-group">
               <div>
-                <p>Tên</p>
-                <input type="text" placeholder="Tên sinh viên"/>
+                <p>Full Name</p>
+                <input type="text" />
               </div>
               <div>
-                <p>Ngày sinh</p>
-                <input type="text" placeholder="Ngày sinh"/>
+                <p>Date of Birth</p>
+                <input type="text" placeholder="dd/mm/yyyy"/>
               </div>
               <div>
-                <p>SDT</p>
-                <input type="text" placeholder="SDT"/>
+                <p>Phone Number</p>
+                <input type="text" />
               </div>
             </div>
             <div className="form-group">
               <div>
-                <p>Giới tính</p>
+                <p>Gender</p>
                 <select className="student-gt">
-                  <option value="Nam">Nam</option>
-                  <option value="Nữ">Nữ</option>
-                  <option value="Khác">Khác</option>
+                  <option value="Nam">Male</option>
+                  <option value="Nữ">Female</option>
+                  <option value="Khác">Other</option>
                 </select>
               </div>
               <div>
-                <p>Địa chỉ liên hệ</p>
-                <input type="text" placeholder="Địa chỉ liên hệ"/>
+                <p>Contact Address</p>
+                <input type="text" />
               </div>
               <div>
-                <p>Địa chỉ Email</p>
-                <input type="text" placeholder="Địa chỉ Email"/>
+                <p>Email Address</p>
+                <input type="text"/>
               </div>
             </div>
             <div className="form-group">
               <div>
-                <p>MSSV</p>
-                <input type="text" placeholder="MSSV"/>
+                <p>Student ID</p>
+                <input type="text" />
               </div>
               <div>
-                <p>Khoa</p>
+                <p>Faculty</p>
                 <select>
                   {faculties.map((faculty) => (
                     <option key={faculty.id} value={faculty.id}>{faculty.name}</option>
@@ -217,21 +262,21 @@ function StudentManagement() {
                 </select>
               </div>
               <div>
-                <p>Khóa</p>
-                <input type="text" placeholder="Khóa"/>
+                <p>Academy Year</p>
+                <input type="text"/>
               </div>
             </div>
             <div className="form-group">
               <div>
-                <p>Chương trình</p>
-                <select>
-                  <option value="">Chọn chương trình</option>
-                </select>
+                <p>Program Type</p>
+                <input type="text"/>
               </div>
               <div className="student-status">
-                <p>Tình trạng sinh viên</p>
+                <p>Student Status</p>
                 <select>
-                  <option value="">Chọn tình trạng</option>
+                  {statuses.map((status) => (
+                    <option key={status.id} value={status.id}>{status.name}</option>
+                  ))}
                 </select>
               </div>
             </div>

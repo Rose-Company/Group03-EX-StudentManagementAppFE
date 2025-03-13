@@ -33,7 +33,7 @@ function StudentList({ students, onStudentClick }) {
             <th>Phone</th>
             <th>Gender</th>
             <th>Note</th>
-            <th>Actions</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -55,18 +55,15 @@ function StudentList({ students, onStudentClick }) {
               <td>{student.phone}</td>
               <td>{student.gender}</td>
               <td></td>
-              <td onClick={(e) => e.stopPropagation()}>
+              <td>
                 <button 
-                  className="student-edit"
-                  onClick={() => onStudentClick(student)}
+                  className="student-show"
+                  onClick={(e) => {
+                    e.stopPropagation(); 
+                    onStudentClick(student);
+                  }}
                 >
                   <i className='bx bx-show'></i>
-                </button>
-                <button className="student-edit">
-                  <i className="bx bx-message-square-edit"></i>
-                </button>
-                <button onClick={() => handleDeleteStudent(student.fullname)} className="student-delete">
-                  <i className="bx bx-message-square-x"></i>
                 </button>
               </td>
             </tr>

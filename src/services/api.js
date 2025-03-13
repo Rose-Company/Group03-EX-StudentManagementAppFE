@@ -86,4 +86,21 @@ export const getStatuses = async () => {
   return response.data;
 }
 
+//Sort Student
+export const sortStudent = async (field, type, page = 1, pageSize = 10) => {
+  try {
+    const response = await api.get("/v1/students/test", {
+      params: {
+        page,
+        page_size: pageSize,
+        sort: `${field}.${type}` 
+      },
+    });
+    return response.data; 
+  } catch (error) {
+    console.error("Error fetching sorted students:", error);
+    return null; 
+  }
+};
+
 export default api;

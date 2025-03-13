@@ -52,6 +52,7 @@
     width: 100%;
     align-items: center;
     gap: 10px;
+    
 }
   
 .search-filter .filter-dropdown,.search-input {
@@ -64,6 +65,7 @@
 }
 .search-filter .filter-dropdown,.search-input {
     flex:1;
+    color:black;
 }
 .search-filter .search-input {
     padding: 8px;
@@ -166,8 +168,7 @@
     display: flex;
     align-items: center;
 }
-
-.student-edit, .student-delete, .student-view .popup-close-btn {
+.student-show, .popup-close-btn {
     padding:5px;
     background-color: unset;
     font-size: 16px;
@@ -209,6 +210,7 @@
     font-size: 14px;
     border-radius: 3px;
     width:190px;
+    
 }
 .form-group p{
     text-align: left;
@@ -225,7 +227,7 @@
 .form-group .student-gt{
     padding:7px 15px;
     border: 1px solid rgba(22, 20, 20, 0.2);
-    margin-right: 110px;
+    margin-right: 80px;
     width:unset;
 }
 .form-group .student-status{
