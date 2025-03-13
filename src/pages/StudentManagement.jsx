@@ -1,47 +1,125 @@
 import "./StudentManagement.css";
 import StudentList from "./StudentList";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
+import StudentModal from "./StudentModal";
+import { getStudents, getFaculties, updateStudent, deleteStudent } from "../services/api";
+
 
 function StudentManagement() {
   const [isPopUpOpened, setIsPopUpOpened] = useState(false);
+  const [selectedStudent, setSelectedStudent] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [faculties, setFaculties] = useState([]);
   const [page, setPage] = useState(1);
-  // const [students, setStudents] = useState([]);
-  const [setTotalPages] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const [students, setStudents] = useState([]);
+
+
+  // paging
   useEffect(() => {
-    fetch(`http://localhost:8080/v1/students?page=${page}&page_size=10`, {
-      headers: {
-        Authorization:
-          "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAZ21haWwuY29tIiwiZXhwIjoxNzQxODQ3NzA5LCJpZCI6IjhhMGY3YTg5LWNhYzctNDhiMy04ZjZlLWNkYjE3ODZmYTk1MyIsInJvbGUiOiJhMWIyYzNkNC1lNWY2LTQ3YTgtYjljMC1kMWUyZjNhNGI1YzYifQ.ptvI5Wuudds5_XdZH-9HDmWaDBSErp6xSAbj6sHgSR8",
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("API Response:", data);
+    const fetchStudents = async () => {
+      try {
+        const data = await getStudents(page, 10);
         if (data) {
           setStudents(data.items);
           setTotalPages(data.total_pages || 1);
         }
-      })
-      .catch((error) => console.error("Error fetching students:", error));
+      } catch (error) {
+        console.error("Error fetching students:", error);
+      }
+    };
+
+    fetchStudents();
   }, [page]);
 
   useEffect(() => {
-    fetch("http://localhost:8080/v1/faculties")
-      .then((response) => response.json())
-      .then((data) => {
+    const fetchFaculties = async () => {
+      try {
+        const data = await getFaculties();
         if (data.code === 200) {
           setFaculties(data.data.items);
         }
-      })
-      .catch((error) => console.error("Error fetching faculties:", error));
+      } catch (error) {
+        console.error("Error fetching faculties:", error);
+      }
+    };
+
+    fetchFaculties();
   }, []);
 
   const handleOpenPopUp = () => setIsPopUpOpened(true);
   const handleClosePopUp = () => setIsPopUpOpened(false);
   const handlePrevPage = () => setPage(page - 1);
-  const handleNextPage = () => setPage(page + 1);
+  const handleNextPage = () => setPage(page + 1);  
+  const handleStudentClick = (student) => {
+    setSelectedStudent(student.id);
+    setIsModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setSelectedStudent(null);
+    setIsModalOpen(false);
+  };
+
+  const handleSaveStudent = async (updatedStudent) => {
+    try {
+      console.log('Starting update for student:', updatedStudent);
+      
+      // Ensure all required fields are present and properly formatted
+      if (!updatedStudent.id) {
+        console.error('Missing student ID');
+        return;
+      }
+
+      const response = await updateStudent(updatedStudent.id, updatedStudent);
+      console.log('Update response:', response);
+
+      if (response && response.code === 200) {
+        // Refresh the student list
+        const data = await getStudents(page, 10);
+        if (data) {
+          setStudents(data.items);
+          setTotalPages(data.total_pages || 1);
+        }
+        handleModalClose();
+      } else {
+        console.error('Update failed:', response?.message || 'Unknown error');
+      }
+    } catch (error) {
+      console.error('Error in handleSaveStudent:', error);
+      if (error.response) {
+        console.error('Response error:', error.response.data);
+      }
+    }
+  };
+
+  const handleDeleteStudent = async (studentId) => {
+    try {
+      const response = await deleteStudent(studentId);
+      
+      //if deletion was successful
+      if (response && response.code === 200) {
+        // Refresh the student list
+        const data = await getStudents(page, 10);
+        if (data) {
+          setStudents(data.items);
+          setTotalPages(data.total_pages || 1);
+        }
+        
+        // Close the modal
+        handleModalClose();
+        
+        // Show success message
+        alert('Student deleted successfully');
+      } else {
+        throw new Error('Failed to delete student');
+      }
+    } catch (error) {
+      console.error('Error in handleDeleteStudent:', error);
+      throw error; 
+    }
+  };
+
 
   return (
     <>
@@ -62,7 +140,10 @@ function StudentManagement() {
         </div>
 
         <div className="student-list">
-          <StudentList students={students} />
+          <StudentList 
+            students={students} 
+            onStudentClick={handleStudentClick}
+          />
           <div className="pagination">
             {page > 1 ? <button onClick={handlePrevPage}>Prev</button> : <></>}
             <span>Page {page}</span>
@@ -70,6 +151,16 @@ function StudentManagement() {
           </div>
         </div>
       </div>
+
+      <StudentModal
+        studentId={selectedStudent}
+        isOpen={isModalOpen}
+        onClose={handleModalClose}
+        onSave={handleSaveStudent}
+        onDelete={handleDeleteStudent}
+        faculties={faculties}
+      />
+
       {isPopUpOpened && (
         <div className="popup-overlay" onClick={handleClosePopUp}>
           <div className="popup-content" onClick={(e) => e.stopPropagation()}>
