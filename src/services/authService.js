@@ -7,8 +7,14 @@ export const login = async (email, password) => {
       password,
     });
 
+    console.log(response.data);
     if (response.data?.code === 200 && response.data?.token) {
-      return { email, code: response.data.code, token: response.data.token };
+      return {
+        user_id: response.data.id,
+        email,
+        code: response.data.code,
+        token: response.data.token,
+      };
     } else {
       throw new Error(
         "Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin đăng nhập."

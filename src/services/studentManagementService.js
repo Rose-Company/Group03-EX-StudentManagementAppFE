@@ -1,6 +1,41 @@
 import api from "./api";
+
+// Create student
+export const createAStudent = async (studentData) => {
+  try {
+    const requestData = {
+      student_code: parseInt(studentData.student_code),
+      fullname: studentData.fullname,
+      date_of_birth: new Date(studentData.date_of_birth).toISOString(),
+      gender: studentData.gender,
+      faculty_id: parseInt(studentData.faculty_id),
+      batch: studentData.batch,
+      program: studentData.program,
+      address: studentData.address,
+      email: studentData.email,
+      phone: studentData.phone,
+      status_id: parseInt(studentData.status_id),
+    };
+
+    const response = await api.post("/v1/students/create", requestData);
+
+    if (response.data.code === 400) {
+      throw new Error(response.data.message || "Bad request");
+    }
+
+    return response.data;
+  } catch (error) {
+    console.error("API Error:", error.response?.data || error.message);
+    if (error.response?.data) {
+      console.error("Detailed error:", error.response.data);
+    }
+    throw error;
+  }
+};
+
 // Get student by ID
 export const getStudentById = async (id) => {
+  console.log("Fetching student with ID:", id);
   const response = await api.get(`/v1/students/${id}`);
   return response.data;
 };

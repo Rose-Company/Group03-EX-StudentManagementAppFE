@@ -2,16 +2,6 @@ import "./StudentManagement.css";
 import PropTypes from "prop-types";
 
 function StudentList({ students, onStudentClick }) {
-  const handleDeleteStudent = (studentName) => {
-    const isConfirmed = window.confirm(
-      `Bạn có chắc chắn muốn xóa ${studentName}?`
-    );
-    if (isConfirmed) {
-      alert(`Đã xóa ${studentName} thành công!`);
-      // TODO: Gọi API để xóa sinh viên
-    }
-  };
-
   return (
     <div className="student-table">
       <table>
@@ -48,23 +38,6 @@ function StudentList({ students, onStudentClick }) {
               <td>{student.faculty_id}</td>
               <td>{student.gender}</td>
               <td></td>
-              <td onClick={(e) => e.stopPropagation()}>
-                <button
-                  className="student-edit"
-                  onClick={() => onStudentClick(student)}
-                >
-                  <i className="bx bx-show"></i>
-                </button>
-                <button className="student-edit">
-                  <i className="bx bx-message-square-edit"></i>
-                </button>
-                <button
-                  onClick={() => handleDeleteStudent(student.fullname)}
-                  className="student-delete"
-                >
-                  <i className="bx bx-message-square-x"></i>
-                </button>
-              </td>
             </tr>
           ))}
         </tbody>

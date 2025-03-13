@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import {
   getStudentById,
@@ -31,13 +31,15 @@ const StudentModal = ({
     status_id: "",
   });
 
+  const initialFormData = useRef(null);
+
   useEffect(() => {
     const fetchStudentDetails = async () => {
       if (studentId && isOpen) {
         try {
           const data = await getStudentById(studentId);
           setStudent(data);
-          setFormData({
+          const initialData = {
             student_code: data.student_code.toString(),
             fullname: data.fullname,
             date_of_birth: new Date(data.date_of_birth)
@@ -51,7 +53,9 @@ const StudentModal = ({
             email: data.email,
             phone: data.phone,
             status_id: data.status_id.toString(),
-          });
+          };
+          setFormData(initialData);
+          initialFormData.current = initialData; // Lưu trữ dữ liệu ban đầu
         } catch (error) {
           console.error("Error fetching student details:", error);
         }
@@ -140,7 +144,9 @@ const StudentModal = ({
       };
 
       await onSave(updatedData);
+      setStudent(updatedData); // Cập nhật trạng thái student với dữ liệu mới
       setIsEditing(false);
+      initialFormData.current = updatedData; // Cập nhật dữ liệu ban đầu sau khi lưu
     } catch (error) {
       console.error("Error in form submission:", error);
       return;
@@ -149,21 +155,7 @@ const StudentModal = ({
 
   const handleCancel = () => {
     setIsEditing(false);
-    setFormData({
-      student_code: student.student_code.toString(),
-      fullname: student.fullname,
-      date_of_birth: new Date(student.date_of_birth)
-        .toISOString()
-        .split("T")[0],
-      gender: student.gender,
-      faculty_id: student.faculty_id.toString(),
-      batch: student.batch,
-      program: student.program,
-      address: student.address,
-      email: student.email,
-      phone: student.phone,
-      status_id: student.status_id.toString(),
-    });
+    setFormData(initialFormData.current); // Khôi phục dữ liệu ban đầu
   };
 
   const handleDelete = async () => {
@@ -187,6 +179,7 @@ const StudentModal = ({
 
       await onDelete(studentId);
       onClose(); // Close the modal after successful deletion
+      window.location.reload(); // Làm mới trang
     } catch (error) {
       console.error("Error deleting student:", error);
       // Show more specific error message
@@ -205,16 +198,23 @@ const StudentModal = ({
     }
   };
 
+  const handleClose = () => {
+    if (JSON.stringify(formData) !== JSON.stringify(initialFormData.current)) {
+      window.location.reload(); // Làm mới trang nếu dữ liệu đã thay đổi
+    }
+    onClose();
+  };
+
   if (!isOpen || !student) return null;
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
+    <div className="modal-overlay" onClick={handleClose}>
       <div
         className={`modal-content ${isEditing ? "edit-mode" : ""}`}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="edit-mode-indicator">Editing Mode</div>
-        <button className="close-button" onClick={onClose}>
+        <button className="close-button" onClick={handleClose}>
           &times;
         </button>
 

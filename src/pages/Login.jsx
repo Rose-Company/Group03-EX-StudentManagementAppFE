@@ -28,6 +28,8 @@ export default function LoginForm() {
 
       localStorage.setItem("token", response.token);
       localStorage.setItem("email", response.email);
+      localStorage.setItem("user_id", response.user_id);
+      console.log(response);
 
       if (response.code === 200) {
         navigate("/");
@@ -40,6 +42,7 @@ export default function LoginForm() {
       localStorage.removeItem("token");
       localStorage.removeItem("email");
       localStorage.removeItem("role");
+      localStorage.removeItem("user_id");
 
       if (error.message === "Network Error") {
         alert("Lỗi kết nối mạng. Vui lòng kiểm tra kết nối của bạn.");

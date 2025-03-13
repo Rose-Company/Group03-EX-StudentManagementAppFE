@@ -2,7 +2,6 @@ import "./StudentManagement.css";
 import StudentList from "./StudentList";
 import { useState, useEffect } from "react";
 import StudentModal from "./StudentModal";
-
 import {
   getStudents,
   getFaculties,
@@ -12,6 +11,7 @@ import {
   getStudentByFullName,
   getStatuses,
   sortStudent,
+  createAStudent,
 } from "../services/studentManagementService";
 
 function StudentManagement() {
@@ -21,13 +21,30 @@ function StudentManagement() {
   const [faculties, setFaculties] = useState([]);
   const [statuses, setStatuses] = useState([]);
   const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(2);
+  const [totalPages, setTotalPages] = useState(1);
   const [students, setStudents] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [sortField, setSortField] = useState("");
   const [sortOrder, setSortOrder] = useState("");
+  const [newStudent, setNewStudent] = useState({
+    fullname: "",
+    date_of_birth: "",
+    phone: "",
+    gender: "",
+    address: "",
+    email: "",
+    student_code: "",
+    faculty_id: "",
+    batch: "",
+    program: "",
+    status_id: "",
+    user_id: "",
+  });
+
+  // Hàm tính tổng số trang
   const getTotalPages = (total, pageSize) => Math.ceil(total / pageSize);
 
+  // useEffect để tìm kiếm và sắp xếp sinh viên
   useEffect(() => {
     const delayDebounce = setTimeout(async () => {
       try {
@@ -79,8 +96,9 @@ function StudentManagement() {
     }, 500);
 
     return () => clearTimeout(delayDebounce);
-  }, [searchText, page, sortField, sortOrder]); // ✅ Thêm dependencies để re-run khi sort thay đổi
+  }, [searchText, page, sortField, sortOrder]);
 
+  // useEffect để lấy danh sách khoa
   useEffect(() => {
     const fetchFaculties = async () => {
       try {
@@ -96,6 +114,7 @@ function StudentManagement() {
     fetchFaculties();
   }, []);
 
+  // useEffect để lấy danh sách trạng thái
   useEffect(() => {
     const fetchStatuses = async () => {
       try {
@@ -113,13 +132,14 @@ function StudentManagement() {
     fetchStatuses();
   }, []);
 
+  // Các hàm xử lý sự kiện
   const handleOpenPopUp = () => setIsPopUpOpened(true);
   const handleClosePopUp = () => setIsPopUpOpened(false);
   const handlePrevPage = () => setPage(page - 1);
   const handleNextPage = () => setPage(page + 1);
 
   const handleStudentClick = (student) => {
-    setSelectedStudent(student.student_code);
+    setSelectedStudent(String(student.id));
     setIsModalOpen(true);
   };
 
@@ -186,9 +206,11 @@ function StudentManagement() {
       throw error;
     }
   };
+
   const handleSearchStudent = (event) => {
     setSearchText(event.target.value);
   };
+
   const handleSortStudent = (event) => {
     const selectedIndex = event.target.selectedIndex;
     switch (selectedIndex) {
@@ -210,6 +232,74 @@ function StudentManagement() {
         break;
       default:
         break;
+    }
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setNewStudent((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  useEffect(() => {
+    const currentUser = localStorage.getItem("user_id");
+    if (currentUser) {
+      setNewStudent((prev) => ({
+        ...prev,
+        user_id: currentUser,
+      }));
+    }
+  }, []);
+
+  const handleAddStudent = async () => {
+    console.log(localStorage.getItem("user_id"));
+    console.log(newStudent);
+    // Kiểm tra các trường bắt buộc
+    const requiredFields = [
+      "fullname",
+      "date_of_birth",
+      "phone",
+      "gender",
+      "address",
+      "email",
+      "student_code",
+      "faculty_id",
+      "batch",
+      "program",
+      "status_id",
+      "user_id",
+    ];
+
+    const missingFields = requiredFields.filter((field) => !newStudent[field]);
+
+    if (missingFields.length > 0) {
+      console.error("Missing required fields:", missingFields);
+      return;
+    }
+
+    try {
+      const response = await createAStudent(newStudent);
+      if (response && response.code === 200) {
+        // Refresh the student list
+        const data = await getStudents(page, 10);
+        if (data) {
+          setStudents(data.items);
+          setTotalPages(data.total_pages || 1);
+        }
+        handleClosePopUp();
+      } else {
+        console.error(
+          "Add student failed:",
+          response?.message || "Unknown error"
+        );
+      }
+    } catch (error) {
+      console.error("Error in handleAddStudent:", error);
+      if (error.response) {
+        console.error("Response error:", error.response.data);
+      }
     }
   };
 
@@ -277,43 +367,88 @@ function StudentManagement() {
             <div className="form-group">
               <div>
                 <p>Full Name</p>
-                <input type="text" />
+                <input
+                  type="text"
+                  placeholder="Full Name"
+                  name="fullname"
+                  value={newStudent.fullname}
+                  onChange={handleInputChange}
+                />
               </div>
               <div>
                 <p>Date of Birth</p>
-                <input type="text" placeholder="dd/mm/yyyy" />
+                <input
+                  type="date"
+                  placeholder="Date of Birth"
+                  name="date_of_birth"
+                  value={newStudent.date_of_birth}
+                  onChange={handleInputChange}
+                />
               </div>
               <div>
                 <p>Phone Number</p>
-                <input type="text" />
+                <input
+                  type="text"
+                  placeholder="Phone Number"
+                  name="phone"
+                  value={newStudent.phone}
+                  onChange={handleInputChange}
+                />
               </div>
             </div>
             <div className="form-group">
               <div>
                 <p>Gender</p>
-                <select className="student-gt">
-                  <option value="Nam">Male</option>
-                  <option value="Nữ">Female</option>
-                  <option value="Khác">Other</option>
+                <select
+                  className="student-gt"
+                  name="gender"
+                  value={newStudent.gender}
+                  onChange={handleInputChange}
+                >
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Other">Other</option>
                 </select>
               </div>
               <div>
                 <p>Contact Address</p>
-                <input type="text" />
+                <input
+                  type="text"
+                  placeholder="Contact Address"
+                  name="address"
+                  value={newStudent.address}
+                  onChange={handleInputChange}
+                />
               </div>
               <div>
                 <p>Email Address</p>
-                <input type="text" />
+                <input
+                  type="email"
+                  placeholder="Email Address"
+                  name="email"
+                  value={newStudent.email}
+                  onChange={handleInputChange}
+                />
               </div>
             </div>
             <div className="form-group">
               <div>
                 <p>Student ID</p>
-                <input type="text" />
+                <input
+                  type="text"
+                  placeholder="Student ID"
+                  name="student_code"
+                  value={newStudent.student_code}
+                  onChange={handleInputChange}
+                />
               </div>
               <div>
                 <p>Faculty</p>
-                <select>
+                <select
+                  name="faculty_id"
+                  value={newStudent.faculty_id}
+                  onChange={handleInputChange}
+                >
                   {faculties.map((faculty) => (
                     <option key={faculty.id} value={faculty.id}>
                       {faculty.name}
@@ -322,18 +457,34 @@ function StudentManagement() {
                 </select>
               </div>
               <div>
-                <p>Academy Year</p>
-                <input type="text" />
+                <p>Batch</p>
+                <input
+                  type="text"
+                  placeholder="Batch"
+                  name="batch"
+                  value={newStudent.batch}
+                  onChange={handleInputChange}
+                />
               </div>
             </div>
             <div className="form-group">
               <div>
-                <p>Program Type</p>
-                <input type="text" />
+                <p>Program</p>
+                <input
+                  type="text"
+                  placeholder="Program"
+                  name="program"
+                  value={newStudent.program}
+                  onChange={handleInputChange}
+                />
               </div>
               <div className="student-status">
                 <p>Student Status</p>
-                <select>
+                <select
+                  name="status_id"
+                  value={newStudent.status_id}
+                  onChange={handleInputChange}
+                >
                   {statuses.map((status) => (
                     <option key={status.id} value={status.id}>
                       {status.name}
@@ -342,7 +493,9 @@ function StudentManagement() {
                 </select>
               </div>
             </div>
-            <button className="pop-up-add-student">Thêm</button>
+            <button className="pop-up-add-student" onClick={handleAddStudent}>
+              Add
+            </button>
           </div>
         </div>
       )}
