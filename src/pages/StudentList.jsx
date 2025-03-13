@@ -73,7 +73,7 @@ function StudentList({ students, onStudentClick }) {
   );
 }
 
-StudentTable.propTypes = {
+StudentList.propTypes = {
   students: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.string.isRequired,
