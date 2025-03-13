@@ -2,6 +2,18 @@ import "./StudentManagement.css";
 import PropTypes from "prop-types";
 
 function StudentList({ students, onStudentClick }) {
+  if (students.length === 0) {
+    return (
+      <div className="empty-list">
+        <img
+          src="/images/list_empty.png"
+          alt="empty"
+          className="empty-list__img"
+        />
+        <p className="empty-list__title">There is no students!</p>
+      </div>
+    );
+  }
   return (
     <div className="student-table">
       <table>
