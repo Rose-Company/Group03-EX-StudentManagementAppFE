@@ -4,18 +4,18 @@ import { useState } from "react";
 export default function AboutUs() {
   const [teamMembers] = useState([
     {
-      id: "SV001",
-      name: "Nguyen Van A",
-      email: "nguyenvana@example.com",
-      role: "Team Leader",
-      github: "github.com/nguyenvana",
+      id: "22120219",
+      name: "Mai Nhat Nam",
+      email: "mainhatnam01@gmail.com",
+      role: "BackEnd Developer",
+      github: "github.com/mainhatnam219",
     },
     {
-      id: "SV002",
-      name: "Tran Thi B",
-      email: "tranthib@example.com",
-      role: "Frontend Developer",
-      github: "github.com/tranthib",
+      id: "22120235",
+      name: "Hoàng Thanh Thảo Nguyên",
+      email: "thaonguyenhoang2103@gmail.com",
+      role: "FrontEnd Developer",
+      github: "github.com/thaonguyen2103",
     },
     {
       id: "22120255",
@@ -25,25 +25,27 @@ export default function AboutUs() {
       github: "github.com/22120255",
     },
     {
-      id: "SV004",
-      name: "Pham Thi D",
-      email: "phamthid@example.com",
-      role: "UI/UX Designer",
-      github: "github.com/phamthid",
+      id: "22120263",
+      name: "Nguyễn Thành Phát",
+      email: "22120263@student.hcmus.edu.vn",
+      role: "Fullstack Developer",
+      github: "github.com/phatnguyen1906",
     },
   ]);
 
   return (
     <div className="about-us-container">
       <div className="about-header">
-        <h1>Tech Innovators Group</h1>
-        <p>Building the future through innovation and collaboration</p>
+        <h1>GROUP 03</h1>
+        <p className="about-paragraph">Building a student management system</p>
       </div>
 
       <div className="about-content">
         <div className="team-section">
           <h2>Our Team</h2>
-          <p>Meet the talented individuals behind our success</p>
+          <p className="about-paragraph">
+            Meet the talented individuals behind our success
+          </p>
 
           <div className="table-container">
             <table className="team-table">

@@ -1,15 +1,14 @@
 /* About Us Container */
 .about-us-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 40px 20px;
+  margin: 20px auto;
+  padding: 50px;
 }
 
 /* Header Section */
 .about-header {
   text-align: center;
-  margin-bottom: 50px;
-  padding-bottom: 30px;
+  margin-bottom: 10px;
+  padding-bottom: 20px;
   border-bottom: 1px solid #e1e4e8;
 }
 
@@ -136,6 +135,13 @@
     padding: 10px;
     font-size: 0.9rem;
   }
+}
+
+.about-paragraph {
+  width: 100%;
+  font-size: 1.2rem;
+  color: #718096;
+  margin-top: 20px;
 }
 
 @media (max-width: 480px) {

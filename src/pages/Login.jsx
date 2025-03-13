@@ -1,8 +1,7 @@
-import { useState } from "react";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { login } from "../services/authService";
-import "./Login.css";
+import styles from "./Login.module.css";
 
 export default function LoginForm() {
   const [email, setUsername] = useState("");
@@ -35,7 +34,6 @@ export default function LoginForm() {
       } else {
         throw new Error("Đăng nhập không thành công. Vui lòng thử lại.");
       }
-
     } catch (error) {
       console.error("Lỗi đăng nhập:", error);
 
@@ -52,20 +50,21 @@ export default function LoginForm() {
       setIsLoading(false);
     }
   };
+
   useEffect(() => {
-    document.getElementById("root").classList.add("background");
+    document.getElementById("root").classList.add(styles.background);
 
     return () => {
-      document.getElementById("root").classList.remove("background");
+      document.getElementById("root").classList.remove(styles.background);
     };
   }, []);
 
   return (
-    <div className="login-wrapper">
-      <div className="system-title">
-        <div className="icon-container">
+    <div className={styles.loginWrapper}>
+      <div className={styles.systemTitle}>
+        <div className={styles.iconContainer}>
           <svg
-            className="icon"
+            className={styles.icon}
             xmlns="http://www.w3.org/2000/svg"
             width="24"
             height="24"
@@ -81,16 +80,16 @@ export default function LoginForm() {
           </svg>
         </div>
         <h1>Student Management System</h1>
-        <p>Sign in to access your account</p>
+        <p className={styles.loginParagraph}>Sign in to access your account</p>
       </div>
 
-      <div className="login-card">
-        <div className="card-header">
+      <div className={styles.loginCard}>
+        <div className={styles.cardHeader}>
           <h2>Login</h2>
         </div>
-        <div className="card-content">
+        <div className={styles.cardContent}>
           <form onSubmit={handleLogin}>
-            <div className="form-group">
+            <div className={styles.formGroup}>
               <label htmlFor="username">Username</label>
               <input
                 id="username"
@@ -101,7 +100,7 @@ export default function LoginForm() {
                 required
               />
             </div>
-            <div className="form-group">
+            <div className={styles.formGroup}>
               <label htmlFor="password">Password</label>
               <input
                 id="password"
@@ -112,16 +111,20 @@ export default function LoginForm() {
                 required
               />
             </div>
-            <button type="submit" className="login-button" disabled={isLoading}>
+            <button
+              type="submit"
+              className={styles.loginButton}
+              disabled={isLoading}
+            >
               {isLoading ? (
-                <span className="button-content">
-                  <span className="spinner"></span>
+                <span className={styles.buttonContent}>
+                  <span className={styles.spinner}></span>
                   Logging in...
                 </span>
               ) : (
-                <span className="button-content">
+                <span className={styles.buttonContent}>
                   <svg
-                    className="login-icon"
+                    className={styles.loginIcon}
                     xmlns="http://www.w3.org/2000/svg"
                     width="18"
                     height="18"
@@ -142,8 +145,8 @@ export default function LoginForm() {
             </button>
           </form>
         </div>
-        <div className="card-footer">
-          <button className="back-button" onClick={() => navigate("/")}>
+        <div className={styles.cardFooter}>
+          <button className={styles.backButton} onClick={() => navigate("/")}>
             Back to Home
           </button>
         </div>
