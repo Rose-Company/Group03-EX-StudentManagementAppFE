@@ -11,18 +11,7 @@ function StudentList({ students, onStudentClick }) {
       // TODO: Gọi API để xóa sinh viên
     }
   };
-  if (students.length === 0) {
-    return (
-      <div className="empty-list">
-        <img
-          src="/images/list_empty.png"
-          alt="empty"
-          className="empty-list__img"
-        />
-        <p className="empty-list__title">Không có thông tin sinh viên nào!</p>
-      </div>
-    );
-  }
+
   return (
     <div className="student-table">
       <table>
@@ -31,10 +20,9 @@ function StudentList({ students, onStudentClick }) {
             <th>Name</th>
             <th>Student ID</th>
             <th>Email address</th>
-            <th>Faculty</th>
+            <th>Khoa</th>
             <th>Gender</th>
-            <th>Note</th>
-            <th></th>
+            <th>Ghi chú</th>
           </tr>
         </thead>
         <tbody>
@@ -57,7 +45,7 @@ function StudentList({ students, onStudentClick }) {
               </td>
               <td>{student.id}</td>
               <td>{student.email}</td>
-              <td>{student.faculty}</td>
+              <td>{student.khoa}</td>
               <td>{student.gender}</td>
               <td></td>
               <td onClick={(e) => e.stopPropagation()}>
@@ -67,7 +55,6 @@ function StudentList({ students, onStudentClick }) {
                 >
                   <i className="bx bx-show"></i>
                 </button>
-
                 <button className="student-edit">
                   <i className="bx bx-message-square-edit"></i>
                 </button>
@@ -95,7 +82,6 @@ StudentList.propTypes = {
       fullname: PropTypes.string.isRequired,
       email: PropTypes.string,
       phone: PropTypes.string,
-      faculty: PropTypes.string,
       gender: PropTypes.string,
     })
   ).isRequired,
