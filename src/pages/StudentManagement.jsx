@@ -1,47 +1,89 @@
 import "./StudentManagement.css";
 import StudentList from "./StudentList";
 import React, { useState, useEffect } from "react";
+import StudentModal from "./StudentModal";
+import { getStudents, getFaculties, updateStudent, deleteStudent } from "../services/api";
 
 function StudentManagement() {
   const [isPopUpOpened, setIsPopUpOpened] = useState(false);
+  const [selectedStudent, setSelectedStudent] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [faculties, setFaculties] = useState([]);
-  const [page,setPage]=useState(1);
-  // const [students, setStudents] = useState([]);
+  const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [students,setStudents] = useState([]);
+  const [students, setStudents] = useState([]);
+
   useEffect(() => {
-    fetch(`http://localhost:8080/v1/students?page=${page}&page_size=10`, {
-      headers: {
-        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAZ21haWwuY29tIiwiZXhwIjoxNzQxODQ3NzA5LCJpZCI6IjhhMGY3YTg5LWNhYzctNDhiMy04ZjZlLWNkYjE3ODZmYTk1MyIsInJvbGUiOiJhMWIyYzNkNC1lNWY2LTQ3YTgtYjljMC1kMWUyZjNhNGI1YzYifQ.ptvI5Wuudds5_XdZH-9HDmWaDBSErp6xSAbj6sHgSR8'
-      }
-    })
-      .then(response => response.json())
-      .then(data => {
-        console.log("API Response:", data); 
+    const fetchStudents = async () => {
+      try {
+        const data = await getStudents(page, 10);
         if (data) {
           setStudents(data.items);
           setTotalPages(data.total_pages || 1);
         }
-      })
-      .catch(error => console.error("Error fetching students:", error));
+      } catch (error) {
+        console.error("Error fetching students:", error);
+      }
+    };
+
+    fetchStudents();
   }, [page]);
 
   useEffect(() => {
-    fetch("http://localhost:8080/v1/faculties")
-      .then((response) => response.json())
-      .then((data) => { 
+    const fetchFaculties = async () => {
+      try {
+        const data = await getFaculties();
         if (data.code === 200) {
           setFaculties(data.data.items);
         }
-      })
-      .catch((error) => console.error("Error fetching faculties:", error));
+      } catch (error) {
+        console.error("Error fetching faculties:", error);
+      }
+    };
+
+    fetchFaculties();
   }, []);
 
   const handleOpenPopUp = () => setIsPopUpOpened(true);
   const handleClosePopUp = () => setIsPopUpOpened(false);
-  const handlePrevPage = () => setPage(page-1);
-  const handleNextPage = () => setPage(page+1);
+  const handlePrevPage = () => setPage(page - 1);
+  const handleNextPage = () => setPage(page + 1);
   
+  const handleStudentClick = (student) => {
+    setSelectedStudent(student.id);
+    setIsModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setSelectedStudent(null);
+    setIsModalOpen(false);
+  };
+
+  const handleSaveStudent = async (updatedStudent) => {
+    try {
+      await updateStudent(updatedStudent.id, updatedStudent);
+      // Update the student in the list
+      const updatedStudents = students.map(student => 
+        student.id === updatedStudent.id ? updatedStudent : student
+      );
+      setStudents(updatedStudents);
+      handleModalClose();
+    } catch (error) {
+      console.error('Error updating student:', error);
+    }
+  };
+
+  const handleDeleteStudent = async (studentId) => {
+    try {
+      await deleteStudent(studentId);
+      // Remove the deleted student from the list
+      const updatedStudents = students.filter(student => student.id !== studentId);
+      setStudents(updatedStudents);
+      handleModalClose();
+    } catch (error) {
+      console.error('Error deleting student:', error);
+    }
+  };
 
   return (
     <>
@@ -58,14 +100,27 @@ function StudentManagement() {
         </div>
 
         <div className="student-list">
-            <StudentList students={students} />
-            <div className="pagination">
-              {page >1  ?<button onClick={handlePrevPage}>Prev</button>:<></>}
-              <span>Page {page}</span>
-              <button onClick={handleNextPage}>Next</button>
-            </div>
+          <StudentList 
+            students={students} 
+            onStudentClick={handleStudentClick}
+          />
+          <div className="pagination">
+            {page > 1 ? <button onClick={handlePrevPage}>Prev</button> : <></>}
+            <span>Page {page}</span>
+            <button onClick={handleNextPage}>Next</button>
+          </div>
         </div>
       </div>
+
+      <StudentModal
+        studentId={selectedStudent}
+        isOpen={isModalOpen}
+        onClose={handleModalClose}
+        onSave={handleSaveStudent}
+        onDelete={handleDeleteStudent}
+        faculties={faculties}
+      />
+
       {isPopUpOpened && (
         <div className="popup-overlay" onClick={handleClosePopUp}>
           <div className="popup-content" onClick={(e) => e.stopPropagation()}>

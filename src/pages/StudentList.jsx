@@ -1,7 +1,7 @@
 import "./StudentManagement.css";
 import PropTypes from "prop-types";
 
-function StudentList({ students }) {
+function StudentList({ students, onStudentClick }) {
   const handleDeleteStudent = (studentName) => {
     const isConfirmed = window.confirm(`Bạn có chắc chắn muốn xóa ${studentName}?`);
     if (isConfirmed) {
@@ -26,11 +26,16 @@ function StudentList({ students }) {
         </thead>
         <tbody>
           {students.map((student) => (
-            <tr key={student.student_code} className="highlight-row">
+            <tr 
+              key={student.student_code} 
+              className="highlight-row"
+              onClick={() => onStudentClick(student)}
+              style={{ cursor: 'pointer' }}
+            >
               <td className="student-name">
-              <button className="student-avatar">
-              {student.fullname.split(" ").map(word => word[0]).join("").toUpperCase()}
-            </button>
+                <button className="student-avatar">
+                  {student.fullname.split(" ").map(word => word[0]).join("").toUpperCase()}
+                </button>
                 {student.fullname}
               </td>
               <td>{student.student_code}</td>
@@ -38,9 +43,12 @@ function StudentList({ students }) {
               <td>{student.phone}</td>
               <td>{student.gender}</td>
               <td></td>
-              <td>
-                <button className="student-edit">
-                <i className='bx bx-show'></i>
+              <td onClick={(e) => e.stopPropagation()}>
+                <button 
+                  className="student-edit"
+                  onClick={() => onStudentClick(student)}
+                >
+                  <i className='bx bx-show'></i>
                 </button>
                 <button className="student-edit">
                   <i className="bx bx-message-square-edit"></i>
@@ -60,6 +68,7 @@ function StudentList({ students }) {
 StudentList.propTypes = {
   students: PropTypes.arrayOf(
     PropTypes.shape({
+      id: PropTypes.string.isRequired,
       student_code: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
       fullname: PropTypes.string.isRequired,
       email: PropTypes.string,
@@ -67,5 +76,7 @@ StudentList.propTypes = {
       gender: PropTypes.string,
     })
   ).isRequired,
+  onStudentClick: PropTypes.func.isRequired,
 };
+
 export default StudentList;
