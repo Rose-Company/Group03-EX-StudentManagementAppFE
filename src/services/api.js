@@ -9,6 +9,7 @@ const api = axios.create({
   },
 });
 
+
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
   if (token) {
@@ -25,7 +26,7 @@ export const getStudentById = async (id) => {
 
 // Get all students with pagination
 export const getStudents = async (page = 1, pageSize = 10) => {
-  const response = await api.get(`/v1/students`, {
+  const response = await api.get(`/v1/students/test`, {
     params: {
       page,
       page_size: pageSize
