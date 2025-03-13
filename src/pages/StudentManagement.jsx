@@ -6,14 +6,22 @@ function StudentManagement() {
   const [isPopUpOpened, setIsPopUpOpened] = useState(false);
   const [faculties, setFaculties] = useState([]);
   const [page, setPage] = useState(1);
-  // const [students, setStudents] = useState([]);
-  const [setTotalPages] = useState(1);
   const [students, setStudents] = useState([]);
+  const [setTotalPages] = useState(1);
+
+  // 🔹 Hàm lấy token từ localStorage
+  const getAuthToken = () => localStorage.getItem("authToken");
+
   useEffect(() => {
+    const token = getAuthToken();
+    if (!token) {
+      console.error("Không tìm thấy token, vui lòng đăng nhập.");
+      return;
+    }
+
     fetch(`http://localhost:8080/v1/students?page=${page}&page_size=10`, {
       headers: {
-        Authorization:
-          "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAZ21haWwuY29tIiwiZXhwIjoxNzQxODQ3NzA5LCJpZCI6IjhhMGY3YTg5LWNhYzctNDhiMy04ZjZlLWNkYjE3ODZmYTk1MyIsInJvbGUiOiJhMWIyYzNkNC1lNWY2LTQ3YTgtYjljMC1kMWUyZjNhNGI1YzYifQ.ptvI5Wuudds5_XdZH-9HDmWaDBSErp6xSAbj6sHgSR8",
+        Authorization: `Bearer ${token}`,
       },
     })
       .then((response) => response.json())
