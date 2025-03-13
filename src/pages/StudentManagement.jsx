@@ -19,7 +19,6 @@ function StudentManagement() {
   ];
   return (
     <div className="management-container">
-
       <div className="top-action">
         <p className="title">Danh sách sinh viên</p>
         <button className="add-btn">Add Student</button>
@@ -32,7 +31,6 @@ function StudentManagement() {
       </div>
       <div className="student-list">
         <StudentList students={students} />
-
       </div>
     </div>
   );

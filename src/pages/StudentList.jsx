@@ -67,5 +67,4 @@ StudentTable.propTypes = {
   ).isRequired,
 };
 
-
 export default StudentTable;
