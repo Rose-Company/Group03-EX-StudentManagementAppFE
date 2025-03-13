@@ -1,8 +1,9 @@
 import "./StudentManagement.css";
 import StudentList from "./StudentList";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import StudentModal from "./StudentModal";
-import { getStudents, getFaculties, updateStudent, deleteStudent,getStudentById, getStudentByFullName, getStatuses,sortStudent} from "../services/api";
+
+import { getStudents, getFaculties, updateStudent, deleteStudent,getStudentById, getStudentByFullName, getStatuses,sortStudent} from "../services/studentManagementService";
 
 function StudentManagement() {
   const [isPopUpOpened, setIsPopUpOpened] = useState(false);
@@ -18,6 +19,7 @@ function StudentManagement() {
   const [sortOrder, setSortOrder] = useState("");
   const getTotalPages = (total, pageSize) => Math.ceil(total / pageSize);
   
+
   useEffect(() => {
     const delayDebounce = setTimeout(async () => {
       try {
@@ -109,7 +111,7 @@ function StudentManagement() {
   const handleClosePopUp = () => setIsPopUpOpened(false);
   const handlePrevPage = () => setPage(page - 1);
   const handleNextPage = () => setPage(page + 1);
-  
+
   const handleStudentClick = (student) => {
     setSelectedStudent(student.student_code);
     setIsModalOpen(true);
@@ -122,25 +124,61 @@ function StudentManagement() {
 
   const handleSaveStudent = async (updatedStudent) => {
     try {
-      await updateStudent(updatedStudent.id, updatedStudent);
-      const updatedStudents = students.map(student => 
-        student.id === updatedStudent.id ? updatedStudent : student
-      );
-      setStudents(updatedStudents);
-      handleModalClose();
+      console.log("Starting update for student:", updatedStudent);
+
+      // Ensure all required fields are present and properly formatted
+      if (!updatedStudent.id) {
+        console.error("Missing student ID");
+        return;
+      }
+
+      const response = await updateStudent(updatedStudent.id, updatedStudent);
+      console.log("Update response:", response);
+
+      if (response && response.code === 200) {
+        // Refresh the student list
+        const data = await getStudents(page, 10);
+        if (data) {
+          setStudents(data.items);
+          setTotalPages(data.total_pages || 1);
+        }
+        handleModalClose();
+      } else {
+        console.error("Update failed:", response?.message || "Unknown error");
+      }
     } catch (error) {
-      console.error('Error updating student:', error);
+      console.error("Error in handleSaveStudent:", error);
+      if (error.response) {
+        console.error("Response error:", error.response.data);
+      }
     }
   };
 
   const handleDeleteStudent = async (studentId) => {
     try {
-      await deleteStudent(studentId);
-      const updatedStudents = students.filter(student => student.id !== studentId);
-      setStudents(updatedStudents);
-      handleModalClose();
+
+      const response = await deleteStudent(studentId);
+
+      //if deletion was successful
+      if (response && response.code === 200) {
+        // Refresh the student list
+        const data = await getStudents(page, 10);
+        if (data) {
+          setStudents(data.items);
+          setTotalPages(data.total_pages || 1);
+        }
+
+        // Close the modal
+        handleModalClose();
+
+        // Show success message
+        alert("Student deleted successfully");
+      } else {
+        throw new Error("Failed to delete student");
+      }
     } catch (error) {
-      console.error('Error deleting student:', error);
+      console.error("Error in handleDeleteStudent:", error);
+      throw error;
     }
   };
   const handleSearchStudent = (event) => {
@@ -172,10 +210,14 @@ function StudentManagement() {
   
   return (
     <>
-      <div className={isPopUpOpened ? "blur-background" : "management-container"}>
+      <div
+        className={isPopUpOpened ? "blur-background" : "management-container"}
+      >
         <div className="top-action">
           <p className="title">Student List</p>
-          <button onClick={handleOpenPopUp} className="add-btn">Add Student</button>
+          <button onClick={handleOpenPopUp} className="add-btn">
+            Add Student
+          </button>
         </div>
         <div className="search-filter">
         <select onChange={handleSortStudent} className="filter-dropdown">
@@ -188,8 +230,8 @@ function StudentManagement() {
         </div>
 
         <div className="student-list">
-          <StudentList 
-            students={students} 
+          <StudentList
+            students={students}
             onStudentClick={handleStudentClick}
           />
           <div className="pagination">
@@ -228,6 +270,7 @@ function StudentManagement() {
               <div>
                 <p>Phone Number</p>
                 <input type="text" />
+
               </div>
             </div>
             <div className="form-group">
@@ -246,24 +289,29 @@ function StudentManagement() {
               <div>
                 <p>Email Address</p>
                 <input type="text"/>
+
               </div>
             </div>
             <div className="form-group">
               <div>
                 <p>Student ID</p>
                 <input type="text" />
+
               </div>
               <div>
                 <p>Faculty</p>
                 <select>
                   {faculties.map((faculty) => (
-                    <option key={faculty.id} value={faculty.id}>{faculty.name}</option>
+                    <option key={faculty.id} value={faculty.id}>
+                      {faculty.name}
+                    </option>
                   ))}
                 </select>
               </div>
               <div>
                 <p>Academy Year</p>
                 <input type="text"/>
+
               </div>
             </div>
             <div className="form-group">

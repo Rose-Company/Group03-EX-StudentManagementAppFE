@@ -105,7 +105,7 @@ h2 {
 
 /* Add edit icon for editable fields */
 .form-group label::after {
-  content: '✎';
+  content: "✎";
   opacity: 0;
   font-size: 0.9rem;
   color: #3498db;
@@ -300,4 +300,4 @@ h2 {
     left: 50%;
     transform: translateX(-50%);
   }
-} 
+}
