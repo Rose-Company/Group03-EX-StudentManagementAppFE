@@ -19,9 +19,36 @@ api.interceptors.request.use((config) => {
 });
 
 // Get student by ID
-export const getStudentById = async (id) => {
-  const response = await api.get(`/v1/students/${id}`);
-  return response.data;
+export const getStudentById = async (student_code, page = 1, pageSize = 10) => {
+  try {
+    const response = await api.get("/v1/students/test", {
+      params: {
+        page,         
+        page_size: pageSize, 
+        student_code, 
+      },
+    });
+    return response.data; 
+  } catch (error) {
+    console.error("Error fetching student by ID:", error);
+    return null; 
+  }
+};
+
+export const getStudentByFullName = async (fullname, page = 1, pageSize = 10) => {
+  try {
+    const response = await api.get("/v1/students/test", {
+      params: {
+        fullname,
+        page_size: pageSize,  
+        page,         
+      },
+    });
+    return response.data; 
+  } catch (error) {
+    console.error("Error fetching student by fullname:", error);
+    return null; 
+  }
 };
 
 // Get all students with pagination
@@ -52,5 +79,11 @@ export const getFaculties = async () => {
   const response = await api.get('/v1/faculties');
   return response.data;
 };
+
+// Get all statuses
+export const getStatuses = async () => {
+  const response = await api.get('/v1/students/statuses')
+  return response.data;
+}
 
 export default api;

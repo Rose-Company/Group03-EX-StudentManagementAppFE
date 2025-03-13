@@ -2,33 +2,59 @@ import "./StudentManagement.css";
 import StudentList from "./StudentList";
 import React, { useState, useEffect } from "react";
 import StudentModal from "./StudentModal";
-import { getStudents, getFaculties, updateStudent, deleteStudent } from "../services/api";
+import { getStudents, getFaculties, updateStudent, deleteStudent,getStudentById, getStudentByFullName, getStatuses} from "../services/api";
 
 function StudentManagement() {
   const [isPopUpOpened, setIsPopUpOpened] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [faculties, setFaculties] = useState([]);
+  const [status,setStatus] = useState([]);
   const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
+  const [totalPages, setTotalPages] = useState(2);
   const [students, setStudents] = useState([]);
+  const [searchText, setSearchText] = useState("");
+  const getTotalPages = (total, pageSize) => Math.ceil(total / pageSize);
 
   useEffect(() => {
-    const fetchStudents = async () => {
+    const delayDebounce = setTimeout(async () => {
       try {
-        const data = await getStudents(page, 10);
-        if (data) {
-          setStudents(data.items);
-          setTotalPages(data.total_pages || 1);
+        if (searchText.trim() === "") {
+          const data = await getStudents(page, 10);
+          if (data) {
+            setStudents(data.items);
+            setTotalPages(getTotalPages(data.total, 10));
+          } else {
+            setStudents([]);
+          }
+        } else {
+          if (/^\d+$/.test(searchText)) {
+            const data = await getStudentById(searchText, page, 10);
+            if (data && data.items) {
+              setStudents(data.items); 
+              setTotalPages(getTotalPages(data.total, 10));
+            } else {
+              setStudents([]); 
+            }
+          } else {
+            const data = await getStudentByFullName(searchText,page,10);
+            if (data && data.items) {
+              setStudents(data.items);
+              setTotalPages(getTotalPages(data.total, 10));
+            } else {
+              setStudents([]);
+            }
+          }
         }
       } catch (error) {
-        console.error("Error fetching students:", error);
+        console.error("Error searching students:", error);
+        setStudents([]);
       }
-    };
-
-    fetchStudents();
-  }, [page]);
-
+    }, 500); 
+    
+    return () => clearTimeout(delayDebounce);
+  }, [searchText, page]); 
+  
   useEffect(() => {
     const fetchFaculties = async () => {
       try {
@@ -43,6 +69,22 @@ function StudentManagement() {
 
     fetchFaculties();
   }, []);
+
+  useEffect(() => {
+    const fetchFaculties = async () => {
+      try {
+        const data = await getStatuses();
+        if (data.code === 200) {
+          setStatus(data.data.items);
+        }
+      } catch (error) {
+        console.error("Error fetching statuses:", error);
+      }
+    };
+
+    fetchFaculties();
+  }, []);
+
 
   const handleOpenPopUp = () => setIsPopUpOpened(true);
   const handleClosePopUp = () => setIsPopUpOpened(false);
@@ -62,7 +104,6 @@ function StudentManagement() {
   const handleSaveStudent = async (updatedStudent) => {
     try {
       await updateStudent(updatedStudent.id, updatedStudent);
-      // Update the student in the list
       const updatedStudents = students.map(student => 
         student.id === updatedStudent.id ? updatedStudent : student
       );
@@ -76,7 +117,6 @@ function StudentManagement() {
   const handleDeleteStudent = async (studentId) => {
     try {
       await deleteStudent(studentId);
-      // Remove the deleted student from the list
       const updatedStudents = students.filter(student => student.id !== studentId);
       setStudents(updatedStudents);
       handleModalClose();
@@ -84,7 +124,10 @@ function StudentManagement() {
       console.error('Error deleting student:', error);
     }
   };
-
+  const handleSearchStudent = (event) => {
+    setSearchText(event.target.value);
+  };
+  
   return (
     <>
       <div className={isPopUpOpened ? "blur-background" : "management-container"}>
@@ -96,7 +139,7 @@ function StudentManagement() {
           <select className="filter-dropdown">
             <option>Add filter</option>
           </select>
-          <input type="text" className="search-input" placeholder="Search..." />
+          <input onChange={handleSearchStudent} type="text" className="search-input" placeholder="Search..." />
         </div>
 
         <div className="student-list">
@@ -107,7 +150,7 @@ function StudentManagement() {
           <div className="pagination">
             {page > 1 ? <button onClick={handlePrevPage}>Prev</button> : <></>}
             <span>Page {page}</span>
-            <button onClick={handleNextPage}>Next</button>
+            {page < totalPages? <button onClick={handleNextPage}>Next</button> : <></>}
           </div>
         </div>
       </div>

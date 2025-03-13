@@ -9,8 +9,20 @@ function StudentList({ students, onStudentClick }) {
       // TODO: Gọi API để xóa sinh viên
     }
   };
-
+  if (students.length === 0) {
+    return (
+    <div className="empty-list">
+    <img
+    src="/images/list_empty.png"
+     alt="empty"
+     className="empty-list__img"
+    />
+    <p className="empty-list__title">Không có thông tin sinh viên nào!</p>
+    </div>
+      );
+    }
   return (
+    
     <div className="student-table">
       <table>
         <thead>
