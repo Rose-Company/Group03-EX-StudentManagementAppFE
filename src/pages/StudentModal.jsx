@@ -1,7 +1,9 @@
-<<<<<<< HEAD
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { getStudentById, getStudentStatuses } from "../services/api";
+import {
+  getStudentById,
+  getStudentStatuses,
+} from "../services/studentManagementService";
 import "./StudentModal.css";
 
 const StudentModal = ({
@@ -12,19 +14,10 @@ const StudentModal = ({
   onDelete,
   faculties,
 }) => {
-=======
-import { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
-import { getStudentById, getStudentStatuses } from '../services/api';
-import './StudentModal.css';
-
-const StudentModal = ({ studentId, isOpen, onClose, onSave, onDelete, faculties }) => {
->>>>>>> 3aeb5e3163d44bec325b0e3dc2f3a0eb6bfdae25
   const [student, setStudent] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [statuses, setStatuses] = useState([]);
   const [formData, setFormData] = useState({
-<<<<<<< HEAD
     student_code: "",
     fullname: "",
     date_of_birth: "",
@@ -36,19 +29,6 @@ const StudentModal = ({ studentId, isOpen, onClose, onSave, onDelete, faculties 
     email: "",
     phone: "",
     status_id: "",
-=======
-    student_code: '',
-    fullname: '',
-    date_of_birth: '',
-    gender: '',
-    faculty_id: '',
-    batch: '',
-    program: '',
-    address: '',
-    email: '',
-    phone: '',
-    status_id: ''
->>>>>>> 3aeb5e3163d44bec325b0e3dc2f3a0eb6bfdae25
   });
 
   useEffect(() => {
@@ -60,13 +40,9 @@ const StudentModal = ({ studentId, isOpen, onClose, onSave, onDelete, faculties 
           setFormData({
             student_code: data.student_code.toString(),
             fullname: data.fullname,
-<<<<<<< HEAD
             date_of_birth: new Date(data.date_of_birth)
               .toISOString()
               .split("T")[0],
-=======
-            date_of_birth: new Date(data.date_of_birth).toISOString().split('T')[0],
->>>>>>> 3aeb5e3163d44bec325b0e3dc2f3a0eb6bfdae25
             gender: data.gender,
             faculty_id: data.faculty_id.toString(),
             batch: data.batch,
@@ -74,17 +50,10 @@ const StudentModal = ({ studentId, isOpen, onClose, onSave, onDelete, faculties 
             address: data.address,
             email: data.email,
             phone: data.phone,
-<<<<<<< HEAD
             status_id: data.status_id.toString(),
           });
         } catch (error) {
           console.error("Error fetching student details:", error);
-=======
-            status_id: data.status_id.toString()
-          });
-        } catch (error) {
-          console.error('Error fetching student details:', error);
->>>>>>> 3aeb5e3163d44bec325b0e3dc2f3a0eb6bfdae25
         }
       }
     };
@@ -99,11 +68,7 @@ const StudentModal = ({ studentId, isOpen, onClose, onSave, onDelete, faculties 
         const data = await getStudentStatuses();
         setStatuses(data);
       } catch (error) {
-<<<<<<< HEAD
         console.error("Error fetching student statuses:", error);
-=======
-        console.error('Error fetching student statuses:', error);
->>>>>>> 3aeb5e3163d44bec325b0e3dc2f3a0eb6bfdae25
       }
     };
 
@@ -112,17 +77,10 @@ const StudentModal = ({ studentId, isOpen, onClose, onSave, onDelete, faculties 
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-<<<<<<< HEAD
     console.log("Input changed:", name, value);
     setFormData((prev) => ({
       ...prev,
       [name]: value,
-=======
-    console.log('Input changed:', name, value);
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
->>>>>>> 3aeb5e3163d44bec325b0e3dc2f3a0eb6bfdae25
     }));
   };
 
@@ -137,7 +95,6 @@ const StudentModal = ({ studentId, isOpen, onClose, onSave, onDelete, faculties 
     try {
       // Validate required fields
       const requiredFields = [
-<<<<<<< HEAD
         "student_code",
         "fullname",
         "date_of_birth",
@@ -153,51 +110,22 @@ const StudentModal = ({ studentId, isOpen, onClose, onSave, onDelete, faculties 
       const missingFields = requiredFields.filter((field) => !formData[field]);
       if (missingFields.length > 0) {
         console.error("Missing required fields:", missingFields);
-=======
-        'student_code',
-        'fullname',
-        'date_of_birth',
-        'gender',
-        'faculty_id',
-        'batch',
-        'program',
-        'email',
-        'phone',
-        'status_id'
-      ];
-
-      const missingFields = requiredFields.filter(field => !formData[field]);
-      if (missingFields.length > 0) {
-        console.error('Missing required fields:', missingFields);
->>>>>>> 3aeb5e3163d44bec325b0e3dc2f3a0eb6bfdae25
         return;
       }
 
       // Validate numeric fields
       if (isNaN(parseInt(formData.student_code))) {
-<<<<<<< HEAD
         console.error("Invalid student code");
-=======
-        console.error('Invalid student code');
->>>>>>> 3aeb5e3163d44bec325b0e3dc2f3a0eb6bfdae25
         return;
       }
 
       if (isNaN(parseInt(formData.faculty_id))) {
-<<<<<<< HEAD
         console.error("Invalid faculty ID");
-=======
-        console.error('Invalid faculty ID');
->>>>>>> 3aeb5e3163d44bec325b0e3dc2f3a0eb6bfdae25
         return;
       }
 
       if (isNaN(parseInt(formData.status_id))) {
-<<<<<<< HEAD
         console.error("Invalid status ID");
-=======
-        console.error('Invalid status ID');
->>>>>>> 3aeb5e3163d44bec325b0e3dc2f3a0eb6bfdae25
         return;
       }
 
@@ -208,21 +136,13 @@ const StudentModal = ({ studentId, isOpen, onClose, onSave, onDelete, faculties 
         student_code: parseInt(formData.student_code),
         faculty_id: parseInt(formData.faculty_id),
         status_id: parseInt(formData.status_id),
-<<<<<<< HEAD
         date_of_birth: new Date(formData.date_of_birth).toISOString(),
-=======
-        date_of_birth: new Date(formData.date_of_birth).toISOString()
->>>>>>> 3aeb5e3163d44bec325b0e3dc2f3a0eb6bfdae25
       };
 
       await onSave(updatedData);
       setIsEditing(false);
     } catch (error) {
-<<<<<<< HEAD
       console.error("Error in form submission:", error);
-=======
-      console.error('Error in form submission:', error);
->>>>>>> 3aeb5e3163d44bec325b0e3dc2f3a0eb6bfdae25
       return;
     }
   };
@@ -232,13 +152,9 @@ const StudentModal = ({ studentId, isOpen, onClose, onSave, onDelete, faculties 
     setFormData({
       student_code: student.student_code.toString(),
       fullname: student.fullname,
-<<<<<<< HEAD
       date_of_birth: new Date(student.date_of_birth)
         .toISOString()
         .split("T")[0],
-=======
-      date_of_birth: new Date(student.date_of_birth).toISOString().split('T')[0],
->>>>>>> 3aeb5e3163d44bec325b0e3dc2f3a0eb6bfdae25
       gender: student.gender,
       faculty_id: student.faculty_id.toString(),
       batch: student.batch,
@@ -246,49 +162,32 @@ const StudentModal = ({ studentId, isOpen, onClose, onSave, onDelete, faculties 
       address: student.address,
       email: student.email,
       phone: student.phone,
-<<<<<<< HEAD
       status_id: student.status_id.toString(),
-=======
-      status_id: student.status_id.toString()
->>>>>>> 3aeb5e3163d44bec325b0e3dc2f3a0eb6bfdae25
     });
   };
 
   const handleDelete = async () => {
     try {
       // Show confirmation dialog
-<<<<<<< HEAD
       const isConfirmed = window.confirm(
         "Are you sure you want to delete this student?"
       );
 
-=======
-      const isConfirmed = window.confirm('Are you sure you want to delete this student?');
-      
->>>>>>> 3aeb5e3163d44bec325b0e3dc2f3a0eb6bfdae25
       if (!isConfirmed) {
         return;
       }
 
       // Show loading state
-<<<<<<< HEAD
       const deleteButton = document.querySelector(".delete-button");
       if (deleteButton) {
         deleteButton.disabled = true;
         deleteButton.innerHTML =
           '<i class="bx bx-loader-alt bx-spin"></i> Deleting...';
-=======
-      const deleteButton = document.querySelector('.delete-button');
-      if (deleteButton) {
-        deleteButton.disabled = true;
-        deleteButton.innerHTML = '<i class="bx bx-loader-alt bx-spin"></i> Deleting...';
->>>>>>> 3aeb5e3163d44bec325b0e3dc2f3a0eb6bfdae25
       }
 
       await onDelete(studentId);
       onClose(); // Close the modal after successful deletion
     } catch (error) {
-<<<<<<< HEAD
       console.error("Error deleting student:", error);
       // Show more specific error message
       const errorMessage =
@@ -299,15 +198,6 @@ const StudentModal = ({ studentId, isOpen, onClose, onSave, onDelete, faculties 
     } finally {
       // Reset button state if modal is still open
       const deleteButton = document.querySelector(".delete-button");
-=======
-      console.error('Error deleting student:', error);
-      // Show more specific error message
-      const errorMessage = error.response?.data?.message || error.message || 'Failed to delete student. Please try again.';
-      alert(errorMessage);
-    } finally {
-      // Reset button state if modal is still open
-      const deleteButton = document.querySelector('.delete-button');
->>>>>>> 3aeb5e3163d44bec325b0e3dc2f3a0eb6bfdae25
       if (deleteButton) {
         deleteButton.disabled = false;
         deleteButton.innerHTML = '<i class="bx bx-trash"></i> Delete';
@@ -319,7 +209,6 @@ const StudentModal = ({ studentId, isOpen, onClose, onSave, onDelete, faculties 
 
   return (
     <div className="modal-overlay" onClick={onClose}>
-<<<<<<< HEAD
       <div
         className={`modal-content ${isEditing ? "edit-mode" : ""}`}
         onClick={(e) => e.stopPropagation()}
@@ -336,16 +225,6 @@ const StudentModal = ({ studentId, isOpen, onClose, onSave, onDelete, faculties 
             className={`form-group ${isEditing ? "editable" : ""}`}
             onClick={handleFieldClick}
           >
-=======
-      <div className={`modal-content ${isEditing ? 'edit-mode' : ''}`} onClick={e => e.stopPropagation()}>
-        <div className="edit-mode-indicator">Editing Mode</div>
-        <button className="close-button" onClick={onClose}>&times;</button>
-        
-        <h2>{isEditing ? 'Edit Student' : 'Student Details'}</h2>
-        
-        <form onSubmit={handleSubmit}>
-          <div className={`form-group ${isEditing ? 'editable' : ''}`} onClick={handleFieldClick}>
->>>>>>> 3aeb5e3163d44bec325b0e3dc2f3a0eb6bfdae25
             <div>
               <label>Student Code</label>
               <input
@@ -492,15 +371,9 @@ const StudentModal = ({ studentId, isOpen, onClose, onSave, onDelete, faculties 
                   <i className="bx bx-edit"></i>
                   Edit
                 </button>
-<<<<<<< HEAD
                 <button
                   type="button"
                   onClick={handleDelete}
-=======
-                <button 
-                  type="button" 
-                  onClick={handleDelete} 
->>>>>>> 3aeb5e3163d44bec325b0e3dc2f3a0eb6bfdae25
                   className="delete-button"
                 >
                   <i className="bx bx-trash"></i>
@@ -537,14 +410,7 @@ StudentModal.propTypes = {
       id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
       name: PropTypes.string.isRequired,
     })
-<<<<<<< HEAD
   ),
 };
 
 export default StudentModal;
-=======
-  )
-};
-
-export default StudentModal; 
->>>>>>> 3aeb5e3163d44bec325b0e3dc2f3a0eb6bfdae25

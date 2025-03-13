@@ -66,6 +66,7 @@
 .search-filter .filter-dropdown,
 .search-input {
   flex: 1;
+  color: black;
 }
 .search-filter .search-input {
   padding: 8px;
@@ -95,7 +96,6 @@
   font-weight: bold;
   align-self: center;
   width: auto;
-
 }
 
 .student-table {
@@ -176,10 +176,8 @@
   display: flex;
   align-items: center;
 }
-
-.student-edit,
-.student-delete,
-.student-view .popup-close-btn {
+.student-show,
+.popup-close-btn {
   padding: 5px;
   background-color: unset;
   font-size: 16px;
@@ -238,7 +236,7 @@ select {
 .form-group .student-gt {
   padding: 7px 15px;
   border: 1px solid rgba(22, 20, 20, 0.2);
-  margin-right: 110px;
+  margin-right: 80px;
   width: unset;
 }
 .form-group .student-status {
