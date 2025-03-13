@@ -20,9 +20,9 @@ function StudentList({ students, onStudentClick }) {
             <th>Name</th>
             <th>Student ID</th>
             <th>Email address</th>
-            <th>Khoa</th>
+            <th>Faculty</th>
             <th>Gender</th>
-            <th>Ghi chú</th>
+            <th>Note</th>
           </tr>
         </thead>
         <tbody>
@@ -45,7 +45,7 @@ function StudentList({ students, onStudentClick }) {
               </td>
               <td>{student.id}</td>
               <td>{student.email}</td>
-              <td>{student.khoa}</td>
+              <td>{student.faculty_id}</td>
               <td>{student.gender}</td>
               <td></td>
               <td onClick={(e) => e.stopPropagation()}>
@@ -81,6 +81,8 @@ StudentList.propTypes = {
         .isRequired,
       fullname: PropTypes.string.isRequired,
       email: PropTypes.string,
+      faculty_id: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
+        .isRequired,
       phone: PropTypes.string,
       gender: PropTypes.string,
     })
