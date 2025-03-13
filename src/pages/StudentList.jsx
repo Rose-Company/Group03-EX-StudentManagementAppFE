@@ -11,8 +11,20 @@ function StudentList({ students, onStudentClick }) {
       // TODO: Gọi API để xóa sinh viên
     }
   };
-
+  if (students.length === 0) {
+    return (
+    <div className="empty-list">
+    <img
+    src="/images/list_empty.png"
+     alt="empty"
+     className="empty-list__img"
+    />
+    <p className="empty-list__title">Không có thông tin sinh viên nào!</p>
+    </div>
+      );
+    }
   return (
+    
     <div className="student-table">
       <table>
         <thead>
@@ -48,6 +60,13 @@ function StudentList({ students, onStudentClick }) {
               <td>{student.faculty_id}</td>
               <td>{student.gender}</td>
               <td></td>
+              <td>
+                <button 
+                  className="student-show"
+                  onClick={(e) => {
+                    e.stopPropagation(); 
+                    onStudentClick(student);
+                  }}
               <td onClick={(e) => e.stopPropagation()}>
                 <button
                   className="student-edit"
@@ -55,6 +74,7 @@ function StudentList({ students, onStudentClick }) {
                 >
                   <i className="bx bx-show"></i>
                 </button>
+
                 <button className="student-edit">
                   <i className="bx bx-message-square-edit"></i>
                 </button>
