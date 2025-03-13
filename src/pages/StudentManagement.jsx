@@ -3,14 +3,23 @@ import StudentList from "./StudentList";
 import { useState, useEffect } from "react";
 import StudentModal from "./StudentModal";
 
-import { getStudents, getFaculties, updateStudent, deleteStudent,getStudentById, getStudentByFullName, getStatuses,sortStudent} from "../services/studentManagementService";
+import {
+  getStudents,
+  getFaculties,
+  updateStudent,
+  deleteStudent,
+  getStudentById,
+  getStudentByFullName,
+  getStatuses,
+  sortStudent,
+} from "../services/studentManagementService";
 
 function StudentManagement() {
   const [isPopUpOpened, setIsPopUpOpened] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [faculties, setFaculties] = useState([]);
-  const [statuses,setStatuses] = useState([]);
+  const [statuses, setStatuses] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(2);
   const [students, setStudents] = useState([]);
@@ -18,7 +27,6 @@ function StudentManagement() {
   const [sortField, setSortField] = useState("");
   const [sortOrder, setSortOrder] = useState("");
   const getTotalPages = (total, pageSize) => Math.ceil(total / pageSize);
-  
 
   useEffect(() => {
     const delayDebounce = setTimeout(async () => {
@@ -49,10 +57,10 @@ function StudentManagement() {
           if (/^\d+$/.test(searchText)) {
             const data = await getStudentById(searchText, page, 10);
             if (data && data.items) {
-              setStudents(data.items); 
+              setStudents(data.items);
               setTotalPages(getTotalPages(data.total, 10));
             } else {
-              setStudents([]); 
+              setStudents([]);
             }
           } else {
             const data = await getStudentByFullName(searchText, page, 10);
@@ -68,12 +76,11 @@ function StudentManagement() {
         console.error("Error searching students:", error);
         setStudents([]);
       }
-    }, 500); 
-    
+    }, 500);
+
     return () => clearTimeout(delayDebounce);
   }, [searchText, page, sortField, sortOrder]); // ✅ Thêm dependencies để re-run khi sort thay đổi
 
-  
   useEffect(() => {
     const fetchFaculties = async () => {
       try {
@@ -93,19 +100,18 @@ function StudentManagement() {
     const fetchStatuses = async () => {
       try {
         const data = await getStatuses();
-        console.log("Statuses data:", data); 
-  
+        console.log("Statuses data:", data);
+
         if (Array.isArray(data)) {
-          setStatuses(data); 
+          setStatuses(data);
         }
       } catch (error) {
         console.error("Error fetching statuses:", error);
       }
     };
-  
+
     fetchStatuses();
   }, []);
-
 
   const handleOpenPopUp = () => setIsPopUpOpened(true);
   const handleClosePopUp = () => setIsPopUpOpened(false);
@@ -156,7 +162,6 @@ function StudentManagement() {
 
   const handleDeleteStudent = async (studentId) => {
     try {
-
       const response = await deleteStudent(studentId);
 
       //if deletion was successful
@@ -187,19 +192,19 @@ function StudentManagement() {
   const handleSortStudent = (event) => {
     const selectedIndex = event.target.selectedIndex;
     switch (selectedIndex) {
-      case 0: 
+      case 0:
         setSortField("fullname");
         setSortOrder("asc");
         break;
-      case 1: 
+      case 1:
         setSortField("fullname");
         setSortOrder("desc");
         break;
-      case 2: 
+      case 2:
         setSortField("student_code");
         setSortOrder("asc");
         break;
-      case 3: 
+      case 3:
         setSortField("student_code");
         setSortOrder("desc");
         break;
@@ -207,7 +212,7 @@ function StudentManagement() {
         break;
     }
   };
-  
+
   return (
     <>
       <div
@@ -220,13 +225,18 @@ function StudentManagement() {
           </button>
         </div>
         <div className="search-filter">
-        <select onChange={handleSortStudent} className="filter-dropdown">
-          <option value="name-asc">Full Name A - Z</option>
-          <option value="name-desc">Full Name Z - A</option>
-          <option value="id-asc">Student ID Ascending</option>
-          <option value="id-desc">Student ID Descending</option>
-        </select>
-          <input onChange={handleSearchStudent} type="text" className="search-input" placeholder="Search..." />
+          <select onChange={handleSortStudent} className="filter-dropdown">
+            <option value="name-asc">Full Name A - Z</option>
+            <option value="name-desc">Full Name Z - A</option>
+            <option value="id-asc">Student ID Ascending</option>
+            <option value="id-desc">Student ID Descending</option>
+          </select>
+          <input
+            onChange={handleSearchStudent}
+            type="text"
+            className="search-input"
+            placeholder="Search..."
+          />
         </div>
 
         <div className="student-list">
@@ -237,7 +247,11 @@ function StudentManagement() {
           <div className="pagination">
             {page > 1 ? <button onClick={handlePrevPage}>Prev</button> : <></>}
             <span>Page {page}</span>
-            {page < totalPages? <button onClick={handleNextPage}>Next</button> : <></>}
+            {page < totalPages ? (
+              <button onClick={handleNextPage}>Next</button>
+            ) : (
+              <></>
+            )}
           </div>
         </div>
       </div>
@@ -256,7 +270,9 @@ function StudentManagement() {
           <div className="popup-content" onClick={(e) => e.stopPropagation()}>
             <div className="popup-content__top-action">
               <h3>Add Student</h3>
-              <button className="popup-close-btn" onClick={handleClosePopUp}>X</button>
+              <button className="popup-close-btn" onClick={handleClosePopUp}>
+                X
+              </button>
             </div>
             <div className="form-group">
               <div>
@@ -265,12 +281,11 @@ function StudentManagement() {
               </div>
               <div>
                 <p>Date of Birth</p>
-                <input type="text" placeholder="dd/mm/yyyy"/>
+                <input type="text" placeholder="dd/mm/yyyy" />
               </div>
               <div>
                 <p>Phone Number</p>
                 <input type="text" />
-
               </div>
             </div>
             <div className="form-group">
@@ -288,15 +303,13 @@ function StudentManagement() {
               </div>
               <div>
                 <p>Email Address</p>
-                <input type="text"/>
-
+                <input type="text" />
               </div>
             </div>
             <div className="form-group">
               <div>
                 <p>Student ID</p>
                 <input type="text" />
-
               </div>
               <div>
                 <p>Faculty</p>
@@ -310,20 +323,21 @@ function StudentManagement() {
               </div>
               <div>
                 <p>Academy Year</p>
-                <input type="text"/>
-
+                <input type="text" />
               </div>
             </div>
             <div className="form-group">
               <div>
                 <p>Program Type</p>
-                <input type="text"/>
+                <input type="text" />
               </div>
               <div className="student-status">
                 <p>Student Status</p>
                 <select>
                   {statuses.map((status) => (
-                    <option key={status.id} value={status.id}>{status.name}</option>
+                    <option key={status.id} value={status.id}>
+                      {status.name}
+                    </option>
                   ))}
                 </select>
               </div>

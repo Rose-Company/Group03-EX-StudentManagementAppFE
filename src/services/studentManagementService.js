@@ -16,6 +16,26 @@ export const getStudents = async (page = 1, pageSize = 10) => {
   return response.data;
 };
 
+export const getStudentByFullName = async (
+  fullname,
+  page = 1,
+  pageSize = 10
+) => {
+  try {
+    const response = await api.get("/v1/students/test", {
+      params: {
+        fullname,
+        page_size: pageSize,
+        page,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching student by fullname:", error);
+    return null;
+  }
+};
+
 // Update student
 export const updateStudent = async (id, studentData) => {
   try {
@@ -87,10 +107,27 @@ export const getFaculties = async () => {
   return response.data;
 };
 
-// Get all student statuses
-export const getStudentStatuses = async () => {
+// Get all statuses
+export const getStatuses = async () => {
   const response = await api.get("/v1/students/statuses");
   return response.data;
+};
+
+//Sort Student
+export const sortStudent = async (field, type, page = 1, pageSize = 10) => {
+  try {
+    const response = await api.get("/v1/students/test", {
+      params: {
+        page,
+        page_size: pageSize,
+        sort: `${field}.${type}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching sorted students:", error);
+    return null;
+  }
 };
 
 export default api;

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import {
   getStudentById,
-  getStudentStatuses,
+  getStatuses,
 } from "../services/studentManagementService";
 import "./StudentModal.css";
 
@@ -65,7 +65,7 @@ const StudentModal = ({
   useEffect(() => {
     const fetchStatuses = async () => {
       try {
-        const data = await getStudentStatuses();
+        const data = await getStatuses();
         setStatuses(data);
       } catch (error) {
         console.error("Error fetching student statuses:", error);

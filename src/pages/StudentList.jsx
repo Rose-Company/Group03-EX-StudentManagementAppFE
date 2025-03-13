@@ -13,18 +13,17 @@ function StudentList({ students, onStudentClick }) {
   };
   if (students.length === 0) {
     return (
-    <div className="empty-list">
-    <img
-    src="/images/list_empty.png"
-     alt="empty"
-     className="empty-list__img"
-    />
-    <p className="empty-list__title">Không có thông tin sinh viên nào!</p>
-    </div>
-      );
-    }
+      <div className="empty-list">
+        <img
+          src="/images/list_empty.png"
+          alt="empty"
+          className="empty-list__img"
+        />
+        <p className="empty-list__title">Không có thông tin sinh viên nào!</p>
+      </div>
+    );
+  }
   return (
-    
     <div className="student-table">
       <table>
         <thead>
@@ -32,11 +31,10 @@ function StudentList({ students, onStudentClick }) {
             <th>Name</th>
             <th>Student ID</th>
             <th>Email address</th>
-            <th>Khoa</th>
+            <th>Faculty</th>
             <th>Gender</th>
             <th>Note</th>
             <th></th>
-
           </tr>
         </thead>
         <tbody>
@@ -59,16 +57,9 @@ function StudentList({ students, onStudentClick }) {
               </td>
               <td>{student.id}</td>
               <td>{student.email}</td>
-              <td>{student.khoa}</td>
+              <td>{student.faculty}</td>
               <td>{student.gender}</td>
               <td></td>
-              <td>
-                <button 
-                  className="student-show"
-                  onClick={(e) => {
-                    e.stopPropagation(); 
-                    onStudentClick(student);
-                  }}
               <td onClick={(e) => e.stopPropagation()}>
                 <button
                   className="student-edit"
@@ -104,6 +95,7 @@ StudentList.propTypes = {
       fullname: PropTypes.string.isRequired,
       email: PropTypes.string,
       phone: PropTypes.string,
+      faculty: PropTypes.string,
       gender: PropTypes.string,
     })
   ).isRequired,
