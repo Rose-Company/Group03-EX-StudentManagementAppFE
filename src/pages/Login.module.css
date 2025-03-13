@@ -1,5 +1,5 @@
 /* Login wrapper */
-.login-wrapper {
+.loginWrapper {
   width: 100%;
   max-width: 400px;
   margin: 0 auto;
@@ -12,12 +12,12 @@
 }
 
 /* System title section */
-.system-title {
+.systemTitle {
   text-align: center;
   margin-bottom: 2rem;
 }
 
-.icon-container {
+.iconContainer {
   margin-top: 20px;
   display: inline-flex;
   align-items: center;
@@ -34,19 +34,20 @@
   color: #4facfe;
 }
 
-.system-title h1 {
+.systemTitle h1 {
   font-size: 1.875rem;
   font-weight: 700;
   color: #242629;
   margin-bottom: 0.5rem;
 }
 
-.system-title p {
+.systemTitle p {
+  width: 100%;
   color: #a0aec0;
 }
 
 /* Login card */
-.login-card {
+.loginCard {
   border: none;
   border-radius: 0.5rem;
   background-color: rgba(255, 255, 255, 0.1);
@@ -55,12 +56,12 @@
   overflow: hidden;
 }
 
-.card-header {
-  padding: 1.5rem 1.5rem 0.5rem;
+.cardHeader {
+  padding: 1rem 1.5srem 0.5rem;
   text-align: center;
 }
 
-.card-header h2 {
+.cardHeader h2 {
   margin-top: 20px;
   font-size: 1.875rem;
   font-weight: 700;
@@ -68,33 +69,33 @@
   margin-bottom: 0.5rem;
 }
 
-.card-header p {
+.cardHeader p {
   color: #a0aec0;
   font-size: 0.875rem;
 }
 
-.card-content {
+.cardContent {
   padding: 1.5rem;
 }
 
-.card-footer {
+.cardFooter {
   padding: 1rem 1.5rem 1.5rem;
   text-align: center;
 }
 
 /* Form styles */
-.form-group {
+.formGroup {
   margin-bottom: 1rem;
 }
 
-.form-group label {
+.formGroup label {
   display: block;
   margin-bottom: 0.5rem;
   color: #242629;
   font-weight: 500;
 }
 
-.form-group input {
+.formGroup input {
   width: 100%;
   padding: 0.75rem;
   background-color: rgba(255, 255, 255, 0.2);
@@ -105,18 +106,18 @@
   transition: all 0.3s ease;
 }
 
-.form-group input::placeholder {
+.formGroup input::placeholder {
   color: #a0aec0;
 }
 
-.form-group input:focus {
+.formGroup input:focus {
   outline: none;
   border-color: #4facfe;
   box-shadow: 0 0 0 2px rgba(79, 172, 254, 0.3);
 }
 
 /* Button styles */
-.login-button {
+.loginButton {
   width: 50%;
   padding: 0.75rem 1rem;
   background: linear-gradient(45deg, #4facfe 0%, #00f2fe 100%);
@@ -130,25 +131,25 @@
   margin-top: 1rem;
 }
 
-.login-button:hover {
+.loginButton:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(79, 172, 254, 0.6);
 }
 
-.login-button:disabled {
+.loginButton:disabled {
   opacity: 0.7;
   cursor: not-allowed;
   transform: none;
 }
 
-.button-content {
+.buttonContent {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
 }
 
-.login-icon {
+.loginIcon {
   width: 1rem;
   height: 1rem;
 }
@@ -163,13 +164,20 @@
   animation: spin 1s ease-in-out infinite;
 }
 
+.loginParagraph {
+  color: #a0aec0;
+  font-size: 0.875rem;
+  margin-top: 1rem;
+  width: 100%;
+}
+
 @keyframes spin {
   to {
     transform: rotate(360deg);
   }
 }
 
-.back-button {
+.backButton {
   background: transparent;
   color: #a0aec0;
   border: none;
@@ -179,7 +187,7 @@
   transition: color 0.3s ease;
 }
 
-.back-button:hover {
+.backButton:hover {
   color: white;
   background-color: rgba(255, 255, 255, 0.1);
   border-radius: 0.375rem;

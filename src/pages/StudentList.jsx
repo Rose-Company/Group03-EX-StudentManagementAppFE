@@ -10,6 +10,7 @@ function StudentList({ students, onStudentClick }) {
     }
   };
 
+
   return (
     <div className="student-table">
       <table>
@@ -18,10 +19,9 @@ function StudentList({ students, onStudentClick }) {
             <th>Name</th>
             <th>Student ID</th>
             <th>Email address</th>
-            <th>Phone</th>
+            <th>Khoa</th>
             <th>Gender</th>
-            <th>Note</th>
-            <th>Actions</th>
+            <th>Ghi chú</th>
           </tr>
         </thead>
         <tbody>
@@ -37,10 +37,11 @@ function StudentList({ students, onStudentClick }) {
                   {student.fullname.split(" ").map(word => word[0]).join("").toUpperCase()}
                 </button>
                 {student.fullname}
+
               </td>
-              <td>{student.student_code}</td>
+              <td>{student.id}</td>
               <td>{student.email}</td>
-              <td>{student.phone}</td>
+              <td>{student.khoa}</td>
               <td>{student.gender}</td>
               <td></td>
               <td onClick={(e) => e.stopPropagation()}>
@@ -57,6 +58,7 @@ function StudentList({ students, onStudentClick }) {
                   <i className="bx bx-message-square-x"></i>
                 </button>
               </td>
+
             </tr>
           ))}
         </tbody>
@@ -65,7 +67,7 @@ function StudentList({ students, onStudentClick }) {
   );
 }
 
-StudentList.propTypes = {
+StudentTable.propTypes = {
   students: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.string.isRequired,
@@ -74,9 +76,11 @@ StudentList.propTypes = {
       email: PropTypes.string,
       phone: PropTypes.string,
       gender: PropTypes.string,
+
     })
   ).isRequired,
   onStudentClick: PropTypes.func.isRequired,
 };
 
 export default StudentList;
+

@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import StudentModal from "./StudentModal";
 import { getStudents, getFaculties, updateStudent, deleteStudent } from "../services/api";
 
+
 function StudentManagement() {
   const [isPopUpOpened, setIsPopUpOpened] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(null);
@@ -49,8 +50,7 @@ function StudentManagement() {
   const handleOpenPopUp = () => setIsPopUpOpened(true);
   const handleClosePopUp = () => setIsPopUpOpened(false);
   const handlePrevPage = () => setPage(page - 1);
-  const handleNextPage = () => setPage(page + 1);
-  
+  const handleNextPage = () => setPage(page + 1);  
   const handleStudentClick = (student) => {
     setSelectedStudent(student.id);
     setIsModalOpen(true);
@@ -120,12 +120,17 @@ function StudentManagement() {
     }
   };
 
+
   return (
     <>
-      <div className={isPopUpOpened ? "blur-background" : "management-container"}>
+      <div
+        className={isPopUpOpened ? "blur-background" : "management-container"}
+      >
         <div className="top-action">
           <p className="title">Student List</p>
-          <button onClick={handleOpenPopUp} className="add-btn">Add Student</button>
+          <button onClick={handleOpenPopUp} className="add-btn">
+            Add Student
+          </button>
         </div>
         <div className="search-filter">
           <select className="filter-dropdown">
@@ -161,20 +166,22 @@ function StudentManagement() {
           <div className="popup-content" onClick={(e) => e.stopPropagation()}>
             <div className="popup-content__top-action">
               <h3>Thêm sinh viên</h3>
-              <button className="popup-close-btn" onClick={handleClosePopUp}>X</button>
+              <button className="popup-close-btn" onClick={handleClosePopUp}>
+                X
+              </button>
             </div>
             <div className="form-group">
               <div>
                 <p>Tên</p>
-                <input type="text" placeholder="Tên sinh viên"/>
+                <input type="text" placeholder="Tên sinh viên" />
               </div>
               <div>
                 <p>Ngày sinh</p>
-                <input type="text" placeholder="Ngày sinh"/>
+                <input type="text" placeholder="Ngày sinh" />
               </div>
               <div>
                 <p>SDT</p>
-                <input type="text" placeholder="SDT"/>
+                <input type="text" placeholder="SDT" />
               </div>
             </div>
             <div className="form-group">
@@ -188,29 +195,31 @@ function StudentManagement() {
               </div>
               <div>
                 <p>Địa chỉ liên hệ</p>
-                <input type="text" placeholder="Địa chỉ liên hệ"/>
+                <input type="text" placeholder="Địa chỉ liên hệ" />
               </div>
               <div>
                 <p>Địa chỉ Email</p>
-                <input type="text" placeholder="Địa chỉ Email"/>
+                <input type="text" placeholder="Địa chỉ Email" />
               </div>
             </div>
             <div className="form-group">
               <div>
                 <p>MSSV</p>
-                <input type="text" placeholder="MSSV"/>
+                <input type="text" placeholder="MSSV" />
               </div>
               <div>
                 <p>Khoa</p>
                 <select>
                   {faculties.map((faculty) => (
-                    <option key={faculty.id} value={faculty.id}>{faculty.name}</option>
+                    <option key={faculty.id} value={faculty.id}>
+                      {faculty.name}
+                    </option>
                   ))}
                 </select>
               </div>
               <div>
                 <p>Khóa</p>
-                <input type="text" placeholder="Khóa"/>
+                <input type="text" placeholder="Khóa" />
               </div>
             </div>
             <div className="form-group">
@@ -232,6 +241,39 @@ function StudentManagement() {
         </div>
       )}
     </>
+function StudentManagement() {
+  const students = [
+    {
+      name: "Eneh Mercy",
+      id: "22120263",
+      email: "michelle.rivera@example.com",
+      khoa: "J SS 2",
+      gender: "Female",
+    },
+    {
+      name: "Cody Fisher",
+      id: "547030",
+      email: "tim.jennings@example.com",
+      khoa: "SS 3",
+      gender: "Female",
+    },
+  ];
+  return (
+    <div className="management-container">
+      <div className="top-action">
+        <p className="title">Danh sách sinh viên</p>
+        <button className="add-btn">Add Student</button>
+      </div>
+      <div className="search-filter">
+        <select className="filter-dropdown">
+          <option>Add filter</option>
+        </select>
+        <input type="text" className="search-input" placeholder="Search..." />
+      </div>
+      <div className="student-list">
+        <StudentList students={students} />
+      </div>
+    </div>
   );
 }
 
