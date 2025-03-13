@@ -1,9 +1,13 @@
 import "./StudentManagement.css";
 import StudentList from "./StudentList";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import StudentModal from "./StudentModal";
-import { getStudents, getFaculties, updateStudent, deleteStudent } from "../services/api";
-
+import {
+  getStudents,
+  getFaculties,
+  updateStudent,
+  deleteStudent,
+} from "../services/studentManagementService";
 
 function StudentManagement() {
   const [isPopUpOpened, setIsPopUpOpened] = useState(false);
@@ -11,9 +15,8 @@ function StudentManagement() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [faculties, setFaculties] = useState([]);
   const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
+  const [setTotalPages] = useState(1);
   const [students, setStudents] = useState([]);
-
 
   // paging
   useEffect(() => {
@@ -50,7 +53,8 @@ function StudentManagement() {
   const handleOpenPopUp = () => setIsPopUpOpened(true);
   const handleClosePopUp = () => setIsPopUpOpened(false);
   const handlePrevPage = () => setPage(page - 1);
-  const handleNextPage = () => setPage(page + 1);  
+  const handleNextPage = () => setPage(page + 1);
+
   const handleStudentClick = (student) => {
     setSelectedStudent(student.id);
     setIsModalOpen(true);
@@ -63,16 +67,16 @@ function StudentManagement() {
 
   const handleSaveStudent = async (updatedStudent) => {
     try {
-      console.log('Starting update for student:', updatedStudent);
-      
+      console.log("Starting update for student:", updatedStudent);
+
       // Ensure all required fields are present and properly formatted
       if (!updatedStudent.id) {
-        console.error('Missing student ID');
+        console.error("Missing student ID");
         return;
       }
 
       const response = await updateStudent(updatedStudent.id, updatedStudent);
-      console.log('Update response:', response);
+      console.log("Update response:", response);
 
       if (response && response.code === 200) {
         // Refresh the student list
@@ -83,12 +87,12 @@ function StudentManagement() {
         }
         handleModalClose();
       } else {
-        console.error('Update failed:', response?.message || 'Unknown error');
+        console.error("Update failed:", response?.message || "Unknown error");
       }
     } catch (error) {
-      console.error('Error in handleSaveStudent:', error);
+      console.error("Error in handleSaveStudent:", error);
       if (error.response) {
-        console.error('Response error:', error.response.data);
+        console.error("Response error:", error.response.data);
       }
     }
   };
@@ -96,7 +100,7 @@ function StudentManagement() {
   const handleDeleteStudent = async (studentId) => {
     try {
       const response = await deleteStudent(studentId);
-      
+
       //if deletion was successful
       if (response && response.code === 200) {
         // Refresh the student list
@@ -105,21 +109,20 @@ function StudentManagement() {
           setStudents(data.items);
           setTotalPages(data.total_pages || 1);
         }
-        
+
         // Close the modal
         handleModalClose();
-        
+
         // Show success message
-        alert('Student deleted successfully');
+        alert("Student deleted successfully");
       } else {
-        throw new Error('Failed to delete student');
+        throw new Error("Failed to delete student");
       }
     } catch (error) {
-      console.error('Error in handleDeleteStudent:', error);
-      throw error; 
+      console.error("Error in handleDeleteStudent:", error);
+      throw error;
     }
   };
-
 
   return (
     <>
@@ -140,8 +143,8 @@ function StudentManagement() {
         </div>
 
         <div className="student-list">
-          <StudentList 
-            students={students} 
+          <StudentList
+            students={students}
             onStudentClick={handleStudentClick}
           />
           <div className="pagination">
@@ -241,39 +244,6 @@ function StudentManagement() {
         </div>
       )}
     </>
-function StudentManagement() {
-  const students = [
-    {
-      name: "Eneh Mercy",
-      id: "22120263",
-      email: "michelle.rivera@example.com",
-      khoa: "J SS 2",
-      gender: "Female",
-    },
-    {
-      name: "Cody Fisher",
-      id: "547030",
-      email: "tim.jennings@example.com",
-      khoa: "SS 3",
-      gender: "Female",
-    },
-  ];
-  return (
-    <div className="management-container">
-      <div className="top-action">
-        <p className="title">Danh sách sinh viên</p>
-        <button className="add-btn">Add Student</button>
-      </div>
-      <div className="search-filter">
-        <select className="filter-dropdown">
-          <option>Add filter</option>
-        </select>
-        <input type="text" className="search-input" placeholder="Search..." />
-      </div>
-      <div className="student-list">
-        <StudentList students={students} />
-      </div>
-    </div>
   );
 }
 

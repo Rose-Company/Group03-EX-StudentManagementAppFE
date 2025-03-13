@@ -3,13 +3,14 @@ import PropTypes from "prop-types";
 
 function StudentList({ students, onStudentClick }) {
   const handleDeleteStudent = (studentName) => {
-    const isConfirmed = window.confirm(`Bạn có chắc chắn muốn xóa ${studentName}?`);
+    const isConfirmed = window.confirm(
+      `Bạn có chắc chắn muốn xóa ${studentName}?`
+    );
     if (isConfirmed) {
       alert(`Đã xóa ${studentName} thành công!`);
       // TODO: Gọi API để xóa sinh viên
     }
   };
-
 
   return (
     <div className="student-table">
@@ -26,18 +27,21 @@ function StudentList({ students, onStudentClick }) {
         </thead>
         <tbody>
           {students.map((student) => (
-            <tr 
-              key={student.student_code} 
+            <tr
+              key={student.student_code}
               className="highlight-row"
               onClick={() => onStudentClick(student)}
-              style={{ cursor: 'pointer' }}
+              style={{ cursor: "pointer" }}
             >
               <td className="student-name">
                 <button className="student-avatar">
-                  {student.fullname.split(" ").map(word => word[0]).join("").toUpperCase()}
+                  {student.fullname
+                    .split(" ")
+                    .map((word) => word[0])
+                    .join("")
+                    .toUpperCase()}
                 </button>
                 {student.fullname}
-
               </td>
               <td>{student.id}</td>
               <td>{student.email}</td>
@@ -45,20 +49,22 @@ function StudentList({ students, onStudentClick }) {
               <td>{student.gender}</td>
               <td></td>
               <td onClick={(e) => e.stopPropagation()}>
-                <button 
+                <button
                   className="student-edit"
                   onClick={() => onStudentClick(student)}
                 >
-                  <i className='bx bx-show'></i>
+                  <i className="bx bx-show"></i>
                 </button>
                 <button className="student-edit">
                   <i className="bx bx-message-square-edit"></i>
                 </button>
-                <button onClick={() => handleDeleteStudent(student.fullname)} className="student-delete">
+                <button
+                  onClick={() => handleDeleteStudent(student.fullname)}
+                  className="student-delete"
+                >
                   <i className="bx bx-message-square-x"></i>
                 </button>
               </td>
-
             </tr>
           ))}
         </tbody>
@@ -67,20 +73,19 @@ function StudentList({ students, onStudentClick }) {
   );
 }
 
-StudentTable.propTypes = {
+StudentList.propTypes = {
   students: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.string.isRequired,
-      student_code: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
+      student_code: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
+        .isRequired,
       fullname: PropTypes.string.isRequired,
       email: PropTypes.string,
       phone: PropTypes.string,
       gender: PropTypes.string,
-
     })
   ).isRequired,
   onStudentClick: PropTypes.func.isRequired,
 };
 
 export default StudentList;
-

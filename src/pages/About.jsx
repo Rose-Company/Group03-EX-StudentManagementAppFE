@@ -22,7 +22,7 @@ export default function AboutUs() {
       name: "Trần Thái Nhật",
       email: "22120255@student.hcmus.edu.vn",
       role: "Fullstack Developer",
-      github: "github.com/22120255",
+      github: "github.com/thainhat04",
     },
     {
       id: "22120263",
