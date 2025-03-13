@@ -48,24 +48,24 @@
 }
 
 .search-filter {
-  display: flex;
-  width: 100%;
-  align-items: center;
-  gap: 10px;
+    display: flex;
+    width: 100%;
+    align-items: center;
+    gap: 10px;
+    
 }
-
-.search-filter .filter-dropdown,
-.search-input {
-  padding: 8px 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  color: lightgray;
-  font-size: 12px;
-  height: 100%;
+  
+.search-filter .filter-dropdown,.search-input {
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    color: lightgray;
+    font-size: 12px;
+    height: 100%;
 }
-.search-filter .filter-dropdown,
-.search-input {
-  flex: 1;
+.search-filter .filter-dropdown,.search-input {
+    flex:1;
+    color:black;
 }
 .search-filter .search-input {
   padding: 8px;
@@ -158,96 +158,93 @@
   width: 10%;
 }
 .student-avatar {
-  width: 40px; /* Kích thước nút */
-  height: 40px;
-  border-radius: 50%; /* Bo tròn để tạo avatar */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  font-size: 16px;
-  background-color: #8ea5be; /* Màu nền */
-  color: white; /* Màu chữ */
-  border: none;
-  cursor: pointer;
-  margin: 0 5px;
+    width: 40px; /* Kích thước nút */
+    height: 40px;
+    border-radius: 50%; /* Bo tròn để tạo avatar */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 16px;
+    background-color: #8ea5be; /* Màu nền */
+    color: white; /* Màu chữ */
+    border: none;
+    cursor: pointer;
+    margin:0 5px;
+  }
+.student-name{
+    display: flex;
+    align-items: center;
 }
-.student-name {
-  display: flex;
-  align-items: center;
-}
-
-.student-edit,
-.student-delete,
-.student-view .popup-close-btn {
-  padding: 5px;
-  background-color: unset;
-  font-size: 16px;
+.student-show, .popup-close-btn {
+    padding:5px;
+    background-color: unset;
+    font-size: 16px;
 }
 
-.popup-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(155, 153, 153, 0.5); /* Làm mờ nền */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000; /* Đảm bảo hiển thị trên cùng */
+.popup-overlay{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(155, 153, 153, 0.5); /* Làm mờ nền */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000; /* Đảm bảo hiển thị trên cùng */
 }
 
-.popup-content {
-  background-color: white;
-  width: 750px;
-  height: 500px;
-  border-radius: 10px;
-  padding: 20px 30px;
+.popup-content{
+    background-color: white;
+    width:750px;
+    height:500px;
+    border-radius: 10px;
+    padding:20px 30px;
 }
 
-.popup-content__top-action {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 30px;
+.popup-content__top-action{
+    display:flex;
+    justify-content: space-between;
+    margin-bottom: 30px;
 }
 
-.popup-content .form-group {
-  display: flex;
-  justify-content: space-between;
-  padding: 0 40px;
+.popup-content .form-group{
+    display: flex;
+    justify-content: space-between;
+    padding: 0 40px;
 }
-.form-group input,
-p,
-select {
-  font-size: 14px;
-  border-radius: 3px;
-  width: 190px;
+.form-group input, p, select{
+    font-size: 14px;
+    border-radius: 3px;
+    width:190px;
+    
 }
-.form-group p {
-  text-align: left;
-  margin-bottom: 5px;
+.form-group p{
+    text-align: left;
+    margin-bottom:5px;
 }
-.form-group input {
-  padding: 7px 15px;
+.form-group input{
+    padding: 7px 15px
 }
-.form-group select {
-  border: 1px solid rgba(22, 20, 20, 0.2);
-  padding: 7px 30px 7px 7px;
+.form-group select{
+    border: 1px solid rgba(22, 20, 20, 0.2);
+    padding:7px 30px 7px 7px;
+    
 }
-.form-group .student-gt {
-  padding: 7px 15px;
-  border: 1px solid rgba(22, 20, 20, 0.2);
-  margin-right: 110px;
-  width: unset;
+.form-group .student-gt{
+    padding:7px 15px;
+    border: 1px solid rgba(22, 20, 20, 0.2);
+    margin-right: 80px;
+    width:unset;
 }
-.form-group .student-status {
-  margin-right: 210px;
+.form-group .student-status{
+    margin-right: 210px;
 }
 
-.pop-up-add-student {
-  margin-top: 30px;
-  padding: 7px 30px;
+.pop-up-add-student{
+    margin-top:30px;
+    padding:7px 30px;
 }
 .pagination {
   margin: 10px;
