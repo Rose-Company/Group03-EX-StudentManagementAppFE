@@ -13,6 +13,8 @@ function StudentManagement() {
   const [totalPages, setTotalPages] = useState(1);
   const [students, setStudents] = useState([]);
 
+
+  // paging
   useEffect(() => {
     const fetchStudents = async () => {
       try {
@@ -61,27 +63,60 @@ function StudentManagement() {
 
   const handleSaveStudent = async (updatedStudent) => {
     try {
-      await updateStudent(updatedStudent.id, updatedStudent);
-      // Update the student in the list
-      const updatedStudents = students.map(student => 
-        student.id === updatedStudent.id ? updatedStudent : student
-      );
-      setStudents(updatedStudents);
-      handleModalClose();
+      console.log('Starting update for student:', updatedStudent);
+      
+      // Ensure all required fields are present and properly formatted
+      if (!updatedStudent.id) {
+        console.error('Missing student ID');
+        return;
+      }
+
+      const response = await updateStudent(updatedStudent.id, updatedStudent);
+      console.log('Update response:', response);
+
+      if (response && response.code === 200) {
+        // Refresh the student list
+        const data = await getStudents(page, 10);
+        if (data) {
+          setStudents(data.items);
+          setTotalPages(data.total_pages || 1);
+        }
+        handleModalClose();
+      } else {
+        console.error('Update failed:', response?.message || 'Unknown error');
+      }
     } catch (error) {
-      console.error('Error updating student:', error);
+      console.error('Error in handleSaveStudent:', error);
+      if (error.response) {
+        console.error('Response error:', error.response.data);
+      }
     }
   };
 
   const handleDeleteStudent = async (studentId) => {
     try {
-      await deleteStudent(studentId);
-      // Remove the deleted student from the list
-      const updatedStudents = students.filter(student => student.id !== studentId);
-      setStudents(updatedStudents);
-      handleModalClose();
+      const response = await deleteStudent(studentId);
+      
+      //if deletion was successful
+      if (response && response.code === 200) {
+        // Refresh the student list
+        const data = await getStudents(page, 10);
+        if (data) {
+          setStudents(data.items);
+          setTotalPages(data.total_pages || 1);
+        }
+        
+        // Close the modal
+        handleModalClose();
+        
+        // Show success message
+        alert('Student deleted successfully');
+      } else {
+        throw new Error('Failed to delete student');
+      }
     } catch (error) {
-      console.error('Error deleting student:', error);
+      console.error('Error in handleDeleteStudent:', error);
+      throw error; 
     }
   };
 
