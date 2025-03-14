@@ -7,10 +7,10 @@ import {
   getFaculties,
   updateStudent,
   deleteStudent,
-  getStudentById,
   getStudentByFullName,
   getStatuses,
   sortStudent,
+  searchStudentByID,
   createAStudent,
 } from "../services/studentManagementService";
 
@@ -53,7 +53,16 @@ function StudentManagement() {
           if (sortField.trim() !== "") {
             const data = await sortStudent(sortField, sortOrder, page, 10);
             if (data) {
-              setStudents(data.items);
+              const studentsWithFacultyName = data.items.map((student) => {
+                const faculty = faculties.find(
+                  (faculty) => faculty.id === student.faculty_id
+                );
+                return {
+                  ...student,
+                  faculty_name: faculty ? faculty.name : "Unknown",
+                };
+              });
+              setStudents(studentsWithFacultyName);
               setTotalPages(getTotalPages(data.total, 10));
             } else {
               setStudents([]);
@@ -62,7 +71,16 @@ function StudentManagement() {
             // Nếu không có search và không có sort => lấy toàn bộ sinh viên
             const data = await getStudents(page, 10);
             if (data) {
-              setStudents(data.items);
+              const studentsWithFacultyName = data.items.map((student) => {
+                const faculty = faculties.find(
+                  (faculty) => faculty.id === student.faculty_id
+                );
+                return {
+                  ...student,
+                  faculty_name: faculty ? faculty.name : "Unknown",
+                };
+              });
+              setStudents(studentsWithFacultyName);
               setTotalPages(getTotalPages(data.total, 10));
             } else {
               setStudents([]);
@@ -72,9 +90,18 @@ function StudentManagement() {
         // Nếu có tìm kiếm
         else {
           if (/^\d+$/.test(searchText)) {
-            const data = await getStudentById(searchText, page, 10);
+            const data = await searchStudentByID(searchText, page, 10);
             if (data && data.items) {
-              setStudents(data.items);
+              const studentsWithFacultyName = data.items.map((student) => {
+                const faculty = faculties.find(
+                  (faculty) => faculty.id === student.faculty_id
+                );
+                return {
+                  ...student,
+                  faculty_name: faculty ? faculty.name : "Unknown",
+                };
+              });
+              setStudents(studentsWithFacultyName);
               setTotalPages(getTotalPages(data.total, 10));
             } else {
               setStudents([]);
@@ -82,7 +109,16 @@ function StudentManagement() {
           } else {
             const data = await getStudentByFullName(searchText, page, 10);
             if (data && data.items) {
-              setStudents(data.items);
+              const studentsWithFacultyName = data.items.map((student) => {
+                const faculty = faculties.find(
+                  (faculty) => faculty.id === student.faculty_id
+                );
+                return {
+                  ...student,
+                  faculty_name: faculty ? faculty.name : "Unknown",
+                };
+              });
+              setStudents(studentsWithFacultyName);
               setTotalPages(getTotalPages(data.total, 10));
             } else {
               setStudents([]);
@@ -96,7 +132,7 @@ function StudentManagement() {
     }, 500);
 
     return () => clearTimeout(delayDebounce);
-  }, [searchText, page, sortField, sortOrder]);
+  }, [searchText, page, sortField, sortOrder, faculties]);
 
   // useEffect để lấy danh sách khoa
   useEffect(() => {
@@ -165,7 +201,16 @@ function StudentManagement() {
         // Refresh the student list
         const data = await getStudents(page, 10);
         if (data) {
-          setStudents(data.items);
+          const studentsWithFacultyName = data.items.map((student) => {
+            const faculty = faculties.find(
+              (faculty) => faculty.id === student.faculty_id
+            );
+            return {
+              ...student,
+              faculty_name: faculty ? faculty.name : "Unknown",
+            };
+          });
+          setStudents(studentsWithFacultyName);
           setTotalPages(data.total_pages || 1);
         }
         handleModalClose();
@@ -189,7 +234,16 @@ function StudentManagement() {
         // Refresh the student list
         const data = await getStudents(page, 10);
         if (data) {
-          setStudents(data.items);
+          const studentsWithFacultyName = data.items.map((student) => {
+            const faculty = faculties.find(
+              (faculty) => faculty.id === student.faculty_id
+            );
+            return {
+              ...student,
+              faculty_name: faculty ? faculty.name : "Unknown",
+            };
+          });
+          setStudents(studentsWithFacultyName);
           setTotalPages(data.total_pages || 1);
         }
 
@@ -251,7 +305,31 @@ function StudentManagement() {
         user_id: currentUser,
       }));
     }
-  }, []);
+
+    // Đặt giá trị mặc định cho gender nếu chưa có giá trị
+    if (!newStudent.gender) {
+      setNewStudent((prev) => ({
+        ...prev,
+        gender: "Male", // Đặt giá trị mặc định là tùy chọn đầu tiên
+      }));
+    }
+
+    // Đặt giá trị mặc định cho faculty_id nếu chưa có giá trị
+    if (faculties.length > 0 && !newStudent.faculty_id) {
+      setNewStudent((prev) => ({
+        ...prev,
+        faculty_id: faculties[0].id, // Đặt giá trị mặc định là tùy chọn đầu tiên
+      }));
+    }
+
+    // Đặt giá trị mặc định cho status_id nếu chưa có giá trị
+    if (statuses.length > 0 && !newStudent.status_id) {
+      setNewStudent((prev) => ({
+        ...prev,
+        status_id: statuses[0].id, // Đặt giá trị mặc định là tùy chọn đầu tiên
+      }));
+    }
+  }, [faculties, statuses]);
 
   const handleAddStudent = async () => {
     console.log(localStorage.getItem("user_id"));
@@ -275,18 +353,31 @@ function StudentManagement() {
     const missingFields = requiredFields.filter((field) => !newStudent[field]);
 
     if (missingFields.length > 0) {
-      console.error("Missing required fields:", missingFields);
+      alert(`Missing fields: ${missingFields.join(", ")}`);
       return;
     }
 
+    const studentData = {
+      ...newStudent,
+    };
+
     try {
-      const response = await createAStudent(newStudent);
+      const response = await createAStudent(studentData);
       console.log("Add student response:", response);
       if (response.code === 200) {
         // Refresh the student list
         const data = await getStudents(page, 10);
         if (data) {
-          setStudents(data.items);
+          const studentsWithFacultyName = data.items.map((student) => {
+            const faculty = faculties.find(
+              (faculty) => faculty.id === student.faculty_id
+            );
+            return {
+              ...student,
+              faculty_name: faculty ? faculty.name : "Unknown",
+            };
+          });
+          setStudents(studentsWithFacultyName);
           setTotalPages(data.total_pages || 1);
         }
         alert("Student added successfully");
@@ -400,7 +491,6 @@ function StudentManagement() {
             </div>
             <div className="form-group">
               <div>
-                <p>Gender</p>
                 <select
                   className="student-gt"
                   name="gender"

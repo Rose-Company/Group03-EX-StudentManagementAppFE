@@ -33,7 +33,20 @@ export const createAStudent = async (studentData) => {
   }
 };
 
-// Get student by ID
+// Search student by ID
+export const searchStudentByID = async (id, page, pageSize) => {
+  console.log("Fetching student with ID:", id);
+  const response = await api.get(`/v1/students/test`, {
+    params: {
+      student_code: id,
+      page,
+      page_size: pageSize,
+    },
+  });
+  return response.data;
+};
+
+// Search student by ID
 export const getStudentById = async (id) => {
   console.log("Fetching student with ID:", id);
   const response = await api.get(`/v1/students/${id}`);
