@@ -7,10 +7,10 @@ import {
   getFaculties,
   updateStudent,
   deleteStudent,
-  getStudentById,
   getStudentByFullName,
   getStatuses,
   sortStudent,
+  searchStudentByID,
   createAStudent,
 } from "../services/studentManagementService";
 
@@ -34,7 +34,7 @@ function StudentManagement() {
     address: "",
     email: "",
     student_code: "",
-    faculty_id: "",
+    faculty_name: "",
     batch: "",
     program: "",
     status_id: "",
@@ -72,7 +72,7 @@ function StudentManagement() {
         // Nếu có tìm kiếm
         else {
           if (/^\d+$/.test(searchText)) {
-            const data = await getStudentById(searchText, page, 10);
+            const data = await searchStudentByID(searchText, page, 10);
             if (data && data.items) {
               setStudents(data.items);
               setTotalPages(getTotalPages(data.total, 10));
@@ -265,7 +265,7 @@ function StudentManagement() {
       "address",
       "email",
       "student_code",
-      "faculty_id",
+      "faculty_name", // Thay đổi từ faculty_id thành faculty_name
       "batch",
       "program",
       "status_id",
@@ -279,8 +279,23 @@ function StudentManagement() {
       return;
     }
 
+    // Tìm faculty_id dựa trên faculty_name
+    const selectedFaculty = faculties.find(
+      (faculty) => faculty.name === newStudent.faculty_name
+    );
+
+    if (!selectedFaculty) {
+      console.error("Invalid faculty name");
+      return;
+    }
+
+    const studentData = {
+      ...newStudent,
+      faculty_id: selectedFaculty.id, // Thêm faculty_id vào dữ liệu sinh viên
+    };
+
     try {
-      const response = await createAStudent(newStudent);
+      const response = await createAStudent(studentData);
       console.log("Add student response:", response);
       if (response.code === 200) {
         // Refresh the student list

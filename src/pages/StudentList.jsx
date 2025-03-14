@@ -24,13 +24,12 @@ function StudentList({ students, onStudentClick }) {
             <th>Email address</th>
             <th>Faculty</th>
             <th>Gender</th>
-            <th>Note</th>
           </tr>
         </thead>
         <tbody>
           {students.map((student) => (
             <tr
-              key={student.student_code}
+              key={student.id}
               className="highlight-row"
               onClick={() => onStudentClick(student)}
               style={{ cursor: "pointer" }}
@@ -45,11 +44,10 @@ function StudentList({ students, onStudentClick }) {
                 </button>
                 {student.fullname}
               </td>
-              <td>{student.id}</td>
+              <td>{student.student_code}</td>
               <td>{student.email}</td>
-              <td>{student.faculty_id}</td>
+              <td>{student.faculty_name}</td>
               <td>{student.gender}</td>
-              <td></td>
             </tr>
           ))}
         </tbody>
