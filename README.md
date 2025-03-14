@@ -2,8 +2,8 @@
 
 ## 📌 Giới thiệu
 
-Dự án này được xây dựng bằng **ReactJS** với mục tiêu [mô tả ngắn gọn về chức năng của dự án].  
-Dự án sử dụng **React Router, Axios, file** để tối ưu hóa trải nghiệm người dùng.
+Dự án này được xây dựng bằng **ReactJS** với mục tiêu hiển thị giao diện quản lý sinh viên một cách đơn giản.  
+Dự án sử dụng **React Router, Axios, vite** để tối ưu hóa trải nghiệm người dùng.
 
 ---
 
