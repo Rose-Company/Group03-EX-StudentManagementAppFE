@@ -331,6 +331,11 @@ function StudentManagement() {
     }
   }, [faculties, statuses]);
 
+  const validateEmail = (email) => {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(String(email).toLowerCase());
+  };
+
   const handleAddStudent = async () => {
     console.log(localStorage.getItem("user_id"));
     console.log(newStudent);
@@ -354,6 +359,12 @@ function StudentManagement() {
 
     if (missingFields.length > 0) {
       alert(`Missing fields: ${missingFields.join(", ")}`);
+      return;
+    }
+
+    // Validate email
+    if (!validateEmail(newStudent.email)) {
+      alert("Invalid email address");
       return;
     }
 
