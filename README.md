@@ -2,8 +2,8 @@
 
 ## 📌 Giới thiệu
 
-Dự án này được xây dựng bằng **ReactJS** với mục tiêu [mô tả ngắn gọn về chức năng của dự án].  
-Dự án sử dụng **React Router, Axios, file** để tối ưu hóa trải nghiệm người dùng.
+Dự án này được xây dựng bằng **ReactJS** với mục tiêu hiển thị giao diện quản lý sinh viên một cách đơn giản.  
+Dự án sử dụng **React Router, Axios, vite** để tối ưu hóa trải nghiệm người dùng.
 
 ---
 
@@ -11,7 +11,14 @@ Dự án sử dụng **React Router, Axios, file** để tối ưu hóa trải n
 
 Dự án có cấu trúc thư mục như sau:
 
-📁 src/ ┣ 📁 assets/ # Chứa hình ảnh, icon, font, style ┣ 📁 components/ # Chứa các component tái sử dụng ┣ 📁 pages/ # Chứa các trang chính ┣ 📁 services/ # Chứa các file gọi API ┣ 📁 hooks/ # Chứa custom hooks (nếu có) ┣ 📁 utils/ # Chứa các function tiện ích ┗ 📄 App.js # Component gốc của ứng dụng
+📁 src/
+┣ 📁 assets/ # Contains images, icons, fonts, and styles
+┣ 📁 components/ # Contains reusable components
+┣ 📁 pages/ # Contains main pages of the application
+┣ 📁 services/ # Contains API service files
+┣ 📁 hooks/ # Contains custom hooks (if any)
+┣ 📁 utils/ # Contains utility functions
+┗ 📄 App.js # Root component of the application
 
 ### Môi trường chạy dự án: Node.js v20.14.0
 
