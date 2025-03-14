@@ -281,13 +281,15 @@ function StudentManagement() {
 
     try {
       const response = await createAStudent(newStudent);
-      if (response && response.code === 200) {
+      console.log("Add student response:", response);
+      if (response.code === 200) {
         // Refresh the student list
         const data = await getStudents(page, 10);
         if (data) {
           setStudents(data.items);
           setTotalPages(data.total_pages || 1);
         }
+        alert("Student added successfully");
         handleClosePopUp();
       } else {
         console.error(
