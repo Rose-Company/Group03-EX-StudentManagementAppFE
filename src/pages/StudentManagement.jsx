@@ -491,6 +491,7 @@ function StudentManagement() {
             </div>
             <div className="form-group">
               <div>
+                <p>Gender</p>
                 <select
                   className="student-gt"
                   name="gender"
