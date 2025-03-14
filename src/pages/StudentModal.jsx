@@ -31,6 +31,16 @@ const StudentModal = ({
     status_id: "",
   });
 
+  const [wasEditing, setWasEditing] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      setIsEditing(wasEditing); // Phục hồi trạng thái trước đó
+    } else {
+      setWasEditing(isEditing); // Lưu trạng thái trước khi đóng modal
+    }
+  }, [isOpen]);
+
   const initialFormData = useRef(null);
 
   useEffect(() => {
@@ -88,7 +98,8 @@ const StudentModal = ({
     }));
   };
 
-  const handleFieldClick = () => {
+  const handleFieldClick = (e) => {
+    e.stopPropagation(); // Ngăn sự kiện lan ra ngoài
     if (!isEditing) {
       setIsEditing(true);
     }
@@ -146,6 +157,10 @@ const StudentModal = ({
       await onSave(updatedData);
       setStudent(updatedData); // Cập nhật trạng thái student với dữ liệu mới
       setIsEditing(false);
+      setTimeout(() => {
+        onClose();
+        window.location.reload();
+      }, 1000);
       initialFormData.current = updatedData; // Cập nhật dữ liệu ban đầu sau khi lưu
     } catch (error) {
       console.error("Error in form submission:", error);
@@ -198,7 +213,12 @@ const StudentModal = ({
     }
   };
 
-  const handleClose = () => {
+  const handleClose = (e) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
     if (JSON.stringify(formData) !== JSON.stringify(initialFormData.current)) {
       window.location.reload(); // Làm mới trang nếu dữ liệu đã thay đổi
     }
@@ -208,7 +228,15 @@ const StudentModal = ({
   if (!isOpen || !student) return null;
 
   return (
-    <div className="modal-overlay" onClick={handleClose}>
+    <div
+      className="modal-overlay"
+      onClick={(e) => {
+        // Chỉ đóng modal khi click trực tiếp vào overlay
+        if (e.target.className === "modal-overlay") {
+          handleClose(e);
+        }
+      }}
+    >
       <div
         className={`modal-content ${isEditing ? "edit-mode" : ""}`}
         onClick={(e) => e.stopPropagation()}
@@ -221,10 +249,7 @@ const StudentModal = ({
         <h2>{isEditing ? "Edit Student" : "Student Details"}</h2>
 
         <form onSubmit={handleSubmit}>
-          <div
-            className={`form-group ${isEditing ? "editable" : ""}`}
-            onClick={handleFieldClick}
-          >
+          <div className={`form-group ${isEditing ? "editable" : ""}`}>
             <div>
               <label>Student Code</label>
               <input
@@ -367,13 +392,24 @@ const StudentModal = ({
           <div className="modal-actions">
             {!isEditing ? (
               <>
-                <button type="button" onClick={() => setIsEditing(true)}>
+                <button
+                  type="button"
+                  className="edit-button"
+                  onClick={(e) => {
+                    e.preventDefault(); // Ngăn hành vi mặc định
+                    e.stopPropagation(); // Ngăn sự kiện lan ra ngoài modal
+                    handleFieldClick(e);
+                  }}
+                >
                   <i className="bx bx-edit"></i>
                   Edit
                 </button>
                 <button
                   type="button"
-                  onClick={handleDelete}
+                  onClick={(e) => {
+                    e.stopPropagation(); // Ngăn sự kiện lan ra ngoài modal
+                    handleDelete();
+                  }}
                   className="delete-button"
                 >
                   <i className="bx bx-trash"></i>
@@ -382,11 +418,17 @@ const StudentModal = ({
               </>
             ) : (
               <>
-                <button type="submit">
+                <button type="submit" onClick={handleSubmit}>
                   <i className="bx bx-check"></i>
                   Save
                 </button>
-                <button type="button" onClick={handleCancel}>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation(); // Ngăn sự kiện lan ra ngoài modal
+                    handleCancel();
+                  }}
+                >
                   <i className="bx bx-x"></i>
                   Cancel
                 </button>
