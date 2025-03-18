@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import "./Header.css";
+import styles from "./Header.module.css"; // Import CSS Module
 import { Dropdown } from "react-bootstrap";
 import PropTypes from "prop-types";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -55,7 +55,7 @@ function Header() {
 
   const UserDropdown = ({ username, handleLogout }) => {
     return (
-      <Dropdown className="user-dropdown">
+      <Dropdown className={styles.userDropdown}>
         <Dropdown.Toggle variant="secondary" id="dropdown-basic">
           {username}
         </Dropdown.Toggle>
@@ -74,28 +74,36 @@ function Header() {
   };
 
   return (
-    <header className={`header ${scrolled ? "scrolled" : ""}`}>
-      <div className="header-container">
-        <div className="logo-container">
-          <Link to="/" className="logo">
-            <span className="logo-text">SMS</span>
+    <header
+      className={`${styles.header} ${scrolled ? styles.headerScrolled : ""}`}
+    >
+      <div className={styles.headerContainer}>
+        <div className={styles.logoContainer}>
+          <Link to="/" className={styles.logo}>
+            <span className={styles.logoText}>SMS</span>
           </Link>
         </div>
 
-        <div className="menu-toggle" onClick={toggleMenu}>
-          <div className={`hamburger ${isMenuOpen ? "active" : ""}`}>
+        <div className={styles.menuToggle} onClick={toggleMenu}>
+          <div
+            className={`${styles.hamburger} ${isMenuOpen ? styles.active : ""}`}
+          >
             <span></span>
             <span></span>
             <span></span>
           </div>
         </div>
 
-        <nav className={`nav-container ${isMenuOpen ? "active" : ""}`}>
-          <ul className="nav-links">
+        <nav
+          className={`${styles.navContainer} ${
+            isMenuOpen ? styles.active : ""
+          }`}
+        >
+          <ul className={styles.navLinks}>
             <li>
               <Link
                 to="/"
-                className={location.pathname === "/" ? "active" : ""}
+                className={location.pathname === "/" ? styles.active : ""}
                 onClick={closeMenu}
               >
                 Home
@@ -104,14 +112,14 @@ function Header() {
             <li>
               <Link
                 to="/about"
-                className={location.pathname === "/about" ? "active" : ""}
+                className={location.pathname === "/about" ? styles.active : ""}
                 onClick={closeMenu}
               >
                 About
               </Link>
             </li>
             {isLoggedIn ? (
-              <div className="user-dropdown">
+              <div className={styles.userDropdown}>
                 <li>
                   <UserDropdown
                     username={username}
@@ -123,8 +131,8 @@ function Header() {
               <li id="login">
                 <Link
                   to="/login"
-                  className={`login-button ${
-                    location.pathname === "/login" ? "active" : ""
+                  className={`${styles.loginButton} ${
+                    location.pathname === "/login" ? styles.active : ""
                   }`}
                   onClick={closeMenu}
                 >

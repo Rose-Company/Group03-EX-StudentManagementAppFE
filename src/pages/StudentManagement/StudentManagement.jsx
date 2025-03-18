@@ -1,7 +1,7 @@
-import "./StudentManagement.css";
-import StudentList from "./StudentList";
+import styles from "./StudentManagement.module.css";
 import { useState, useEffect } from "react";
-import StudentModal from "./StudentModal";
+import StudentList from "../../components/Student/StudentList";
+import StudentModal from "../../components/Student/StudentModal";
 import {
   getStudents,
   getFaculties,
@@ -12,7 +12,7 @@ import {
   sortStudent,
   searchStudentByID,
   createAStudent,
-} from "../services/studentManagementService";
+} from "../../services/studentManagementService";
 
 function StudentManagement() {
   const [isPopUpOpened, setIsPopUpOpened] = useState(false);
@@ -410,16 +410,21 @@ function StudentManagement() {
   return (
     <>
       <div
-        className={isPopUpOpened ? "blur-background" : "management-container"}
+        className={
+          isPopUpOpened ? styles.blurBackground : styles.managementContainer
+        }
       >
-        <div className="top-action">
-          <p className="title">Student List</p>
-          <button onClick={handleOpenPopUp} className="add-btn">
+        <div className={styles.topAction}>
+          <p className={styles.title}>Student List</p>
+          <button onClick={handleOpenPopUp} className={styles.addBtn}>
             Add Student
           </button>
         </div>
-        <div className="search-filter">
-          <select onChange={handleSortStudent} className="filter-dropdown">
+        <div className={styles.searchFilter}>
+          <select
+            onChange={handleSortStudent}
+            className={styles.filterDropdown}
+          >
             <option value="name-asc">Full Name A - Z</option>
             <option value="name-desc">Full Name Z - A</option>
             <option value="id-asc">Student ID Ascending</option>
@@ -428,17 +433,17 @@ function StudentManagement() {
           <input
             onChange={handleSearchStudent}
             type="text"
-            className="search-input"
+            className={styles.searchInput}
             placeholder="Search..."
           />
         </div>
 
-        <div className="student-list">
+        <div className={styles.studentList}>
           <StudentList
             students={students}
             onStudentClick={handleStudentClick}
           />
-          <div className="pagination">
+          <div className={styles.pagination}>
             {page > 1 ? <button onClick={handlePrevPage}>Prev</button> : <></>}
             <span>Page {page}</span>
             {page < totalPages ? (
@@ -460,15 +465,21 @@ function StudentManagement() {
       />
 
       {isPopUpOpened && (
-        <div className="popup-overlay" onClick={handleClosePopUp}>
-          <div className="popup-content" onClick={(e) => e.stopPropagation()}>
-            <div className="popup-content__top-action">
+        <div className={styles.popupOverlay} onClick={handleClosePopUp}>
+          <div
+            className={styles.popupContent}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className={styles.popupContentTopAction}>
               <h3>Add Student</h3>
-              <button className="popup-close-btn" onClick={handleClosePopUp}>
+              <button
+                className={styles.popupCloseBtn}
+                onClick={handleClosePopUp}
+              >
                 X
               </button>
             </div>
-            <div className="form-group">
+            <div className={styles.formGroup}>
               <div>
                 <p>Full Name</p>
                 <input
@@ -500,11 +511,11 @@ function StudentManagement() {
                 />
               </div>
             </div>
-            <div className="form-group">
+            <div className={styles.formGroup}>
               <div>
                 <p>Gender</p>
                 <select
-                  className="student-gt"
+                  className={styles.studentGt}
                   name="gender"
                   value={newStudent.gender}
                   onChange={handleInputChange}
@@ -535,7 +546,7 @@ function StudentManagement() {
                 />
               </div>
             </div>
-            <div className="form-group">
+            <div className={styles.formGroup}>
               <div>
                 <p>Student ID</p>
                 <input
@@ -571,7 +582,7 @@ function StudentManagement() {
                 />
               </div>
             </div>
-            <div className="form-group">
+            <div className={styles.formGroup}>
               <div>
                 <p>Program</p>
                 <input
@@ -582,7 +593,7 @@ function StudentManagement() {
                   onChange={handleInputChange}
                 />
               </div>
-              <div className="student-status">
+              <div className={styles.studentStatus}>
                 <p>Student Status</p>
                 <select
                   name="status_id"
@@ -597,7 +608,10 @@ function StudentManagement() {
                 </select>
               </div>
             </div>
-            <button className="pop-up-add-student" onClick={handleAddStudent}>
+            <button
+              className={styles.popUpAddStudent}
+              onClick={handleAddStudent}
+            >
               Add
             </button>
           </div>

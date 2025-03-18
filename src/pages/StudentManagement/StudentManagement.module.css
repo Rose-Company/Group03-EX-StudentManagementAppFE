@@ -1,4 +1,4 @@
-.management-container {
+.managementContainer {
   height: 100vh;
   display: flex;
   flex-direction: column;
@@ -8,7 +8,8 @@
   padding: 100px 59px;
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
 }
-.blur-background {
+
+.blurBackground {
   height: 100vh;
   display: flex;
   flex-direction: column;
@@ -20,13 +21,15 @@
   filter: blur(5px);
   pointer-events: none;
 }
-.top-action {
+
+.topAction {
   width: 100%;
   display: flex;
   justify-content: space-between;
   align-content: center;
 }
-.top-action .title {
+
+.topAction .title {
   font-size: 20px;
   margin-bottom: unset;
   display: unset;
@@ -34,7 +37,7 @@
   font-weight: bold;
 }
 
-.top-action .add-btn {
+.topAction .addBtn {
   background: linear-gradient(45deg, #4facfe 0%, #00f2fe 100%);
   color: white;
   border: none;
@@ -43,19 +46,20 @@
   cursor: pointer;
   font-size: 12px;
 }
-.add-btn:hover {
+
+.addBtn:hover {
   background: black;
 }
 
-.search-filter {
+.searchFilter {
   display: flex;
   width: 100%;
   align-items: center;
   gap: 10px;
 }
 
-.search-filter .filter-dropdown,
-.search-input {
+.searchFilter .filterDropdown,
+.searchInput {
   padding: 8px 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
@@ -63,23 +67,26 @@
   font-size: 12px;
   height: 100%;
 }
-.search-filter .filter-dropdown,
-.search-input {
+
+.searchFilter .filterDropdown,
+.searchInput {
   flex: 1;
   color: black;
 }
-.search-filter .search-input {
+
+.searchFilter .searchInput {
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 5px;
   flex: 4;
 }
 
-.student-list {
+.studentList {
   width: 100%;
   height: 100%;
 }
-.student-list .empty-list {
+
+.studentList .emptyList {
   height: 100%;
   text-align: center;
   display: flex;
@@ -88,40 +95,44 @@
   justify-content: center;
   background-color: #fcfafa;
 }
-.student-list .empty-list .empty-list__img {
+
+.studentList .emptyList .emptyListImg {
   width: 250px;
   align-self: center;
 }
-.student-list .empty-list .empty-list__title {
+
+.studentList .emptyList .emptyListTitle {
   font-weight: bold;
   align-self: center;
   width: auto;
 }
 
-.student-table {
+.studentTable {
   width: 100%;
   font-size: 14px;
   table-layout: fixed;
 }
 
-.student-table thead th {
+.studentTable thead th {
   padding: 12px;
   text-align: left;
   font-weight: bold;
 }
 
-.student-table tbody {
+.studentTable tbody {
   background-color: white;
 }
 
-.student-table tbody tr {
+.studentTable tbody tr {
   transition: background-color 0.3s;
 }
-.student-table tbody tr:hover {
+
+.studentTable tbody tr:hover {
   background-color: #eef2ff;
 }
-.student-table th,
-.student-table td {
+
+.studentTable th,
+.studentTable td {
   padding: 10px;
   text-align: left;
   vertical-align: middle;
@@ -129,74 +140,78 @@
   cursor: pointer;
 }
 
-.student-table th:nth-child(1),
-.student-table td:nth-child(1) {
+.studentTable th:nth-child(1),
+.studentTable td:nth-child(1) {
   width: 30%;
 }
-.student-table th:nth-child(2),
-.student-table td:nth-child(2) {
+
+.studentTable th:nth-child(2),
+.studentTable td:nth-child(2) {
   width: 20%;
 }
 
-.student-table th:nth-child(3),
-.student-table td:nth-child(3) {
+.studentTable th:nth-child(3),
+.studentTable td:nth-child(3) {
   width: 30%;
 }
 
-.student-table th:nth-child(4),
-.student-table td:nth-child(4) {
+.studentTable th:nth-child(4),
+.studentTable td:nth-child(4) {
   width: 10%;
 }
 
-.student-table th:nth-child(5),
-.student-table td:nth-child(5) {
+.studentTable th:nth-child(5),
+.studentTable td:nth-child(5) {
   width: 10%;
 }
 
-.student-table th:nth-child(6),
-.student-table td:nth-child(6) {
+.studentTable th:nth-child(6),
+.studentTable td:nth-child(6) {
   width: 10%;
 }
-.student-avatar {
-  width: 40px; /* Kích thước nút */
+
+.studentAvatar {
+  width: 40px;
   height: 40px;
-  border-radius: 50%; /* Bo tròn để tạo avatar */
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: bold;
   font-size: 16px;
-  background-color: #8ea5be; /* Màu nền */
-  color: white; /* Màu chữ */
+  background-color: #8ea5be;
+  color: white;
   border: none;
   cursor: pointer;
   margin: 0 5px;
 }
-.student-name {
+
+.studentName {
   display: flex;
   align-items: center;
 }
-.student-show,
-.popup-close-btn {
+
+.studentShow,
+.popupCloseBtn {
   padding: 5px;
   background-color: unset;
   font-size: 16px;
 }
 
-.popup-overlay {
+.popupOverlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(155, 153, 153, 0.5); /* Làm mờ nền */
+  background: rgba(155, 153, 153, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000; /* Đảm bảo hiển thị trên cùng */
+  z-index: 1000;
 }
 
-.popup-content {
+.popupContent {
   background-color: white;
   width: 750px;
   height: 500px;
@@ -204,49 +219,56 @@
   padding: 20px 30px;
 }
 
-.popup-content__top-action {
+.popupContentTopAction {
   display: flex;
   justify-content: space-between;
   margin-bottom: 30px;
 }
 
-.popup-content .form-group {
+.popupContent .formGroup {
   display: flex;
   justify-content: space-between;
   padding: 0 40px;
 }
-.form-group input,
-p,
-select {
+
+.formGroup input,
+.formGroup p,
+.formGroup select {
   font-size: 14px;
   border-radius: 3px;
   width: 190px;
 }
-.form-group p {
+
+.formGroup p {
   text-align: left;
   margin-bottom: 5px;
 }
-.form-group input {
+
+.formGroup input {
   padding: 7px 15px;
 }
-.form-group select {
+
+.formGroup select {
   border: 1px solid rgba(22, 20, 20, 0.2);
   padding: 7px 30px 7px 7px;
 }
-.form-group .student-gt {
+
+.formGroup .studentGt {
   padding: 7px 15px;
   border: 1px solid rgba(22, 20, 20, 0.2);
   margin-right: 80px;
   width: unset;
 }
-.form-group .student-status {
+
+.formGroup .studentStatus {
   margin-right: 210px;
 }
 
-.pop-up-add-student {
+.popUpAddStudent {
   margin-top: 30px;
   padding: 7px 30px;
 }
+
 .pagination {
   margin: 10px;
   padding-bottom: 40px;
@@ -256,11 +278,13 @@ select {
   justify-self: center;
   gap: 20px;
 }
+
 .pagination button {
   background-color: unset;
   padding: 0px;
   font-weight: 100;
 }
+
 .pagination span {
   font-weight: bold;
 }
