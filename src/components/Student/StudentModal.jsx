@@ -100,7 +100,8 @@ const StudentModal = ({
   };
 
   const handleFieldClick = (e) => {
-    e.stopPropagation(); // Ngăn sự kiện lan ra ngoài
+    e.preventDefault();
+    e.stopPropagation();
     if (!isEditing) {
       setIsEditing(true);
     }
@@ -231,6 +232,7 @@ const StudentModal = ({
       className={styles.modalOverlay}
       onClick={(e) => {
         if (e.target.className === styles.modalOverlay) {
+          console.log("Overlay clicked");
           handleClose(e);
         }
       }}
