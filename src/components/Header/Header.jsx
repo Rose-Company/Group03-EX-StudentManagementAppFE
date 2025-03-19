@@ -60,14 +60,19 @@ function Header() {
           {username}
         </Dropdown.Toggle>
 
-        <Dropdown.Menu>
-          <Dropdown.Item href="/management">Management</Dropdown.Item>
+        <Dropdown.Menu className={styles.dropdownMenu}>
+          <Dropdown.Item className={styles.dropdownItem} href="/management">
+            Management
+          </Dropdown.Item>
           <Dropdown.Divider />
-          <Dropdown.Item onClick={handleLogout}>Log out</Dropdown.Item>
+          <Dropdown.Item className={styles.dropdownItem} onClick={handleLogout}>
+            Log out
+          </Dropdown.Item>
         </Dropdown.Menu>
       </Dropdown>
     );
   };
+
   UserDropdown.propTypes = {
     username: PropTypes.string.isRequired,
     handleLogout: PropTypes.func.isRequired,

@@ -196,17 +196,20 @@
   border: 1px solid #ddd;
 }
 
-.userDropdown .dropdownItem {
-  color: black !important;
+.userDropdown .dropdownMenu .dropdownItem {
   font-size: 14px;
+  color: black;
   padding: 8px 16px;
-  transition: background 0.3s;
+  transition: color 0.3s;
 }
 
-.userDropdown .dropdownItem:hover {
-  background-color: #f0f0f0;
+.userDropdown .dropdownMenu .dropdownItem:hover {
+  color: #4facfe;
 }
 
+.dropdownItem.active {
+  background-color: #0e3446;
+}
 /* Responsive styles */
 @media (max-width: 768px) {
   .menuToggle {
