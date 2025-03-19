@@ -36,7 +36,7 @@ export const createAStudent = async (studentData) => {
 // Search student by ID
 export const searchStudentByID = async (id, page, pageSize) => {
   console.log("Fetching student with ID:", id);
-  const response = await api.get(`/v1/students/test`, {
+  const response = await api.get(`/v1/students`, {
     params: {
       student_code: id,
       page,
@@ -55,7 +55,7 @@ export const getStudentById = async (id) => {
 
 // Get all students with pagination
 export const getStudents = async (page = 1, pageSize = 10) => {
-  const response = await api.get(`/v1/students/test`, {
+  const response = await api.get(`/v1/students`, {
     params: {
       page,
       page_size: pageSize,
@@ -70,7 +70,7 @@ export const getStudentByFullName = async (
   pageSize = 10
 ) => {
   try {
-    const response = await api.get("/v1/students/test", {
+    const response = await api.get("/v1/students", {
       params: {
         fullname,
         page_size: pageSize,
@@ -164,7 +164,7 @@ export const getStatuses = async () => {
 //Sort Student
 export const sortStudent = async (field, type, page = 1, pageSize = 10) => {
   try {
-    const response = await api.get("/v1/students/test", {
+    const response = await api.get("/v1/students", {
       params: {
         page,
         page_size: pageSize,
