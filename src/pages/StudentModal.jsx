@@ -99,6 +99,7 @@ const StudentModal = ({
   };
 
   const handleFieldClick = (e) => {
+    e.preventDefault()
     e.stopPropagation(); // Ngăn sự kiện lan ra ngoài
     if (!isEditing) {
       setIsEditing(true);
