@@ -63,7 +63,10 @@ function Header() {
         <Dropdown.Menu>
           <Dropdown.Item href="/management">Management</Dropdown.Item>
           <Dropdown.Divider />
+          <Dropdown.Item href="/setting">Setting</Dropdown.Item>
+          <Dropdown.Divider />
           <Dropdown.Item onClick={handleLogout}>Log out</Dropdown.Item>
+          
         </Dropdown.Menu>
       </Dropdown>
     );

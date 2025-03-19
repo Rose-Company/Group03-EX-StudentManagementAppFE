@@ -2,6 +2,7 @@ import styles from "./StudentManagement.module.css";
 import { useState, useEffect } from "react";
 import StudentList from "../../components/Student/StudentList";
 import StudentModal from "../../components/Student/StudentModal";
+import AddStudentPopUp from "../../components/Student/AddStudentPopup";
 import {
   getStudents,
   getFaculties,
@@ -23,8 +24,10 @@ function StudentManagement() {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [students, setStudents] = useState([]);
+  const [isFilterOpen,setIsFilterOpen] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [sortField, setSortField] = useState("");
+  const [facultyFilter,setFacultyFilter] = useState(0);
   const [sortOrder, setSortOrder] = useState("");
   const [newStudent, setNewStudent] = useState({
     fullname: "",
@@ -39,6 +42,48 @@ function StudentManagement() {
     program: "",
     status_id: "",
     user_id: "",
+
+    // Địa chỉ thường trú
+  permanent_address: {
+    street: "",
+    ward: "",
+    district: "",
+    city: "",
+    country: "",
+  },
+
+  // Địa chỉ tạm trú
+  temp_address: {
+    street: "",
+    ward: "",
+    district: "",
+    city: "",
+    country: "",
+  },
+
+  // Địa chỉ nhận thư
+  mailing_address: {
+    street: "",
+    ward: "",
+    district: "",
+    city: "",
+    country: "",
+  },
+
+  // Danh sách giấy tờ tùy thân
+  id_documents: [
+    {
+      id: "",
+      document_type: "",
+      document_number: "",
+      issue_date: "",
+      issue_place: "",
+      expiry_date: "",
+      country_of_issue: "",
+      has_chip: false,
+      notes: null,
+    },
+  ]
   });
 
   // Hàm tính tổng số trang
@@ -288,7 +333,10 @@ function StudentManagement() {
         break;
     }
   };
-
+  const handleFilterByFaculty = (e) => {
+    setFacultyFilter(e.target.selectedIndex);
+    console.log("Selected Faculty ID: ",facultyFilter);
+  }
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setNewStudent((prev) => ({
@@ -296,6 +344,9 @@ function StudentManagement() {
       [name]: value,
     }));
   };
+  const handleOpenFilter = () => {
+    setIsFilterOpen(!isFilterOpen);
+  }
 
   useEffect(() => {
     const currentUser = localStorage.getItem("user_id");
@@ -345,7 +396,6 @@ function StudentManagement() {
       "date_of_birth",
       "phone",
       "gender",
-      "address",
       "email",
       "student_code",
       "faculty_id",
@@ -420,23 +470,122 @@ function StudentManagement() {
             Add Student
           </button>
         </div>
+        
         <div className={styles.searchFilter}>
-          <select
-            onChange={handleSortStudent}
-            className={styles.filterDropdown}
-          >
-            <option value="name-asc">Full Name A - Z</option>
-            <option value="name-desc">Full Name Z - A</option>
-            <option value="id-asc">Student ID Ascending</option>
-            <option value="id-desc">Student ID Descending</option>
-          </select>
           <input
             onChange={handleSearchStudent}
             type="text"
             className={styles.searchInput}
             placeholder="Search..."
           />
+          <button  onClick={handleOpenFilter} className={styles.filterDrop}>
+            <i class='bx bx-filter-alt'></i>
+          </button>
+          {isFilterOpen && (
+            <div className={styles.filterPopup}>
+              <div className={styles.filterSection}>
+                <h4>Sort by</h4>
+                <div className={styles.radioGroup}>
+                  <label>
+                    <input 
+                      type="radio" 
+                      name="sort" 
+                      value="name-asc" 
+                      checked={sortField === "fullname" && sortOrder === "asc"}
+                      onChange={() => {
+                        setSortField("fullname");
+                        setSortOrder("asc");
+                      }} 
+                    />
+                    Name (A-Z)
+                  </label>
+                  <label>
+                    <input 
+                      type="radio" 
+                      name="sort" 
+                      value="name-desc" 
+                      checked={sortField === "fullname" && sortOrder === "desc"}
+                      onChange={() => {
+                        setSortField("fullname");
+                        setSortOrder("desc");
+                      }} 
+                    />
+                    Name (Z-A)
+                  </label>
+                  <label>
+                    <input 
+                      type="radio" 
+                      name="sort" 
+                      value="id-asc" 
+                      checked={sortField === "student_code" && sortOrder === "asc"}
+                      onChange={() => {
+                        setSortField("student_code");
+                        setSortOrder("asc");
+                      }} 
+                    />
+                    Student ID (Ascending)
+                  </label>
+                  <label>
+                    <input 
+                      type="radio" 
+                      name="sort" 
+                      value="id-desc" 
+                      checked={sortField === "student_code" && sortOrder === "desc"}
+                      onChange={() => {
+                        setSortField("student_code");
+                        setSortOrder("desc");
+                      }} 
+                    />
+                    Student ID (Descending)
+                  </label>
+                </div>
+              </div>
+              
+              <div className={styles.filterSection}>
+                <h4>Faculty</h4>
+                <div className={styles.radioGroup}>
+                  <label>
+                    <input 
+                      type="radio" 
+                      name="faculty" 
+                      value="0" 
+                      checked={facultyFilter === 0}
+                      onChange={() => setFacultyFilter(0)} 
+                    />
+                    All Faculties
+                  </label>
+                  {faculties.map((faculty, index) => (
+                    <label key={faculty.id}>
+                      <input 
+                        type="radio" 
+                        name="faculty" 
+                        value={faculty.id} 
+                        checked={facultyFilter === index + 1}
+                        onChange={() => setFacultyFilter(index + 1)} 
+                      />
+                      {faculty.name}
+                    </label>
+                  ))}
+                </div>
+              </div>
+              
+              <div className={styles.filterActions}>
+                <button 
+                  className={styles.clearFilterBtn}
+                  onClick={() => {
+                    setSortField("");
+                    setSortOrder("");
+                    setFacultyFilter(0);
+                    setIsFilterOpen(false);
+                  }}
+                >
+                  Clear Filters
+                </button>
+              </div>
+            </div>
+          )}
         </div>
+
 
         <div className={styles.studentList}>
           <StudentList
@@ -465,157 +614,15 @@ function StudentManagement() {
       />
 
       {isPopUpOpened && (
-        <div className={styles.popupOverlay} onClick={handleClosePopUp}>
-          <div
-            className={styles.popupContent}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className={styles.popupContentTopAction}>
-              <h3>Add Student</h3>
-              <button
-                className={styles.popupCloseBtn}
-                onClick={handleClosePopUp}
-              >
-                X
-              </button>
-            </div>
-            <div className={styles.formGroup}>
-              <div>
-                <p>Full Name</p>
-                <input
-                  type="text"
-                  placeholder="Full Name"
-                  name="fullname"
-                  value={newStudent.fullname}
-                  onChange={handleInputChange}
-                />
-              </div>
-              <div>
-                <p>Date of Birth</p>
-                <input
-                  type="date"
-                  placeholder="Date of Birth"
-                  name="date_of_birth"
-                  value={newStudent.date_of_birth}
-                  onChange={handleInputChange}
-                />
-              </div>
-              <div>
-                <p>Phone Number</p>
-                <input
-                  type="text"
-                  placeholder="Phone Number"
-                  name="phone"
-                  value={newStudent.phone}
-                  onChange={handleInputChange}
-                />
-              </div>
-            </div>
-            <div className={styles.formGroup}>
-              <div>
-                <p>Gender</p>
-                <select
-                  className={styles.studentGt}
-                  name="gender"
-                  value={newStudent.gender}
-                  onChange={handleInputChange}
-                >
-                  <option value="Male">Male</option>
-                  <option value="Female">Female</option>
-                  <option value="Other">Other</option>
-                </select>
-              </div>
-              <div>
-                <p>Contact Address</p>
-                <input
-                  type="text"
-                  placeholder="Contact Address"
-                  name="address"
-                  value={newStudent.address}
-                  onChange={handleInputChange}
-                />
-              </div>
-              <div>
-                <p>Email Address</p>
-                <input
-                  type="email"
-                  placeholder="Email Address"
-                  name="email"
-                  value={newStudent.email}
-                  onChange={handleInputChange}
-                />
-              </div>
-            </div>
-            <div className={styles.formGroup}>
-              <div>
-                <p>Student ID</p>
-                <input
-                  type="text"
-                  placeholder="Student ID"
-                  name="student_code"
-                  value={newStudent.student_code}
-                  onChange={handleInputChange}
-                />
-              </div>
-              <div>
-                <p>Faculty</p>
-                <select
-                  name="faculty_id"
-                  value={newStudent.faculty_id}
-                  onChange={handleInputChange}
-                >
-                  {faculties.map((faculty) => (
-                    <option key={faculty.id} value={faculty.id}>
-                      {faculty.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <p>Batch</p>
-                <input
-                  type="text"
-                  placeholder="Batch"
-                  name="batch"
-                  value={newStudent.batch}
-                  onChange={handleInputChange}
-                />
-              </div>
-            </div>
-            <div className={styles.formGroup}>
-              <div>
-                <p>Program</p>
-                <input
-                  type="text"
-                  placeholder="Program"
-                  name="program"
-                  value={newStudent.program}
-                  onChange={handleInputChange}
-                />
-              </div>
-              <div className={styles.studentStatus}>
-                <p>Student Status</p>
-                <select
-                  name="status_id"
-                  value={newStudent.status_id}
-                  onChange={handleInputChange}
-                >
-                  {statuses.map((status) => (
-                    <option key={status.id} value={status.id}>
-                      {status.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-            <button
-              className={styles.popUpAddStudent}
-              onClick={handleAddStudent}
-            >
-              Add
-            </button>
-          </div>
-        </div>
+        <AddStudentPopUp 
+          isOpen={isPopUpOpened}
+          onClose={handleClosePopUp}
+          onCreate={handleAddStudent}
+          newStudent={newStudent}
+          onInputChange={handleInputChange}
+          faculties={faculties}
+          statuses={statuses}
+        />
       )}
     </>
   );
