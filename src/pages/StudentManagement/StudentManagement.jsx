@@ -13,6 +13,7 @@ import {
   sortStudent,
   searchStudentByID,
   createAStudent,
+  getStudentByNameAndFacutly
 } from "../../services/studentManagementService";
 
 function StudentManagement() {
@@ -24,10 +25,10 @@ function StudentManagement() {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [students, setStudents] = useState([]);
-  const [isFilterOpen,setIsFilterOpen] = useState(false);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [sortField, setSortField] = useState("");
-  const [facultyFilter,setFacultyFilter] = useState(0);
+  const [facultyFilter, setFacultyFilter] = useState("");
   const [sortOrder, setSortOrder] = useState("");
   const [newStudent, setNewStudent] = useState({
     fullname: "",
@@ -42,59 +43,132 @@ function StudentManagement() {
     program: "",
     status_id: "",
     user_id: "",
+    nationality: "Vietnamese",
+    // Địa chỉ (3 loại)
+    addresses: [
+      {
+        address_type: "Permanent",
+        street: "",
+        ward: "",
+        district: "",
+        city: "",
+        country: "Vietnam",
+      },
+      {
+        address_type: "Temporary",
+        street: "",
+        ward: "",
+        district: "",
+        city: "",
+        country: "Vietnam",
+      },
+      {
+        address_type: "Mailing",
+        street: "",
+        ward: "",
+        district: "",
+        city: "",
+        country: "Vietnam",
+      }
+    ],
 
-    // Địa chỉ thường trú
-  permanent_address: {
-    street: "",
-    ward: "",
-    district: "",
-    city: "",
-    country: "",
-  },
-
-  // Địa chỉ tạm trú
-  temp_address: {
-    street: "",
-    ward: "",
-    district: "",
-    city: "",
-    country: "",
-  },
-
-  // Địa chỉ nhận thư
-  mailing_address: {
-    street: "",
-    ward: "",
-    district: "",
-    city: "",
-    country: "",
-  },
-
-  // Danh sách giấy tờ tùy thân
-  id_documents: [
-    {
-      id: "",
-      document_type: "",
-      document_number: "",
-      issue_date: "",
-      issue_place: "",
-      expiry_date: "",
-      country_of_issue: "",
-      has_chip: false,
-      notes: null,
-    },
-  ]
+    // Giấy tờ tùy thân (3 loại)
+    id_documents: [
+      {
+        id: "",
+        document_type: "CCCD",
+        document_number: "",
+        issue_date: "",
+        issue_place: "",
+        expiry_date: "",
+        country_of_issue: "Vietnam",
+        has_chip: false,
+        notes: null,
+      },
+      {
+        id: "",
+        document_type: "CMND",
+        document_number: "",
+        issue_date: "",
+        issue_place: "",
+        expiry_date: "",
+        country_of_issue: "Vietnam",
+        has_chip: false,
+        notes: null,
+      },
+      {
+        id: "",
+        document_type: "Passpory",
+        document_number: "",
+        issue_date: "",
+        issue_place: "",
+        expiry_date: "",
+        country_of_issue: "Vietnam",
+        has_chip: false,
+        notes: null,
+      }
+    ]
   });
 
   // Hàm tính tổng số trang
   const getTotalPages = (total, pageSize) => Math.ceil(total / pageSize);
 
-  // useEffect để tìm kiếm và sắp xếp sinh viên
+
+  useEffect(() => {
+    const delayDebounce = setTimeout(async () => {
+      try {
+        //Trường hợp tìm kiếm theo student ID
+        if (/^\d+$/.test(searchText)) {
+          const data = await searchStudentByID(searchText, page, 10);
+          if (data && data.items) {
+            const studentsWithFacultyName = data.items.map((student) => {
+              const faculty = faculties.find(
+                (faculty) => faculty.id === student.faculty_id
+              );
+              return {
+                ...student,
+                faculty_name: faculty ? faculty.name : "Unknown",
+              };
+            });
+            setStudents(studentsWithFacultyName);
+            setTotalPages(getTotalPages(data.total, 10));
+          } else {
+            setStudents([]);
+          }
+        }
+        //Trường hợp tìm kiếm theo khoa hoặc theo tên
+        else if (facultyFilter.trim() !== "" || searchText.trim() !== "") {
+          const data = await getStudentByNameAndFacutly(searchText, page, 10, facultyFilter);
+          if (data) {
+            const studentsWithFacultyName = data.items.map((student) => {
+              const faculty = faculties.find(
+                (faculty) => faculty.id === student.faculty_id
+              );
+              return {
+                ...student,
+                faculty_name: faculty ? faculty.name : "Unknown",
+              };
+            });
+            setStudents(studentsWithFacultyName);
+            setTotalPages(getTotalPages(data.total, 10));
+          } else {
+            setStudents([]);
+          }
+
+        }
+      } catch (error) {
+        console.error("Error searching students:", error);
+        setStudents([]);
+      }
+    }, 500);
+
+    return () => clearTimeout(delayDebounce);
+  }, [searchText, page, facultyFilter]);
+
   useEffect(() => {
     const delayDebounce = setTimeout(async () => {
       try {
         if (searchText.trim() === "") {
-          // Nếu không tìm kiếm nhưng có sort, thì gọi API sort
           if (sortField.trim() !== "") {
             const data = await sortStudent(sortField, sortOrder, page, 10);
             if (data) {
@@ -113,47 +187,8 @@ function StudentManagement() {
               setStudents([]);
             }
           } else {
-            // Nếu không có search và không có sort => lấy toàn bộ sinh viên
             const data = await getStudents(page, 10);
             if (data) {
-              const studentsWithFacultyName = data.items.map((student) => {
-                const faculty = faculties.find(
-                  (faculty) => faculty.id === student.faculty_id
-                );
-                return {
-                  ...student,
-                  faculty_name: faculty ? faculty.name : "Unknown",
-                };
-              });
-              setStudents(studentsWithFacultyName);
-              setTotalPages(getTotalPages(data.total, 10));
-            } else {
-              setStudents([]);
-            }
-          }
-        }
-        // Nếu có tìm kiếm
-        else {
-          if (/^\d+$/.test(searchText)) {
-            const data = await searchStudentByID(searchText, page, 10);
-            if (data && data.items) {
-              const studentsWithFacultyName = data.items.map((student) => {
-                const faculty = faculties.find(
-                  (faculty) => faculty.id === student.faculty_id
-                );
-                return {
-                  ...student,
-                  faculty_name: faculty ? faculty.name : "Unknown",
-                };
-              });
-              setStudents(studentsWithFacultyName);
-              setTotalPages(getTotalPages(data.total, 10));
-            } else {
-              setStudents([]);
-            }
-          } else {
-            const data = await getStudentByFullName(searchText, page, 10);
-            if (data && data.items) {
               const studentsWithFacultyName = data.items.map((student) => {
                 const faculty = faculties.find(
                   (faculty) => faculty.id === student.faculty_id
@@ -334,14 +369,38 @@ function StudentManagement() {
     }
   };
   const handleFilterByFaculty = (e) => {
-    setFacultyFilter(e.target.selectedIndex);
-    console.log("Selected Faculty ID: ",facultyFilter);
+    setFacultyFilter(e.target.value);
   }
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setNewStudent((prev) => ({
       ...prev,
       [name]: value,
+    }));
+  };
+
+  const handleInputAddressChange = (e, addressType) => {
+    const { name, value } = e.target;
+
+    setNewStudent((prev) => ({
+      ...prev,
+      addresses: prev.addresses.map((address) =>
+        address.address_type === addressType
+          ? { ...address, [name]: value }
+          : address
+      ),
+    }));
+  };
+  const handleInputDocumentChange = (e, docType) => {
+    const { name, value } = e.target;
+
+    setNewStudent((prev) => ({
+      ...prev,
+      id_documents: prev.id_documents.map((document) =>
+        document.document_type === docType
+          ? { ...document, [name]: value }
+          : document
+      ),
     }));
   };
   const handleOpenFilter = () => {
@@ -395,6 +454,12 @@ function StudentManagement() {
       "fullname",
       "date_of_birth",
       "phone",
+      "document_type",
+      "document_number",
+      "issue_date",
+      "issue_expiry",
+      "issue_place",
+
       "gender",
       "email",
       "student_code",
@@ -470,112 +535,113 @@ function StudentManagement() {
             Add Student
           </button>
         </div>
-        
+
         <div className={styles.searchFilter}>
+          <button onClick={handleOpenFilter} className={styles.filterDrop}>
+            <i className='bx bx-filter-alt'></i>
+          </button>
           <input
             onChange={handleSearchStudent}
             type="text"
             className={styles.searchInput}
             placeholder="Search..."
           />
-          <button  onClick={handleOpenFilter} className={styles.filterDrop}>
-            <i class='bx bx-filter-alt'></i>
-          </button>
+
           {isFilterOpen && (
             <div className={styles.filterPopup}>
               <div className={styles.filterSection}>
                 <h4>Sort by</h4>
                 <div className={styles.radioGroup}>
                   <label>
-                    <input 
-                      type="radio" 
-                      name="sort" 
-                      value="name-asc" 
+                    <input
+                      type="radio"
+                      name="sort"
+                      value="name-asc"
                       checked={sortField === "fullname" && sortOrder === "asc"}
                       onChange={() => {
                         setSortField("fullname");
                         setSortOrder("asc");
-                      }} 
+                      }}
                     />
                     Name (A-Z)
                   </label>
                   <label>
-                    <input 
-                      type="radio" 
-                      name="sort" 
-                      value="name-desc" 
+                    <input
+                      type="radio"
+                      name="sort"
+                      value="name-desc"
                       checked={sortField === "fullname" && sortOrder === "desc"}
                       onChange={() => {
                         setSortField("fullname");
                         setSortOrder("desc");
-                      }} 
+                      }}
                     />
                     Name (Z-A)
                   </label>
                   <label>
-                    <input 
-                      type="radio" 
-                      name="sort" 
-                      value="id-asc" 
+                    <input
+                      type="radio"
+                      name="sort"
+                      value="id-asc"
                       checked={sortField === "student_code" && sortOrder === "asc"}
                       onChange={() => {
                         setSortField("student_code");
                         setSortOrder("asc");
-                      }} 
+                      }}
                     />
                     Student ID (Ascending)
                   </label>
                   <label>
-                    <input 
-                      type="radio" 
-                      name="sort" 
-                      value="id-desc" 
+                    <input
+                      type="radio"
+                      name="sort"
+                      value="id-desc"
                       checked={sortField === "student_code" && sortOrder === "desc"}
                       onChange={() => {
                         setSortField("student_code");
                         setSortOrder("desc");
-                      }} 
+                      }}
                     />
                     Student ID (Descending)
                   </label>
                 </div>
               </div>
-              
+
               <div className={styles.filterSection}>
                 <h4>Faculty</h4>
                 <div className={styles.radioGroup}>
                   <label>
-                    <input 
-                      type="radio" 
-                      name="faculty" 
-                      value="0" 
-                      checked={facultyFilter === 0}
-                      onChange={() => setFacultyFilter(0)} 
+                    <input
+                      type="radio"
+                      name="faculty"
+                      value=""
+                      checked={facultyFilter === ""}
+                      onChange={handleFilterByFaculty}
                     />
                     All Faculties
                   </label>
-                  {faculties.map((faculty, index) => (
+                  {faculties.map((faculty) => (
                     <label key={faculty.id}>
-                      <input 
-                        type="radio" 
-                        name="faculty" 
-                        value={faculty.id} 
-                        checked={facultyFilter === index + 1}
-                        onChange={() => setFacultyFilter(index + 1)} 
+                      <input
+                        type="radio"
+                        name="faculty"
+                        value={faculty.name}
+                        checked={facultyFilter === faculty.name}
+                        onChange={handleFilterByFaculty}
                       />
                       {faculty.name}
                     </label>
                   ))}
                 </div>
               </div>
-              
+
               <div className={styles.filterActions}>
-                <button 
+                <button
                   className={styles.clearFilterBtn}
                   onClick={() => {
                     setSortField("");
                     setSortOrder("");
-                    setFacultyFilter(0);
+                    setFacultyFilter("");
                     setIsFilterOpen(false);
                   }}
                 >
@@ -614,12 +680,13 @@ function StudentManagement() {
       />
 
       {isPopUpOpened && (
-        <AddStudentPopUp 
+        <AddStudentPopUp
           isOpen={isPopUpOpened}
           onClose={handleClosePopUp}
           onCreate={handleAddStudent}
           newStudent={newStudent}
           onInputChange={handleInputChange}
+          onInputAddressChange={handleInputAddressChange}
           faculties={faculties}
           statuses={statuses}
         />

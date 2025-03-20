@@ -9,11 +9,12 @@ function AddStudentPopUp({
   onCreate,
   newStudent,
   onInputChange,
+  onInputAddressChange,
   faculties,
   statuses,
 }) {
   const [currentStep, setCurrentStep] = useState(1);
-  const totalSteps = 3;
+  const totalSteps = 4;
 
   if (!isOpen) return null;
 
@@ -41,20 +42,19 @@ function AddStudentPopUp({
     return (
       <div className={styles.stepIndicator}>
         <div className={styles.stepperContainer}>
-          {[1, 2, 3].map((step) => (
+          {[1, 2, 3, 4].map((step) => (
             <div key={step} className={styles.stepperItem}>
               <div
-                className={`${styles.stepCircle} ${
-                  currentStep >= step ? styles.activeStep : ""
-                }`}
+                className={`${styles.stepCircle} ${currentStep >= step ? styles.activeStep : ""
+                  }`}
               >
                 {step}
               </div>
-              {step < 3 && <div className={styles.stepLine}></div>}
+              {step < 4 && <div className={styles.stepLine}></div>}
             </div>
           ))}
         </div>
-        
+
       </div>
     );
   };
@@ -94,61 +94,7 @@ function AddStudentPopUp({
             />
           </div>
         </div>
-        <div className={styles.formGroup}>
-          <div>
-            <p>ID Type</p>
-            <select
-              className={styles.studentGt}
-              name="document_type"
-              value={newStudent.document_type}
-              onChange={onInputChange}
-            >
-              <option value="Passport">Passport</option>
-              <option value="CCCD">CCCD</option>
-              <option value="CMND">CMND</option>
-            </select>
-          </div>
-          <div>
-            <p>ID Number</p>
-            <input
-              type="text"
-              placeholder="ID Number"
-              name="document_number"
-              value={newStudent.id_documents.document_number}
-              onChange={onInputChange}
-            />
-          </div>
-          <div>
-            <p>Issue Date</p>
-            <input
-              type="date"
-              placeholder="Issue Date"
-              name="issue_date"
-              value={newStudent.id_documents.issue_date}
-              onChange={onInputChange}
-            />
-          </div>
-          <div>
-            <p>Expiry Date</p>
-            <input
-              type="date"
-              placeholder="Expiry Date"
-              name="issue_expiry"
-              value={newStudent.id_documents.issue_expiry}
-              onChange={onInputChange}
-            />
-          </div>
-          <div>
-            <p>Issue Place</p>
-            <input
-              type="text"
-              placeholder="Issue Place"
-              name="issue_place"
-              value={newStudent.id_documents.issue_place}
-              onChange={onInputChange}
-            />
-          </div>
-        </div>
+
         <div className={styles.formGroup}>
           <div>
             <p>Gender</p>
@@ -177,171 +123,154 @@ function AddStudentPopUp({
       </>
     );
   };
+  const renderDocumentIDStep = () => {
+    return (
+      <>
+        {newStudent.id_documents.map((document, index) => (
+          <div key={index}>
+            <p>{document.document_type || `Document ${index + 1}`}</p>
+            <div className={styles.formGroup}>
+              <div>
+                <p>ID Number</p>
+                <input
+                  type="text"
+                  placeholder="ID Number"
+                  name="document_number"
+                  value={document.document_number}
+                  onChange={(e) => onInputChange(e, document.document_type)}
+                />
+              </div>
+              <div>
+                <p>Issue Date</p>
+                <input
+                  type="date"
+                  name="issue_date"
+                  value={document.issue_date}
+                  onChange={(e) => onInputChange(e, document.document_type)}
+                />
+              </div>
+              <div>
+                <p>Expiry Date</p>
+                <input
+                  type="date"
+                  name="expiry_date"
+                  value={document.expiry_date}
+                  onChange={(e) => onInputChange(e, document.document_type)}
+                />
+              </div>
+              <div>
+                <p>Issue Place</p>
+                <input
+                  type="text"
+                  placeholder="Issue Place"
+                  name="issue_place"
+                  value={document.issue_place}
+                  onChange={(e) => onInputChange(e, document.document_type)}
+                />
+              </div>
+              <div>
+                <p>Country Of Issue</p>
+                <input
+                  type="text"
+                  placeholder="Country of Issue"
+                  name="country_of_issue"
+                  value={document.country_of_issue}
+                  onChange={(e) => onInputChange(e, document.document_type)}
+                />
+              </div>
+              <div>
+                <p>Notes</p>
+                <input
+                  type="text"
+                  placeholder="Notes"
+                  name="notes"
+                  value={document.notes || ""}
+                  onChange={(e) => onInputChange(e, document.document_type)}
+                />
+              </div>
+              <div className={styles.chipCheck}>
+                <input
+                  type="checkbox"
+                  name="has_chip"
+                  checked={document.has_chip}
+                  onChange={(e) =>
+                    onInputChange({
+                      target: {
+                        name: "has_chip",
+                        value: e.target.checked,
+                      },
+                    }, document.document_type)
+                  }
+                />
+                Has chip?
+              </div>
+            </div>
+          </div>
+        ))}
+      </>
+    );
+  };
 
   const renderAddressesStep = () => {
     return (
       <>
-        <p>Permanent Address</p>
-        <div className={styles.formGroup}>
-          <div>
-            <p>Country</p>
-            <input
-              type="text"
-              placeholder="Country"
-              name="country"
-              value={newStudent.permanent_address.country}
-              onChange={onInputChange}
-            />
+        {newStudent.addresses.map((address, index) => (
+          <div key={index}>
+            <p>{address.address_type} Address</p>
+            <div className={styles.formGroup}>
+              <div>
+                <p>Country</p>
+                <input
+                  type="text"
+                  placeholder="Country"
+                  name="country"
+                  value={address.country}
+                  onChange={(e) => handleInputAddressChange(e, address.address_type)}
+                />
+              </div>
+              <div>
+                <p>City</p>
+                <input
+                  type="text"
+                  placeholder="City"
+                  name="city"
+                  value={address.city}
+                  onChange={(e) => handleInputAddressChange(e, address.address_type)}
+                />
+              </div>
+              <div>
+                <p>District</p>
+                <input
+                  type="text"
+                  placeholder="District"
+                  name="district"
+                  value={address.district}
+                  onChange={(e) => handleInputAddressChange(e, address.address_type)}
+                />
+              </div>
+              <div>
+                <p>Ward</p>
+                <input
+                  type="text"
+                  placeholder="Ward"
+                  name="ward"
+                  value={address.ward}
+                  onChange={(e) => handleInputAddressChange(e, address.address_type)}
+                />
+              </div>
+              <div>
+                <p>Street</p>
+                <input
+                  type="text"
+                  placeholder="Street"
+                  name="street"
+                  value={address.street}
+                  onChange={(e) => handleInputAddressChange(e, address.address_type)}
+                />
+              </div>
+            </div>
           </div>
-          <div>
-            <p>City</p>
-            <input
-              type="text"
-              placeholder="City"
-              name="city"
-              value={newStudent.permanent_address.city}
-              onChange={onInputChange}
-            />
-          </div>
-          <div>
-            <p>District</p>
-            <input
-              type="text"
-              placeholder="District"
-              name="district"
-              value={newStudent.permanent_address.district}
-              onChange={onInputChange}
-            />
-          </div>
-          <div>
-            <p>Ward</p>
-            <input
-              type="text"
-              placeholder="Ward"
-              name="ward"
-              value={newStudent.permanent_address.ward}
-              onChange={onInputChange}
-            />
-          </div>
-          <div>
-            <p>Street</p>
-            <input
-              type="text"
-              placeholder="Street"
-              name="street"
-              value={newStudent.permanent_address.street}
-              onChange={onInputChange}
-            />
-          </div>
-        </div>
-
-        <p>Temporary Address</p>
-        <div className={styles.formGroup}>
-          <div>
-            <p>Country</p>
-            <input
-              type="text"
-              placeholder="Country"
-              name="country"
-              value={newStudent.temp_address.country}
-              onChange={onInputChange}
-            />
-          </div>
-          <div>
-            <p>City</p>
-            <input
-              type="text"
-              placeholder="City"
-              name="city"
-              value={newStudent.temp_address.city}
-              onChange={onInputChange}
-            />
-          </div>
-          <div>
-            <p>District</p>
-            <input
-              type="text"
-              placeholder="District"
-              name="district"
-              value={newStudent.temp_address.district}
-              onChange={onInputChange}
-            />
-          </div>
-          <div>
-            <p>Ward</p>
-            <input
-              type="text"
-              placeholder="Ward"
-              name="ward"
-              value={newStudent.temp_address.ward}
-              onChange={onInputChange}
-            />
-          </div>
-          <div>
-            <p>Street</p>
-            <input
-              type="text"
-              placeholder="Street"
-              name="street"
-              value={newStudent.temp_address.street}
-              onChange={onInputChange}
-            />
-          </div>
-        </div>
-
-        <p>Mailing Address</p>
-        <div className={styles.formGroup}>
-          <div>
-            <p>Country</p>
-            <input
-              type="text"
-              placeholder="Country"
-              name="country"
-              value={newStudent.mailing_address.country}
-              onChange={onInputChange}
-            />
-          </div>
-          <div>
-            <p>City</p>
-            <input
-              type="text"
-              placeholder="City"
-              name="city"
-              value={newStudent.mailing_address.city}
-              onChange={onInputChange}
-            />
-          </div>
-          <div>
-            <p>District</p>
-            <input
-              type="text"
-              placeholder="District"
-              name="district"
-              value={newStudent.mailing_address.district}
-              onChange={onInputChange}
-            />
-          </div>
-          <div>
-            <p>Ward</p>
-            <input
-              type="text"
-              placeholder="Ward"
-              name="ward"
-              value={newStudent.mailing_address.ward}
-              onChange={onInputChange}
-            />
-          </div>
-          <div>
-            <p>Street</p>
-            <input
-              type="text"
-              placeholder="Street"
-              name="street"
-              value={newStudent.mailing_address.street}
-              onChange={onInputChange}
-            />
-          </div>
-        </div>
+        ))}
       </>
     );
   };
@@ -351,16 +280,16 @@ function AddStudentPopUp({
       <>
         <div className={styles.formGroup}>
           <div>
-              <p>Student ID</p>
-              <input
-                type="text"
-                placeholder="Student ID"
-                name="student_code"
-                value={newStudent.student_code}
-                onChange={onInputChange}
-              />
-            </div>
-            <div>
+            <p>Student ID</p>
+            <input
+              type="text"
+              placeholder="Student ID"
+              name="student_code"
+              value={newStudent.student_code}
+              onChange={onInputChange}
+            />
+          </div>
+          <div>
             <p>Batch</p>
             <input
               type="text"
@@ -418,8 +347,10 @@ function AddStudentPopUp({
       case 1:
         return renderPersonalInfoStep();
       case 2:
-        return renderAddressesStep();
+        return renderDocumentIDStep();
       case 3:
+        return renderAddressesStep();
+      case 4:
         return renderAcademicInfoStep();
       default:
         return null;

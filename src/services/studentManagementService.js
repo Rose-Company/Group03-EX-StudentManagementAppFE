@@ -11,13 +11,43 @@ export const createAStudent = async (studentData) => {
       faculty_id: parseInt(studentData.faculty_id),
       batch: studentData.batch,
       program: studentData.program,
-      address: studentData.address,
+      program_id: parseInt(studentData.program_id),
+      address: studentData.address, // Thêm địa chỉ mặc định
       email: studentData.email,
       phone: studentData.phone,
       status_id: parseInt(studentData.status_id),
+      nationality: studentData.nationality,
+      addresses: [
+        {
+          address_type: "Permanent",
+          street: studentData.permanent_address.street,
+          ward: studentData.permanent_address.ward,
+          district: studentData.permanent_address.district,
+          city: studentData.permanent_address.city,
+          country: studentData.permanent_address.country,
+        },
+        {
+          address_type: "Temporary",
+          street: studentData.temp_address.street,
+          ward: studentData.temp_address.ward,
+          district: studentData.temp_address.district,
+          city: studentData.temp_address.city,
+          country: studentData.temp_address.country,
+        }
+      ],
+      documents:{
+        document_type: studentData.id_documents.document_type,
+        document_number: studentData.id_documents.document_number,
+        issue_date: new Date(studentData.id_documents.issue_date).toISOString(),
+        issue_place: studentData.id_documents.issue_place,
+        expiry_date: new Date(studentData.id_documents.expiry_date).toISOString(),
+        country_of_issue: studentData.id_documents.country_of_issue,
+        has_chip: studentData.id_documents.has_chip,
+        notes: studentData.id_documents.notes || null
+      }
     };
-
-    const response = await api.post("/v1/students/create", requestData);
+    console.log("Request Data:", JSON.stringify(requestData, null, 2));
+    //const response = await api.post("/v1/students/create", requestData);
 
     if (response.data.code === 400) {
       throw new Error(response.data.message || "Bad request");
@@ -26,12 +56,10 @@ export const createAStudent = async (studentData) => {
     return response.data;
   } catch (error) {
     console.error("API Error:", error.response?.data || error.message);
-    if (error.response?.data) {
-      console.error("Detailed error:", error.response.data);
-    }
     throw error;
   }
 };
+
 
 // Search student by ID
 export const searchStudentByID = async (id, page, pageSize) => {
@@ -81,6 +109,27 @@ export const getStudentByFullName = async (
   } catch (error) {
     console.error("Error fetching student by fullname:", error);
     return null;
+  }
+};
+
+//Get student by name, faculty
+export const getStudentByNameAndFacutly = async (
+  fullname,
+  page=1,
+  pageSize = 10,
+  faculty_name,
+) => {
+  try{
+    const response = await api.get("/v1/students", {
+      params: {
+        
+        faculty_name,fullname
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching student by fullname:", error);
+  return null;
   }
 };
 

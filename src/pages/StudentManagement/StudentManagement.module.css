@@ -81,7 +81,7 @@ body {
   display: flex;
   width: 100%;
   align-items: center;
-  justify-content: space-between;
+  justify-content: start;
   gap: 16px;
   background-color: white;
   padding: 16px 20px;
@@ -115,9 +115,9 @@ body {
   max-width: 600px;
 }
 
-.filterContainer {
+/* .filterContainer {
   position: relative;
-}
+} */
 
 .filterDrop {
   background-color: #f8f9fa;
@@ -184,7 +184,7 @@ body {
   width: 100%;
   font-size: 14px;
   border-collapse: collapse;
-  min-width: 700px;
+  min-width: 750px;
   table-layout: fixed; /* Add fixed table layout for better column control */
 }
 
@@ -301,10 +301,11 @@ body {
 
 /* Filter popup - UPDATED */
 .filterPopup {
-  position: fixed;
   z-index: 1000;
-  top: 290px; /* Position it right below the filter button */
-  right: 0; /* Align with the left edge of the filter container */
+  position:absolute;
+  top: 290px;
+   /* Position it right below the filter button */
+   /* Align with the left edge of the filter container */
   width: 280px;
   background-color: white;
   border-radius: 8px;
