@@ -428,13 +428,15 @@
 
   .loadingSpinner {
     display: flex;
+    justify-content: center;
     align-items: center;
     gap: 8px;
   }
 
   .spinnerIcon {
-    width: 20px;
-    height: 20px;
+    width: 48px;
+    height: 48px;
+    fill: #2196f3;
     animation: spin 1s linear infinite;
   }
 
@@ -459,31 +461,21 @@
   .uploadLoading h3 {
     color: #1976d2;
     margin: 16px 0 8px;
+    font-size: 1.2rem;
   }
 
   .uploadLoading p {
     color: #666;
     margin: 8px 0;
+    font-size: 0.9rem;
   }
 
-  .loadingSpinner {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  /* Button loading state */
+  .confirmBtn:disabled .loadingSpinner {
+    opacity: 0.8;
   }
 
-  .spinnerIcon {
-    width: 48px;
-    height: 48px;
-    fill: #2196f3;
-    animation: spin 1s linear infinite;
-  }
-
-  @keyframes spin {
-    from {
-      transform: rotate(0deg);
-    }
-    to {
-      transform: rotate(360deg);
-    }
+  .confirmBtn:disabled .spinnerIcon {
+    width: 20px;
+    height: 20px;
   }

@@ -14,6 +14,7 @@ const UploadModal = ({ isOpen, onClose }) => {
   const [fileData, setFileData] = useState(null);
   const [importErrors, setImportErrors] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [loadingText, setLoadingText] = useState("");
 
   if (!isOpen) return null;
 
@@ -25,6 +26,24 @@ const UploadModal = ({ isOpen, onClose }) => {
     setErrorMessage("");
     setFileData(null);
     setImportErrors(null);
+    setLoadingText("");
+  };
+
+  // Toast configuration
+  const showToast = (type, message) => {
+    toast[type](message, {
+      position: "top-right",
+      autoClose: type === 'success' ? 3000 : 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      theme: "colored",
+      style: {
+        backgroundColor: type === 'success' ? '#4caf50' : '#f44336',
+        color: 'white',
+      }
+    });
   };
 
   // 3. Validation functions
@@ -69,7 +88,8 @@ const UploadModal = ({ isOpen, onClose }) => {
     
     if (file && validateFile(file)) {
       setSelectedFile(file);
-      setIsLoading(true); // Bắt đầu loading
+      setIsLoading(true);
+      setLoadingText("Đang tải file lên...");
       try {
         console.log("handleDrop - Uploading file...");
         const response = await uploadFile(file);
@@ -82,10 +102,7 @@ const UploadModal = ({ isOpen, onClose }) => {
             file_name: response.file_name,
           });
           setUploadStatus('success');
-          toast.success('🎉 Tải file lên thành công!', {
-            position: "top-right",
-            autoClose: 2000,
-          });
+          showToast('success', '🎉 Tải file lên thành công!');
         } else {
           console.log("handleDrop - Response structure:", response);
           throw new Error("Không nhận được download URL");
@@ -94,12 +111,10 @@ const UploadModal = ({ isOpen, onClose }) => {
         console.error("handleDrop - Upload error:", error);
         setUploadStatus('error');
         setErrorMessage("Lỗi khi tải lên file");
-        toast.error('❌ Lỗi khi tải file lên', {
-          position: "top-right",
-          autoClose: 3000,
-        });
+        showToast('error', '❌ Lỗi khi tải file lên');
       } finally {
-        setIsLoading(false); // Kết thúc loading
+        setIsLoading(false);
+        setLoadingText("");
       }
     }
   };
@@ -110,7 +125,8 @@ const UploadModal = ({ isOpen, onClose }) => {
     
     if (file && validateFile(file)) {
       setSelectedFile(file);
-      setIsLoading(true); // Bắt đầu loading
+      setIsLoading(true);
+      setLoadingText("Đang tải file lên...");
       try {
         console.log("handleFileChange - Uploading file...");
         const response = await uploadFile(file);
@@ -123,10 +139,7 @@ const UploadModal = ({ isOpen, onClose }) => {
             file_name: response.file_name,
           });
           setUploadStatus('success');
-          toast.success('🎉 Tải file lên thành công!', {
-            position: "top-right",
-            autoClose: 2000,
-          });
+          showToast('success', '🎉 Tải file lên thành công!');
         } else {
           console.log("handleFileChange - Response structure:", response);
           throw new Error("Không nhận được download URL");
@@ -135,12 +148,10 @@ const UploadModal = ({ isOpen, onClose }) => {
         console.error("handleFileChange - Upload error:", error);
         setUploadStatus('error');
         setErrorMessage("Lỗi khi tải lên file");
-        toast.error('❌ Lỗi khi tải file lên', {
-          position: "top-right",
-          autoClose: 3000,
-        });
+        showToast('error', '❌ Lỗi khi tải file lên');
       } finally {
-        setIsLoading(false); // Kết thúc loading
+        setIsLoading(false);
+        setLoadingText("");
       }
     }
   };
@@ -153,11 +164,11 @@ const UploadModal = ({ isOpen, onClose }) => {
     }
   
     try {
-      setIsLoading(true); // Bắt đầu loading
+      setIsLoading(true);
+      setLoadingText("Đang xử lý import...");
       const response = await confirmFileImport(fileData.download_url);
       console.log("API Response:", response);
 
-      // Kiểm tra nếu có lỗi import
       if (response.data && response.data.failed_records && response.data.failed_records.length > 0) {
         const { successful_count, failed_count, failed_records } = response.data;
         setImportErrors(response.data);
@@ -166,21 +177,7 @@ const UploadModal = ({ isOpen, onClose }) => {
         return;
       }
       
-      // Nếu không có lỗi, xem như import thành công
-      toast.success('🎉 Import sinh viên thành công!', {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        theme: "colored",
-        style: {
-          backgroundColor: '#4caf50',
-          color: 'white',
-        }
-      });
-      
+      showToast('success', '🎉 Import sinh viên thành công!');
       resetModalState();
       onClose();
 
@@ -190,28 +187,13 @@ const UploadModal = ({ isOpen, onClose }) => {
       
       if (error.response?.data?.data?.failed_records) {
         setImportErrors(error.response.data.data);
-        toast.error('❌ Có lỗi xảy ra khi import sinh viên', {
-          position: "top-right",
-          autoClose: 5000,
-          theme: "colored",
-          style: {
-            backgroundColor: '#f44336',
-            color: 'white',
-          }
-        });
+        showToast('error', '❌ Có lỗi xảy ra khi import sinh viên');
       } else {
-        toast.error(error.response?.data?.message || '❌ Lỗi kết nối server', {
-          position: "top-right",
-          autoClose: 5000,
-          theme: "colored",
-          style: {
-            backgroundColor: '#f44336',
-            color: 'white',
-          }
-        });
+        showToast('error', error.response?.data?.message || '❌ Lỗi kết nối server');
       }
     } finally {
       setIsLoading(false);
+      setLoadingText("");
     }
   };
   
@@ -287,19 +269,21 @@ const UploadModal = ({ isOpen, onClose }) => {
     </div>
   );
 
+  const renderLoadingState = () => (
+    <div className={styles.uploadLoading}>
+      <div className={styles.loadingSpinner}>
+        <svg className={styles.spinnerIcon} viewBox="0 0 24 24">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/>
+        </svg>
+      </div>
+      <h3>{loadingText}</h3>
+      <p>Vui lòng đợi trong giây lát</p>
+    </div>
+  );
+
   const renderUploadStatus = () => {
     if (isLoading) {
-      return (
-        <div className={styles.uploadLoading}>
-          <div className={styles.loadingSpinner}>
-            <svg className={styles.spinnerIcon} viewBox="0 0 24 24">
-              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/>
-            </svg>
-          </div>
-          <h3>Đang tải file lên...</h3>
-          <p>Vui lòng đợi trong giây lát</p>
-        </div>
-      );
+      return renderLoadingState();
     }
 
     if (uploadStatus === 'success') {
@@ -362,7 +346,7 @@ const UploadModal = ({ isOpen, onClose }) => {
     if (uploadStatus === 'success') {
       return (
         <>
-          <button className={styles.changeFileBtn} onClick={handleChangeFile}>
+          <button className={styles.changeFileBtn} onClick={handleChangeFile} disabled={isLoading}>
             Thay đổi tệp
           </button>
           <button 
@@ -375,7 +359,7 @@ const UploadModal = ({ isOpen, onClose }) => {
                 <svg className={styles.spinnerIcon} viewBox="0 0 24 24">
                   <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/>
                 </svg>
-                Đang xử lý...
+                {loadingText}
               </span>
             ) : (
               'Xác nhận giao dịch'
