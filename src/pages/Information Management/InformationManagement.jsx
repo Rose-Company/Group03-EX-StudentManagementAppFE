@@ -1,7 +1,7 @@
 import styles from "../Information Management/InformationManagement.module.css";
 import Table from "../../components/Table/Table";
 import { useEffect, useState } from "react";
-import { getFaculties, getStatuses, createFaculty, createStatus } from "../../services/informationManagementService";
+import { getFaculties, getStatuses, createFaculty, createStatus, updateFaculty, updateStatus } from "../../services/informationManagementService";
 
 function InformationManagement() {
     const [activeTab, setActiveTab] = useState("faculty");
@@ -70,6 +70,47 @@ function InformationManagement() {
         setEditStatus(null);
     };
 
+    // Xử lý lưu Faculty
+    const handleSaveFaculty = async () => {
+        try {
+            if (editFaculty) {
+                await updateFaculty(editFaculty.id, newFacultyName);
+            } else {
+                await createFaculty(newFacultyName);
+            }
+    
+            // Load lại danh sách Faculty sau khi cập nhật
+            const data = await getFaculties();
+            if (data.code === 200 && data.data?.items) {
+                setFaculties(data.data.items);
+            }
+            handleCloseModal();
+        } catch (error) {
+            console.error("Error saving faculty:", error);
+        }
+    };
+    
+    // Xử lý lưu Status
+    const handleSaveStatus = async () => {
+        try {
+            if (editStatus) {
+                await updateStatus(editStatus.id, newStatusName);
+            } else {
+                await createStatus(newStatusName);
+            }
+    
+            // Load lại danh sách Status sau khi cập nhật
+            const data = await getStatuses();
+            if (Array.isArray(data)) {
+                setStatuses(data);
+            }
+            handleCloseModal();
+        } catch (error) {
+            console.error("Error saving status:", error);
+        }
+    };
+    
+
     return (
         <div className={styles.managementContainer}>
             <div className={styles.tabs}>
@@ -112,7 +153,7 @@ function InformationManagement() {
                         </div>
                         <div className={styles.buttonGroup}>
                             <button className={styles.cancelButton} onClick={handleCloseModal}>Cancel</button>
-                            <button className={styles.addButton} disabled={!newFacultyName.trim()}>{editFaculty ? "Save" : "Add"}</button>
+                            <button className={styles.addButton} disabled={!newFacultyName.trim()} onClick={handleSaveFaculty}>{editFaculty ? "Save" : "Add"}</button>
                         </div>
                     </div>
                 </div>
@@ -129,7 +170,7 @@ function InformationManagement() {
                         </div>
                         <div className={styles.buttonGroup}>
                             <button className={styles.cancelButton} onClick={handleCloseModal}>Cancel</button>
-                            <button className={styles.addButton} disabled={!newStatusName.trim()}>{editStatus ? "Save" : "Add"}</button>
+                            <button className={styles.addButton} disabled={!newStatusName.trim()} onClick={handleSaveStatus}>{editStatus ? "Save" : "Add"}</button>
                         </div>
                     </div>
                 </div>
