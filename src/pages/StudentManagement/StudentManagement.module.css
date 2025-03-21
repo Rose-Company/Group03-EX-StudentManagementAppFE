@@ -22,7 +22,7 @@ body {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   max-width: 1200px;
   margin: 0 auto;
-  margin-top:50px;
+  margin-top: 50px;
 }
 
 .blurBackground {
@@ -224,13 +224,11 @@ body {
 }
 
 /* Column widths - UPDATED for better responsiveness */
-.studentTable th:nth-child(1)
-{
+.studentTable th:nth-child(1) {
   width: 30%; /* Name column */
 }
 
-.studentTable th:nth-child(2)
- {
+.studentTable th:nth-child(2) {
   width: 20%; /* Second column */
 }
 
@@ -242,7 +240,7 @@ body {
   width: 55%; /* Fourth column */
 }
 
-.studentTable th:nth-child(5){
+.studentTable th:nth-child(5) {
   width: 25%; /* Fifth column */
 }
 
@@ -302,10 +300,10 @@ body {
 /* Filter popup - UPDATED */
 .filterPopup {
   z-index: 1000;
-  position:absolute;
+  position: absolute;
   top: 290px;
-   /* Position it right below the filter button */
-   /* Align with the left edge of the filter container */
+  /* Position it right below the filter button */
+  /* Align with the left edge of the filter container */
   width: 280px;
   background-color: white;
   border-radius: 8px;
@@ -339,7 +337,8 @@ body {
   cursor: pointer;
 }
 
-.applyFilterBtn, .clearFilterBtn {
+.applyFilterBtn,
+.clearFilterBtn {
   padding: 10px 16px;
   border-radius: 6px;
   border: none;
@@ -371,35 +370,36 @@ body {
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
-  .managementContainer, .blurBackground {
+  .managementContainer,
+  .blurBackground {
     padding: 20px 16px;
   }
-  
+
   .topAction {
     flex-direction: column;
     gap: 16px;
     align-items: flex-start;
   }
-  
+
   .searchFilter {
     flex-direction: column;
     align-items: flex-start;
   }
-  
+
   .searchFilter .searchInput {
     width: 100%;
     max-width: 100%;
   }
-  
+
   .filterContainer {
     width: 100%;
   }
-  
+
   .filterDrop {
     width: 100%;
     justify-content: space-between;
   }
-  
+
   /* Ensure filter popup stays properly positioned on mobile */
   .filterPopup {
     width: 100%;
