@@ -45,7 +45,7 @@ Group03-EX-StudentManagementAppFE/
 │   │   ├── Login/                    # Login page
 │   │   │   ├── Login.jsx             # Login implementation
 │   │   │   └── Login.module.css      # Login styles
-│   │   ├── StudentManagement         # Student management page
+│   │   ├── StudentManagement/        # Student management page
 │   │   │   ├── StudentManagement.jsx # Student management implementation
 │   │   │   └── StudentManagement.module.css # Student management styles
 │   ├── services/                     # API services
