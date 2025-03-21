@@ -8,7 +8,6 @@ import {
   getFaculties,
   updateStudent,
   deleteStudent,
-  getStudentByFullName,
   getStatuses,
   sortStudent,
   searchStudentByID,
@@ -30,6 +29,24 @@ function StudentManagement() {
   const [sortField, setSortField] = useState("");
   const [facultyFilter, setFacultyFilter] = useState("");
   const [sortOrder, setSortOrder] = useState("");
+  const createAddress = () => ({
+    street: "",
+    ward: "",
+    district: "",
+    city: "",
+    country: "",
+  });
+  
+  const createDocument = () => ({
+    id: "",
+    document_number: "",
+    issue_date: "",
+    issue_place: "",
+    expiry_date: "",
+    country_of_issue: "",
+    has_chip: false,
+    notes: null,
+  });
   const [newStudent, setNewStudent] = useState({
     fullname: "",
     date_of_birth: "",
@@ -43,73 +60,17 @@ function StudentManagement() {
     program: "",
     status_id: "",
     user_id: "",
-    nationality: "Vietnamese",
-    // Địa chỉ (3 loại)
-    addresses: [
-      {
-        address_type: "Permanent",
-        street: "",
-        ward: "",
-        district: "",
-        city: "",
-        country: "Vietnam",
-      },
-      {
-        address_type: "Temporary",
-        street: "",
-        ward: "",
-        district: "",
-        city: "",
-        country: "Vietnam",
-      },
-      {
-        address_type: "Mailing",
-        street: "",
-        ward: "",
-        district: "",
-        city: "",
-        country: "Vietnam",
-      }
-    ],
-
-    // Giấy tờ tùy thân (3 loại)
-    id_documents: [
-      {
-        id: "",
-        document_type: "CCCD",
-        document_number: "",
-        issue_date: "",
-        issue_place: "",
-        expiry_date: "",
-        country_of_issue: "Vietnam",
-        has_chip: false,
-        notes: null,
-      },
-      {
-        id: "",
-        document_type: "CMND",
-        document_number: "",
-        issue_date: "",
-        issue_place: "",
-        expiry_date: "",
-        country_of_issue: "Vietnam",
-        has_chip: false,
-        notes: null,
-      },
-      {
-        id: "",
-        document_type: "Passpory",
-        document_number: "",
-        issue_date: "",
-        issue_place: "",
-        expiry_date: "",
-        country_of_issue: "Vietnam",
-        has_chip: false,
-        notes: null,
-      }
-    ]
+  
+    // Địa chỉ
+    permanent_address: createAddress(),
+    temp_address: createAddress(),
+    mailing_address: createAddress(),
+  
+    // Giấy tờ tùy thân
+    cccd: createDocument(),
+    cmnd: createDocument(),
+    passPort: createDocument(),
   });
-
   // Hàm tính tổng số trang
   const getTotalPages = (total, pageSize) => Math.ceil(total / pageSize);
 
@@ -117,7 +78,7 @@ function StudentManagement() {
   useEffect(() => {
     const delayDebounce = setTimeout(async () => {
       try {
-        //Trường hợp tìm kiếm theo student ID
+        //Trường hợp tìm kiếm
         if (/^\d+$/.test(searchText)) {
           const data = await searchStudentByID(searchText, page, 10);
           if (data && data.items) {
@@ -165,10 +126,12 @@ function StudentManagement() {
     return () => clearTimeout(delayDebounce);
   }, [searchText, page, facultyFilter]);
 
+  // useEffect để tìm kiếm và sắp xếp sinh viên
   useEffect(() => {
     const delayDebounce = setTimeout(async () => {
       try {
         if (searchText.trim() === "") {
+          // Nếu không tìm kiếm nhưng có sort, thì gọi API sort
           if (sortField.trim() !== "") {
             const data = await sortStudent(sortField, sortOrder, page, 10);
             if (data) {
@@ -187,6 +150,7 @@ function StudentManagement() {
               setStudents([]);
             }
           } else {
+            // Nếu không có search và không có sort => lấy toàn bộ sinh viên
             const data = await getStudents(page, 10);
             if (data) {
               const studentsWithFacultyName = data.items.map((student) => {
@@ -345,31 +309,11 @@ function StudentManagement() {
     setSearchText(event.target.value);
   };
 
-  const handleSortStudent = (event) => {
-    const selectedIndex = event.target.selectedIndex;
-    switch (selectedIndex) {
-      case 0:
-        setSortField("fullname");
-        setSortOrder("asc");
-        break;
-      case 1:
-        setSortField("fullname");
-        setSortOrder("desc");
-        break;
-      case 2:
-        setSortField("student_code");
-        setSortOrder("asc");
-        break;
-      case 3:
-        setSortField("student_code");
-        setSortOrder("desc");
-        break;
-      default:
-        break;
-    }
-  };
+
   const handleFilterByFaculty = (e) => {
+    //chỗ này đổi thành set theo tên khoa chứ ko phải khoa id
     setFacultyFilter(e.target.value);
+    console.log("Selected Faculty ID: ", facultyFilter);
   }
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -378,29 +322,26 @@ function StudentManagement() {
       [name]: value,
     }));
   };
-
   const handleInputAddressChange = (e, addressType) => {
     const { name, value } = e.target;
 
     setNewStudent((prev) => ({
       ...prev,
-      addresses: prev.addresses.map((address) =>
-        address.address_type === addressType
-          ? { ...address, [name]: value }
-          : address
-      ),
+      [addressType]: {
+        ...prev[addressType],
+        [name]: value,
+      },
     }));
   };
-  const handleInputDocumentChange = (e, docType) => {
+  const handleInputDocumentChange = (e, documentType) => {
     const { name, value } = e.target;
 
     setNewStudent((prev) => ({
       ...prev,
-      id_documents: prev.id_documents.map((document) =>
-        document.document_type === docType
-          ? { ...document, [name]: value }
-          : document
-      ),
+      [documentType]: {
+        ...prev[documentType],
+        [name]: value,
+      },
     }));
   };
   const handleOpenFilter = () => {
@@ -454,12 +395,6 @@ function StudentManagement() {
       "fullname",
       "date_of_birth",
       "phone",
-      "document_type",
-      "document_number",
-      "issue_date",
-      "issue_expiry",
-      "issue_place",
-
       "gender",
       "email",
       "student_code",
@@ -488,6 +423,7 @@ function StudentManagement() {
     };
 
     try {
+
       const response = await createAStudent(studentData);
       console.log("Add student response:", response);
       if (response.code === 200) {
@@ -537,16 +473,15 @@ function StudentManagement() {
         </div>
 
         <div className={styles.searchFilter}>
-          <button onClick={handleOpenFilter} className={styles.filterDrop}>
-            <i className='bx bx-filter-alt'></i>
-          </button>
           <input
             onChange={handleSearchStudent}
             type="text"
             className={styles.searchInput}
             placeholder="Search..."
           />
-
+          <button onClick={handleOpenFilter} className={styles.filterDrop}>
+            <i className='bx bx-filter-alt'></i>
+          </button>
           {isFilterOpen && (
             <div className={styles.filterPopup}>
               <div className={styles.filterSection}>
@@ -687,6 +622,7 @@ function StudentManagement() {
           newStudent={newStudent}
           onInputChange={handleInputChange}
           onInputAddressChange={handleInputAddressChange}
+          onInputDocumentChange={handleInputDocumentChange}
           faculties={faculties}
           statuses={statuses}
         />
