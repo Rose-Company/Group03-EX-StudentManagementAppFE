@@ -1,0 +1,497 @@
+/* Global reset and base styles */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: #f5f7fa;
+    color: #333;
+}
+
+/* Management container */
+.managementContainer {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 24px;
+    align-items: center;
+    padding: 40px 20px;
+    font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+    max-width: 1200px;
+    margin: 0 auto;
+    margin-top: 50px;
+}
+
+.blurBackground {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 24px;
+    align-items: center;
+    padding: 40px 20px;
+    font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+    filter: blur(5px);
+    pointer-events: none;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Header section */
+.topAction {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.topAction .title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #2c3e50;
+}
+
+.topAction .addBtn {
+    background: linear-gradient(45deg, #4facfe 0%, #00f2fe 100%);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(79, 172, 254, 0.3);
+}
+
+.addBtn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 8px rgba(79, 172, 254, 0.4);
+}
+
+/* Search and filter section */
+.searchFilter {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: start;
+    gap: 16px;
+    background-color: white;
+    padding: 16px 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.searchInput {
+    padding: 12px 16px;
+    border: 1px solid #e1e5eb;
+    border-radius: 6px;
+    font-size: 14px;
+    flex: 1;
+    max-width: 600px;
+    color: #2c3e50;
+    transition: all 0.3s ease;
+}
+
+.searchInput:focus {
+    outline: none;
+    border-color: #4facfe;
+    box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.2);
+}
+
+.searchFilter .searchInput {
+    padding: 12px 16px;
+    border: 1px solid #e1e5eb;
+    border-radius: 6px;
+    font-size: 14px;
+    flex: 1;
+    max-width: 600px;
+}
+
+/* .filterContainer {
+    position: relative;
+  } */
+
+.filterDrop {
+    background-color: #f8f9fa;
+    border: 1px solid #e1e5eb;
+    border-radius: 6px;
+    padding: 12px 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.filterDrop:hover {
+    background-color: #e9ecef;
+}
+
+/* Student list section */
+.studentList {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+}
+
+.studentList .emptyList {
+    height: 300px;
+    width: 100%;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    justify-content: center;
+    background-color: #fcfcfc;
+    padding: 40px;
+}
+
+.studentList .emptyList .emptyListImg {
+    width: 180px;
+    align-self: center;
+    opacity: 0.6;
+}
+
+.studentList .emptyList .emptyListTitle {
+    font-weight: 600;
+    font-size: 18px;
+    color: #6c757d;
+    text-align: center;
+}
+
+/* Table container */
+.tableContainer {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.studentTable {
+    width: 100%;
+    font-size: 14px;
+    border-collapse: collapse;
+    min-width: 750px;
+    table-layout: fixed;
+    /* Add fixed table layout for better column control */
+}
+
+.studentTable thead {
+    background-color: #f8f9fa;
+}
+
+.studentTable thead th {
+    padding: 16px;
+    text-align: left;
+    font-weight: 600;
+    color: #495057;
+    border-bottom: 2px solid #e9ecef;
+}
+
+.studentTable tbody {
+    background-color: white;
+}
+
+.studentTable tbody tr {
+    transition: background-color 0.3s;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.studentTable tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+.studentTable th,
+.studentTable td {
+    padding: 16px;
+    text-align: left;
+    vertical-align: middle;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Column widths - UPDATED for better responsiveness */
+.studentTable th:nth-child(1) {
+    width: 30%;
+    /* Name column */
+}
+
+.studentTable th:nth-child(2) {
+    width: 20%;
+    /* Second column */
+}
+
+.studentTable th:nth-child(3) {
+    width: 20%;
+    /* Third column */
+}
+
+.studentTable th:nth-child(4) {
+    width: 55%;
+    /* Fourth column */
+}
+
+.studentTable th:nth-child(5) {
+    width: 25%;
+    /* Fifth column */
+}
+
+/* Student avatars */
+.studentAvatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 16px;
+    background-color: #4facfe;
+    color: white;
+    border: none;
+    cursor: pointer;
+    margin-right: 12px;
+    box-shadow: 0 2px 4px rgba(79, 172, 254, 0.3);
+}
+
+.studentName {
+    display: flex;
+    align-items: center;
+}
+
+/* Pagination */
+.pagination {
+    margin: 20px 0;
+    padding: 16px;
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    gap: 12px;
+    align-items: center;
+}
+
+.pagination button {
+    background-color: transparent;
+    border: 1px solid #e1e5eb;
+    border-radius: 6px;
+    padding: 8px 12px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.pagination button:hover {
+    background-color: #f8f9fa;
+}
+
+.pagination span {
+    font-weight: 600;
+    color: #4facfe;
+}
+
+/* Filter popup - UPDATED */
+.filterPopup {
+    z-index: 1000;
+    position: absolute;
+    top: 290px;
+    /* Position it right below the filter button */
+    /* Align with the left edge of the filter container */
+    width: 280px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-top: 8px;
+    /* Add a small gap between button and popup */
+}
+
+.filterSection {
+    margin-bottom: 20px;
+}
+
+.filterSection h4 {
+    margin-bottom: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #495057;
+}
+
+.radioGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.radioGroup label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.applyFilterBtn,
+.clearFilterBtn {
+    padding: 10px 16px;
+    border-radius: 6px;
+    border: none;
+    font-size: 14px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.applyFilterBtn {
+    background-color: #4facfe;
+    color: white;
+    margin-right: 8px;
+}
+
+.applyFilterBtn:hover {
+    background-color: #3d9ade;
+}
+
+.clearFilterBtn {
+    background-color: transparent;
+    color: #4facfe;
+    border: 1px solid #4facfe;
+}
+
+.clearFilterBtn:hover {
+    background-color: #f0f7ff;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+
+    .managementContainer,
+    .blurBackground {
+        padding: 20px 16px;
+    }
+
+    .topAction {
+        flex-direction: column;
+        gap: 16px;
+        align-items: flex-start;
+    }
+
+    .searchFilter {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .searchFilter .searchInput {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .filterContainer {
+        width: 100%;
+    }
+
+    .filterDrop {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    /* Ensure filter popup stays properly positioned on mobile */
+    .filterPopup {
+        width: 100%;
+        right: auto;
+    }
+}
+/* Styling for tabs */
+.tab {
+    padding: 10px 20px;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    font-weight: 500;
+}
+
+.activeTab {
+    border-bottom: 2px solid #1976d2;
+    color: #1976d2;
+    font-weight: bold;
+}
+
+/* Modal styles */
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal {
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+    width: 400px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.modalHeader {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.inputGroup {
+    margin-bottom: 15px;
+}
+
+.label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+
+.input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.buttonGroup {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.cancelButton {
+    padding: 8px 16px;
+    background: #f1f1f1;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.addButton {
+    padding: 8px 16px;
+    background: #1976d2;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}

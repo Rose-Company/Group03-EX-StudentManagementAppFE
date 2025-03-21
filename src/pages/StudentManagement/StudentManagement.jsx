@@ -1,17 +1,18 @@
 import styles from "./StudentManagement.module.css";
 import { useState, useEffect } from "react";
-import StudentList from "../../components/Student/StudentList";
 import StudentModal from "../../components/Student/StudentModal";
+import AddStudentPopUp from "../../components/Student/AddStudentPopup";
+import Table from "../../components/Table/Table";
 import {
   getStudents,
   getFaculties,
   updateStudent,
   deleteStudent,
-  getStudentByFullName,
   getStatuses,
   sortStudent,
   searchStudentByID,
   createAStudent,
+  getStudentByNameAndFacutly
 } from "../../services/studentManagementService";
 import UploadModal from "../../components/Student/UploadModal";
 
@@ -27,9 +28,29 @@ function StudentManagement() {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [students, setStudents] = useState([]);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [sortField, setSortField] = useState("");
+  const [facultyFilter, setFacultyFilter] = useState("");
   const [sortOrder, setSortOrder] = useState("");
+  const createAddress = () => ({
+    street: "",
+    ward: "",
+    district: "",
+    city: "",
+    country: "",
+  });
+
+  const createDocument = () => ({
+    id: "",
+    document_number: "",
+    issue_date: "",
+    issue_place: "",
+    expiry_date: "",
+    country_of_issue: "",
+    has_chip: false,
+    notes: null,
+  });
   const [newStudent, setNewStudent] = useState({
     fullname: "",
     date_of_birth: "",
@@ -43,11 +64,82 @@ function StudentManagement() {
     program: "",
     status_id: "",
     user_id: "",
+
   });
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
 
+
+    // Địa chỉ
+    permanent_address: createAddress(),
+    temp_address: createAddress(),
+    mailing_address: createAddress(),
+
+    // Giấy tờ tùy thân
+    cccd: createDocument(),
+    cmnd: createDocument(),
+    passPort: createDocument(),
+  });
+  const studentColumns = [
+    { key: "fullname", label: "Name" },
+    { key: "student_code", label: "Student ID" },
+    { key: "email", label: "Email Address" },
+    { key: "faculty_name", label: "Faculty" },
+    { key: "gender", label: "Gender" },
+  ];
   // Hàm tính tổng số trang
   const getTotalPages = (total, pageSize) => Math.ceil(total / pageSize);
+
+
+  useEffect(() => {
+    const delayDebounce = setTimeout(async () => {
+      try {
+        //Trường hợp tìm kiếm
+        if (/^\d+$/.test(searchText)) {
+          const data = await searchStudentByID(searchText, page, 10);
+          if (data && data.items) {
+            const studentsWithFacultyName = data.items.map((student) => {
+              const faculty = faculties.find(
+                (faculty) => faculty.id === student.faculty_id
+              );
+              return {
+                ...student,
+                faculty_name: faculty ? faculty.name : "Unknown",
+              };
+            });
+            setStudents(studentsWithFacultyName);
+            setTotalPages(getTotalPages(data.total, 10));
+          } else {
+            setStudents([]);
+          }
+        }
+        //Trường hợp tìm kiếm theo khoa hoặc theo tên
+        else if (facultyFilter.trim() !== "" || searchText.trim() !== "") {
+          const data = await getStudentByNameAndFacutly(searchText, page, 10, facultyFilter);
+          if (data) {
+            const studentsWithFacultyName = data.items.map((student) => {
+              const faculty = faculties.find(
+                (faculty) => faculty.id === student.faculty_id
+              );
+              return {
+                ...student,
+                faculty_name: faculty ? faculty.name : "Unknown",
+              };
+            });
+            setStudents(studentsWithFacultyName);
+            setTotalPages(getTotalPages(data.total, 10));
+          } else {
+            setStudents([]);
+          }
+
+        }
+      } catch (error) {
+        console.error("Error searching students:", error);
+        setStudents([]);
+      }
+    }, 500);
+
+    return () => clearTimeout(delayDebounce);
+  }, [searchText, page, facultyFilter]);
 
   // useEffect để tìm kiếm và sắp xếp sinh viên
   useEffect(() => {
@@ -76,44 +168,6 @@ function StudentManagement() {
             // Nếu không có search và không có sort => lấy toàn bộ sinh viên
             const data = await getStudents(page, 10);
             if (data) {
-              const studentsWithFacultyName = data.items.map((student) => {
-                const faculty = faculties.find(
-                  (faculty) => faculty.id === student.faculty_id
-                );
-                return {
-                  ...student,
-                  faculty_name: faculty ? faculty.name : "Unknown",
-                };
-              });
-              setStudents(studentsWithFacultyName);
-              setTotalPages(getTotalPages(data.total, 10));
-            } else {
-              setStudents([]);
-            }
-          }
-        }
-        // Nếu có tìm kiếm
-        else {
-          if (/^\d+$/.test(searchText)) {
-            const data = await searchStudentByID(searchText, page, 10);
-            if (data && data.items) {
-              const studentsWithFacultyName = data.items.map((student) => {
-                const faculty = faculties.find(
-                  (faculty) => faculty.id === student.faculty_id
-                );
-                return {
-                  ...student,
-                  faculty_name: faculty ? faculty.name : "Unknown",
-                };
-              });
-              setStudents(studentsWithFacultyName);
-              setTotalPages(getTotalPages(data.total, 10));
-            } else {
-              setStudents([]);
-            }
-          } else {
-            const data = await getStudentByFullName(searchText, page, 10);
-            if (data && data.items) {
               const studentsWithFacultyName = data.items.map((student) => {
                 const faculty = faculties.find(
                   (faculty) => faculty.id === student.faculty_id
@@ -180,7 +234,7 @@ function StudentManagement() {
   const handleNextPage = () => setPage(page + 1);
 
   const handleStudentClick = (student) => {
-    setSelectedStudent(String(student.id));
+    setSelectedStudent(String(student.student_code));
     setIsModalOpen(true);
   };
 
@@ -270,30 +324,12 @@ function StudentManagement() {
     setSearchText(event.target.value);
   };
 
-  const handleSortStudent = (event) => {
-    const selectedIndex = event.target.selectedIndex;
-    switch (selectedIndex) {
-      case 0:
-        setSortField("fullname");
-        setSortOrder("asc");
-        break;
-      case 1:
-        setSortField("fullname");
-        setSortOrder("desc");
-        break;
-      case 2:
-        setSortField("student_code");
-        setSortOrder("asc");
-        break;
-      case 3:
-        setSortField("student_code");
-        setSortOrder("desc");
-        break;
-      default:
-        break;
-    }
-  };
 
+  const handleFilterByFaculty = (e) => {
+    //chỗ này đổi thành set theo tên khoa chứ ko phải khoa id
+    setFacultyFilter(e.target.value);
+    console.log("Selected Faculty ID: ", facultyFilter);
+  }
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setNewStudent((prev) => ({
@@ -301,6 +337,31 @@ function StudentManagement() {
       [name]: value,
     }));
   };
+  const handleInputAddressChange = (e, addressType) => {
+    const { name, value } = e.target;
+
+    setNewStudent((prev) => ({
+      ...prev,
+      [addressType]: {
+        ...prev[addressType],
+        [name]: value,
+      },
+    }));
+  };
+  const handleInputDocumentChange = (e, documentType) => {
+    const { name, value } = e.target;
+
+    setNewStudent((prev) => ({
+      ...prev,
+      [documentType]: {
+        ...prev[documentType],
+        [name]: value,
+      },
+    }));
+  };
+  const handleOpenFilter = () => {
+    setIsFilterOpen(!isFilterOpen);
+  }
 
   useEffect(() => {
     const currentUser = localStorage.getItem("user_id");
@@ -350,7 +411,6 @@ function StudentManagement() {
       "date_of_birth",
       "phone",
       "gender",
-      "address",
       "email",
       "student_code",
       "faculty_id",
@@ -378,6 +438,7 @@ function StudentManagement() {
     };
 
     try {
+
       const response = await createAStudent(studentData);
       console.log("Add student response:", response);
       if (response.code === 200) {
@@ -489,29 +550,127 @@ function StudentManagement() {
             Import file
           </button>
         </div>
+
         <div className={styles.searchFilter}>
-          <select
-            onChange={handleSortStudent}
-            className={styles.filterDropdown}
-          >
-            <option value="name-asc">Full Name A - Z</option>
-            <option value="name-desc">Full Name Z - A</option>
-            <option value="id-asc">Student ID Ascending</option>
-            <option value="id-desc">Student ID Descending</option>
-          </select>
+          <button onClick={handleOpenFilter} className={styles.filterDrop}>
+            <i className='bx bx-filter-alt'></i>
+          </button>
           <input
             onChange={handleSearchStudent}
             type="text"
             className={styles.searchInput}
             placeholder="Search..."
           />
+
+          {isFilterOpen && (
+            <div className={styles.filterPopup}>
+              <div className={styles.filterSection}>
+                <h4>Sort by</h4>
+                <div className={styles.radioGroup}>
+                  <label>
+                    <input
+                      type="radio"
+                      name="sort"
+                      value="name-asc"
+                      checked={sortField === "fullname" && sortOrder === "asc"}
+                      onChange={() => {
+                        setSortField("fullname");
+                        setSortOrder("asc");
+                      }}
+                    />
+                    Name (A-Z)
+                  </label>
+                  <label>
+                    <input
+                      type="radio"
+                      name="sort"
+                      value="name-desc"
+                      checked={sortField === "fullname" && sortOrder === "desc"}
+                      onChange={() => {
+                        setSortField("fullname");
+                        setSortOrder("desc");
+                      }}
+                    />
+                    Name (Z-A)
+                  </label>
+                  <label>
+                    <input
+                      type="radio"
+                      name="sort"
+                      value="id-asc"
+                      checked={sortField === "student_code" && sortOrder === "asc"}
+                      onChange={() => {
+                        setSortField("student_code");
+                        setSortOrder("asc");
+                      }}
+                    />
+                    Student ID (Ascending)
+                  </label>
+                  <label>
+                    <input
+                      type="radio"
+                      name="sort"
+                      value="id-desc"
+                      checked={sortField === "student_code" && sortOrder === "desc"}
+                      onChange={() => {
+                        setSortField("student_code");
+                        setSortOrder("desc");
+                      }}
+                    />
+                    Student ID (Descending)
+                  </label>
+                </div>
+              </div>
+
+              <div className={styles.filterSection}>
+                <h4>Faculty</h4>
+                <div className={styles.radioGroup}>
+                  <label>
+                    <input
+                      type="radio"
+                      name="faculty"
+                      value=""
+                      checked={facultyFilter === ""}
+                      onChange={handleFilterByFaculty}
+                    />
+                    All Faculties
+                  </label>
+                  {faculties.map((faculty) => (
+                    <label key={faculty.id}>
+                      <input
+                        type="radio"
+                        name="faculty"
+                        value={faculty.name}
+                        checked={facultyFilter === faculty.name}
+                        onChange={handleFilterByFaculty}
+                      />
+                      {faculty.name}
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              <div className={styles.filterActions}>
+                <button
+                  className={styles.clearFilterBtn}
+                  onClick={() => {
+                    setSortField("");
+                    setSortOrder("");
+                    setFacultyFilter("");
+                    setIsFilterOpen(false);
+                  }}
+                >
+                  Clear Filters
+                </button>
+              </div>
+            </div>
+          )}
         </div>
 
+
         <div className={styles.studentList}>
-          <StudentList
-            students={students}
-            onStudentClick={handleStudentClick}
-          />
+
+          <Table columns={studentColumns} data={students} onRowClick={handleStudentClick} />
           <div className={styles.pagination}>
             {page > 1 ? <button onClick={handlePrevPage}>Prev</button> : <></>}
             <span>Page {page}</span>
@@ -534,157 +693,17 @@ function StudentManagement() {
       />
 
       {isPopUpOpened && (
-        <div className={styles.popupOverlay} onClick={handleClosePopUp}>
-          <div
-            className={styles.popupContent}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className={styles.popupContentTopAction}>
-              <h3>Add Student</h3>
-              <button
-                className={styles.popupCloseBtn}
-                onClick={handleClosePopUp}
-              >
-                X
-              </button>
-            </div>
-            <div className={styles.formGroup}>
-              <div>
-                <p>Full Name</p>
-                <input
-                  type="text"
-                  placeholder="Full Name"
-                  name="fullname"
-                  value={newStudent.fullname}
-                  onChange={handleInputChange}
-                />
-              </div>
-              <div>
-                <p>Date of Birth</p>
-                <input
-                  type="date"
-                  placeholder="Date of Birth"
-                  name="date_of_birth"
-                  value={newStudent.date_of_birth}
-                  onChange={handleInputChange}
-                />
-              </div>
-              <div>
-                <p>Phone Number</p>
-                <input
-                  type="text"
-                  placeholder="Phone Number"
-                  name="phone"
-                  value={newStudent.phone}
-                  onChange={handleInputChange}
-                />
-              </div>
-            </div>
-            <div className={styles.formGroup}>
-              <div>
-                <p>Gender</p>
-                <select
-                  className={styles.studentGt}
-                  name="gender"
-                  value={newStudent.gender}
-                  onChange={handleInputChange}
-                >
-                  <option value="Male">Male</option>
-                  <option value="Female">Female</option>
-                  <option value="Other">Other</option>
-                </select>
-              </div>
-              <div>
-                <p>Contact Address</p>
-                <input
-                  type="text"
-                  placeholder="Contact Address"
-                  name="address"
-                  value={newStudent.address}
-                  onChange={handleInputChange}
-                />
-              </div>
-              <div>
-                <p>Email Address</p>
-                <input
-                  type="email"
-                  placeholder="Email Address"
-                  name="email"
-                  value={newStudent.email}
-                  onChange={handleInputChange}
-                />
-              </div>
-            </div>
-            <div className={styles.formGroup}>
-              <div>
-                <p>Student ID</p>
-                <input
-                  type="text"
-                  placeholder="Student ID"
-                  name="student_code"
-                  value={newStudent.student_code}
-                  onChange={handleInputChange}
-                />
-              </div>
-              <div>
-                <p>Faculty</p>
-                <select
-                  name="faculty_id"
-                  value={newStudent.faculty_id}
-                  onChange={handleInputChange}
-                >
-                  {faculties.map((faculty) => (
-                    <option key={faculty.id} value={faculty.id}>
-                      {faculty.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <p>Batch</p>
-                <input
-                  type="text"
-                  placeholder="Batch"
-                  name="batch"
-                  value={newStudent.batch}
-                  onChange={handleInputChange}
-                />
-              </div>
-            </div>
-            <div className={styles.formGroup}>
-              <div>
-                <p>Program</p>
-                <input
-                  type="text"
-                  placeholder="Program"
-                  name="program"
-                  value={newStudent.program}
-                  onChange={handleInputChange}
-                />
-              </div>
-              <div className={styles.studentStatus}>
-                <p>Student Status</p>
-                <select
-                  name="status_id"
-                  value={newStudent.status_id}
-                  onChange={handleInputChange}
-                >
-                  {statuses.map((status) => (
-                    <option key={status.id} value={status.id}>
-                      {status.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-            <button
-              className={styles.popUpAddStudent}
-              onClick={handleAddStudent}
-            >
-              Add
-            </button>
-          </div>
-        </div>
+        <AddStudentPopUp
+          isOpen={isPopUpOpened}
+          onClose={handleClosePopUp}
+          onCreate={handleAddStudent}
+          newStudent={newStudent}
+          onInputChange={handleInputChange}
+          onInputAddressChange={handleInputAddressChange}
+          onInputDocumentChange={handleInputDocumentChange}
+          faculties={faculties}
+          statuses={statuses}
+        />
       )}
 
       <UploadModal isOpen={isUploadModalOpen} onClose={handleCloseUploadModal} />

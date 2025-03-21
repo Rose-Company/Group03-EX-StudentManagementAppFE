@@ -191,7 +191,7 @@ const StudentModal = ({
       if (deleteButton) {
         deleteButton.disabled = true;
         deleteButton.innerHTML =
-          '<i class="bx bx-loader-alt bx-spin"></i> Deleting...';
+          '<i className="bx bx-loader-alt bx-spin"></i> Deleting...';
       }
 
       await onDelete(studentId);
@@ -208,7 +208,7 @@ const StudentModal = ({
       const deleteButton = document.querySelector(`.${styles.deleteButton}`);
       if (deleteButton) {
         deleteButton.disabled = false;
-        deleteButton.innerHTML = '<i class="bx bx-trash"></i> Delete';
+        deleteButton.innerHTML = '<i className="bx bx-trash"></i> Delete';
       }
     }
   };

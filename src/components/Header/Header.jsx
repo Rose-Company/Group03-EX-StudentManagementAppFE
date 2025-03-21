@@ -65,9 +65,10 @@ function Header() {
             Management
           </Dropdown.Item>
           <Dropdown.Divider />
-          <Dropdown.Item className={styles.dropdownItem} onClick={handleLogout}>
-            Log out
-          </Dropdown.Item>
+          <Dropdown.Item href="/setting">Setting</Dropdown.Item>
+          <Dropdown.Divider />
+          <Dropdown.Item onClick={handleLogout}>Log out</Dropdown.Item>
+   
         </Dropdown.Menu>
       </Dropdown>
     );
