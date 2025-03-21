@@ -258,4 +258,46 @@ export const sortStudent = async (field, type, page = 1, pageSize = 10) => {
   }
 };
 
+// Upload file
+export const uploadFile = async (file) => {
+  const formData = new FormData();
+  formData.append('file', file);
+
+  try {
+    const response = await api.post('/v1/admins/imported-file', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error("Upload Error:", error.response?.data || error.message);
+    throw error;
+  }
+};
+
+// Confirm file import
+export const confirmFileImport = async (downloadUrl) => {
+  try {
+    const response = await api.post('/v1/students/import-from-file', 
+      {
+        "file": downloadUrl // Đảm bảo gửi đúng format với key "file"
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+    
+        }
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Import Error:", error.response?.data || error.message);
+    throw error;
+  }
+};
+
 export default api;
+
+

@@ -12,9 +12,12 @@ import StudentManagement from "./pages/StudentManagement/StudentManagement";
 import AboutGroup from "./pages/About/About";
 import ProtectedRoute from "./components/common/ProtectedRoute";
 import "./App.css";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   return (
+    <>
     <Router>
       <Routes>
         <Route path="/login" element={<Login />} />
@@ -56,6 +59,20 @@ function App() {
         />
       </Routes>
     </Router>
+  </Router>
+  <ToastContainer
+    position="top-right"
+    autoClose={3000}
+    hideProgressBar={false}
+    newestOnTop
+    closeOnClick
+    rtl={false}
+    pauseOnFocusLoss
+    draggable
+    pauseOnHover
+    theme="light"
+  />
+  </>
   );
 }
 
