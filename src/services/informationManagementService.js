@@ -17,7 +17,6 @@ export const getStatuses = async () => {
 // Create faculty
 export const createFaculty = async (facultyName) => {
   try {
-    console.log("New name:" ,facultyName);
     const response = await api.post("/v1/faculties", { name: facultyName });
     return response.data;
   } catch (error) {

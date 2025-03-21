@@ -226,7 +226,7 @@ function StudentManagement() {
   const handleNextPage = () => setPage(page + 1);
 
   const handleStudentClick = (student) => {
-    setSelectedStudent(String(student.id));
+    setSelectedStudent(String(student.student_code));
     setIsModalOpen(true);
   };
 
