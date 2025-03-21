@@ -14,6 +14,8 @@ export const getStatuses = async () => {
   console.log(response.data);
   return response.data;
 };
+
+
 // Create faculty
 export const createFaculty = async (facultyName) => {
   try {
@@ -21,6 +23,17 @@ export const createFaculty = async (facultyName) => {
     return response.data;
   } catch (error) {
     console.error("Error creating faculty:", error.response?.data || error.message);
+    throw error;
+  }
+};
+
+// Create status
+export const createStatus = async (statusName) => {
+  try {
+    const response = await api.post("/v1/statuses", { name: statusName });
+    return response.data;
+  } catch (error) {
+    console.error("Error creating status:", error.response?.data || error.message);
     throw error;
   }
 };

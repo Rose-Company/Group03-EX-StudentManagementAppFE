@@ -1,16 +1,22 @@
 import styles from "../Information Management/InformationManagement.module.css";
 import Table from "../../components/Table/Table";
 import { useEffect, useState } from "react";
-import { getFaculties, getStatuses, createFaculty } from "../../services/informationManagementService";
+import { getFaculties, getStatuses, createFaculty, createStatus } from "../../services/informationManagementService";
 
 function InformationManagement() {
     const [activeTab, setActiveTab] = useState("faculty");
-    const [showAddModal, setShowAddModal] = useState(false);
-    const [showEditModal, setShowEditModal] = useState(false);
-    const [newFacultyName, setNewFacultyName] = useState("");
-    const [editFaculty, setEditFaculty] = useState(null);
     const [faculties, setFaculties] = useState([]);
     const [statuses, setStatuses] = useState([]);
+
+    // State quản lý pop-up Faculty
+    const [showFacultyModal, setShowFacultyModal] = useState(false);
+    const [newFacultyName, setNewFacultyName] = useState("");
+    const [editFaculty, setEditFaculty] = useState(null);
+
+    // State quản lý pop-up Status
+    const [showStatusModal, setShowStatusModal] = useState(false);
+    const [newStatusName, setNewStatusName] = useState("");
+    const [editStatus, setEditStatus] = useState(null);
 
     useEffect(() => {
         const fetchFaculties = async () => {
@@ -40,46 +46,37 @@ function InformationManagement() {
         fetchStatuses();
     }, []);
 
-    const handleAddFaculty = () => setShowAddModal(true);
+    // Xử lý mở pop-up
+    const handleOpenFacultyModal = () => setShowFacultyModal(true);
+    const handleOpenStatusModal = () => setShowStatusModal(true);
     const handleEditFaculty = (faculty) => {
         setEditFaculty(faculty);
         setNewFacultyName(faculty.name);
-        setShowEditModal(true);
+        setShowFacultyModal(true);
+    };
+    const handleEditStatus = (status) => {
+        setEditStatus(status);
+        setNewStatusName(status.name);
+        setShowStatusModal(true);
     };
 
+    // Xử lý đóng pop-up
     const handleCloseModal = () => {
-        setShowAddModal(false);
-        setShowEditModal(false);
+        setShowFacultyModal(false);
+        setShowStatusModal(false);
         setNewFacultyName("");
+        setNewStatusName("");
         setEditFaculty(null);
-    };
-
-    const handleSubmitFaculty = async () => {
-        if (newFacultyName.trim()) {
-            try {
-                await createFaculty(newFacultyName);
-                const updatedFaculties = await getFaculties();
-                setFaculties(updatedFaculties.data.items);
-                handleCloseModal();
-            } catch (error) {
-                alert("Failed to add faculty: " + (error.response?.data?.message || "Unknown error"));
-            }
-        }
+        setEditStatus(null);
     };
 
     return (
         <div className={styles.managementContainer}>
             <div className={styles.tabs}>
-                <div
-                    className={`${styles.tab} ${activeTab === "faculty" ? styles.activeTab : ""}`}
-                    onClick={() => setActiveTab("faculty")}
-                >
+                <div className={`${styles.tab} ${activeTab === "faculty" ? styles.activeTab : ""}`} onClick={() => setActiveTab("faculty")}>
                     Faculty Management
                 </div>
-                <div
-                    className={`${styles.tab} ${activeTab === "status" ? styles.activeTab : ""}`}
-                    onClick={() => setActiveTab("status")}
-                >
+                <div className={`${styles.tab} ${activeTab === "status" ? styles.activeTab : ""}`} onClick={() => setActiveTab("status")}>
                     Status Management
                 </div>
             </div>
@@ -88,11 +85,9 @@ function InformationManagement() {
                 <>
                     <div className={styles.topAction}>
                         <p className={styles.title}>Faculty List</p>
-                        <button className={styles.addBtn} onClick={handleAddFaculty}>
-                            Add Faculty
-                        </button>
+                        <button className={styles.addBtn} onClick={handleOpenFacultyModal}>Add Faculty</button>
                     </div>
-                    <Table columns={[{ key: "id", label: "ID" }, { key: "name", label: "Faculty" }]} data={faculties} onRowClick={handleEditFaculty} />
+                    <Table columns={[{ key: "id", label: "ID" }, { key: "name", label: "Faculty" }]} data={faculties} onRowClick={handleEditFaculty}/>
                 </>
             )}
 
@@ -100,35 +95,41 @@ function InformationManagement() {
                 <>
                     <div className={styles.topAction}>
                         <p className={styles.title}>Status List</p>
-                        <button className={styles.addBtn}>Add Status</button>
+                        <button className={styles.addBtn} onClick={handleOpenStatusModal}>Add Status</button>
                     </div>
-                    <Table columns={[{ key: "id", label: "ID" }, { key: "name", label: "Status" }]} data={statuses} />
+                    <Table columns={[{ key: "id", label: "ID" }, { key: "name", label: "Status" }]} data={statuses} onRowClick={handleEditStatus}/>
                 </>
             )}
 
-            {(showAddModal || showEditModal) && (
+            {/* Pop-up Faculty */}
+            {showFacultyModal && (
                 <div className={styles.modalOverlay}>
                     <div className={styles.modal}>
-                        <div className={styles.modalHeader}>
-                            {showAddModal ? "Add New Faculty" : "Edit Faculty"}
-                        </div>
+                        <div className={styles.modalHeader}>{editFaculty ? "Edit Faculty" : "Add New Faculty"}</div>
                         <div className={styles.inputGroup}>
                             <label className={styles.label}>Faculty Name</label>
-                            <input
-                                type="text"
-                                className={styles.input}
-                                value={newFacultyName}
-                                onChange={(e) => setNewFacultyName(e.target.value)}
-                                placeholder="Enter faculty name"
-                            />
+                            <input type="text" className={styles.input} value={newFacultyName} onChange={(e) => setNewFacultyName(e.target.value)} placeholder="Enter faculty name" />
                         </div>
                         <div className={styles.buttonGroup}>
-                            <button className={styles.cancelButton} onClick={handleCloseModal}>
-                                Cancel
-                            </button>
-                            <button className={styles.addButton} onClick={handleSubmitFaculty} disabled={!newFacultyName.trim()}>
-                                {showAddModal ? "Add" : "Save"}
-                            </button>
+                            <button className={styles.cancelButton} onClick={handleCloseModal}>Cancel</button>
+                            <button className={styles.addButton} disabled={!newFacultyName.trim()}>{editFaculty ? "Save" : "Add"}</button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Pop-up Status */}
+            {showStatusModal && (
+                <div className={styles.modalOverlay}>
+                    <div className={styles.modal}>
+                        <div className={styles.modalHeader}>{editStatus ? "Edit Status" : "Add New Status"}</div>
+                        <div className={styles.inputGroup}>
+                            <label className={styles.label}>Status Name</label>
+                            <input type="text" className={styles.input} value={newStatusName} onChange={(e) => setNewStatusName(e.target.value)} placeholder="Enter status name" />
+                        </div>
+                        <div className={styles.buttonGroup}>
+                            <button className={styles.cancelButton} onClick={handleCloseModal}>Cancel</button>
+                            <button className={styles.addButton} disabled={!newStatusName.trim()}>{editStatus ? "Save" : "Add"}</button>
                         </div>
                     </div>
                 </div>
