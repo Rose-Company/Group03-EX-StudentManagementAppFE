@@ -1,0 +1,96 @@
+/* General Table Styles */
+  
+  .table {
+    width: 100%;
+    font-size: 14px;
+    border-collapse: collapse;
+    table-layout: fixed;
+  }
+  
+  .table thead {
+    background-color: #f8f9fa;
+  }
+  
+  .table thead th {
+    padding: 16px;
+    text-align: left;
+    font-weight: 600;
+    color: #495057;
+    border-bottom: 2px solid #e9ecef;
+  }
+  
+  .table tbody {
+    background-color: white;
+  }
+  
+  .table tbody tr {
+    transition: background-color 0.3s;
+    border-bottom: 1px solid #e9ecef;
+  }
+  
+  .table tbody tr:hover {
+    background-color: #f8f9fa;
+  }
+  
+  .table th,
+  .table td {
+    padding: 16px;
+    text-align: left;
+    vertical-align: middle;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  /* Responsive Column Widths */
+  .table th:first-child,
+  .table td:first-child {
+    width: 30%; /* Name column */
+  }
+  
+  .table th:nth-child(2),
+  .table td:nth-child(2) {
+    width: 20%; /* Student ID */
+  }
+  
+  .table th:nth-child(3),
+  .table td:nth-child(3) {
+    width: 20%; /* Email */
+  }
+  
+  .table th:nth-child(4),
+  .table td:nth-child(4) {
+    width: 20%; /* Faculty */
+  }
+  
+  .table th:nth-child(5),
+  .table td:nth-child(5) {
+    width: 10%; /* Gender */
+  }
+  
+  /* Empty State Styling */
+  .emptyList {
+    height: 300px;
+    width: 100%;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    justify-content: center;
+    background-color: #fcfcfc;
+    padding: 40px;
+  }
+  
+  .emptyList .emptyListImg {
+    width: 180px;
+    align-self: center;
+    opacity: 0.6;
+  }
+  
+  .emptyList .emptyListTitle {
+    font-weight: 600;
+    font-size: 18px;
+    color: #6c757d;
+    text-align: center;
+  }
+  

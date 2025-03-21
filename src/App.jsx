@@ -7,6 +7,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login/Login";
 import Home from "./pages/Home/Home";
 import Header from "./components/Header/Header";
+import InformationManagement from "./pages/Information Management/InformationManagement";
 import StudentManagement from "./pages/StudentManagement/StudentManagement";
 import AboutGroup from "./pages/About/About";
 import ProtectedRoute from "./components/common/ProtectedRoute";
@@ -32,6 +33,15 @@ function App() {
             <ProtectedRoute>
               <Header />
               <StudentManagement />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/setting"
+          element={
+            <ProtectedRoute>
+              <Header/>
+              <InformationManagement/>
             </ProtectedRoute>
           }
         />

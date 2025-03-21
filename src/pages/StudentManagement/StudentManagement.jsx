@@ -1,8 +1,8 @@
 import styles from "./StudentManagement.module.css";
 import { useState, useEffect } from "react";
-import StudentList from "../../components/Student/StudentList";
 import StudentModal from "../../components/Student/StudentModal";
 import AddStudentPopUp from "../../components/Student/AddStudentPopup";
+import Table from "../../components/Table/Table";
 import {
   getStudents,
   getFaculties,
@@ -36,7 +36,7 @@ function StudentManagement() {
     city: "",
     country: "",
   });
-  
+
   const createDocument = () => ({
     id: "",
     document_number: "",
@@ -60,17 +60,24 @@ function StudentManagement() {
     program: "",
     status_id: "",
     user_id: "",
-  
+
     // Địa chỉ
     permanent_address: createAddress(),
     temp_address: createAddress(),
     mailing_address: createAddress(),
-  
+
     // Giấy tờ tùy thân
     cccd: createDocument(),
     cmnd: createDocument(),
     passPort: createDocument(),
   });
+  const studentColumns = [
+    { key: "fullname", label: "Name" },
+    { key: "student_code", label: "Student ID" },
+    { key: "email", label: "Email Address" },
+    { key: "faculty_name", label: "Faculty" },
+    { key: "gender", label: "Gender" },
+  ];
   // Hàm tính tổng số trang
   const getTotalPages = (total, pageSize) => Math.ceil(total / pageSize);
 
@@ -473,15 +480,16 @@ function StudentManagement() {
         </div>
 
         <div className={styles.searchFilter}>
+          <button onClick={handleOpenFilter} className={styles.filterDrop}>
+            <i className='bx bx-filter-alt'></i>
+          </button>
           <input
             onChange={handleSearchStudent}
             type="text"
             className={styles.searchInput}
             placeholder="Search..."
           />
-          <button onClick={handleOpenFilter} className={styles.filterDrop}>
-            <i className='bx bx-filter-alt'></i>
-          </button>
+
           {isFilterOpen && (
             <div className={styles.filterPopup}>
               <div className={styles.filterSection}>
@@ -589,10 +597,8 @@ function StudentManagement() {
 
 
         <div className={styles.studentList}>
-          <StudentList
-            students={students}
-            onStudentClick={handleStudentClick}
-          />
+
+          <Table columns={studentColumns} data={students} onRowClick={handleStudentClick} />
           <div className={styles.pagination}>
             {page > 1 ? <button onClick={handlePrevPage}>Prev</button> : <></>}
             <span>Page {page}</span>
