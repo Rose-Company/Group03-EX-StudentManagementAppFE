@@ -13,9 +13,13 @@ import {
   searchStudentByID,
   createAStudent,
 } from "../../services/studentManagementService";
+import UploadModal from "../../components/Student/UploadModal";
 
 function StudentManagement() {
   const [isPopUpOpened, setIsPopUpOpened] = useState(false);
+  const [isImportModalOpen, setIsImportModalOpen] = useState(false);
+  const [importStatus, setImportStatus] = useState({ success: false, error: false });
+  const [selectedFile, setSelectedFile] = useState(null);
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [faculties, setFaculties] = useState([]);
@@ -40,6 +44,7 @@ function StudentManagement() {
     status_id: "",
     user_id: "",
   });
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
 
   // Hàm tính tổng số trang
   const getTotalPages = (total, pageSize) => Math.ceil(total / pageSize);
@@ -407,6 +412,67 @@ function StudentManagement() {
     }
   };
 
+  // Hàm xử lý mở/đóng modal import
+  const handleOpenImportModal = () => setIsImportModalOpen(true);
+  const handleCloseImportModal = () => {
+    setIsImportModalOpen(false);
+    setImportStatus({ success: false, error: false });
+    setSelectedFile(null);
+  };
+
+  // Hàm xử lý khi file được chọn
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      // Kiểm tra định dạng file (CSV hoặc JSON)
+      const fileExt = file.name.split('.').pop().toLowerCase();
+      if (fileExt === 'csv' || fileExt === 'json') {
+        setSelectedFile(file);
+        setImportStatus({ success: false, error: false });
+      } else {
+        setImportStatus({ success: false, error: true });
+        setSelectedFile(null);
+      }
+    }
+  };
+
+  // Hàm xử lý khi kéo file vào khu vực drop
+  const handleDragOver = (e) => {
+    e.preventDefault();
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    const file = e.dataTransfer.files[0];
+    if (file) {
+      const fileExt = file.name.split('.').pop().toLowerCase();
+      if (fileExt === 'csv' || fileExt === 'json') {
+        setSelectedFile(file);
+        setImportStatus({ success: false, error: false });
+      } else {
+        setImportStatus({ success: false, error: true });
+        setSelectedFile(null);
+      }
+    }
+  };
+
+  // Hàm xử lý khi submit file
+  const handleImportFile = () => {
+    // Giả lập thành công
+    // Trong thực tế, bạn sẽ gọi API để upload file
+    if (selectedFile) {
+      setImportStatus({ success: true, error: false });
+    }
+  };
+
+  const handleOpenUploadModal = () => {
+    setIsUploadModalOpen(true);
+  };
+
+  const handleCloseUploadModal = () => {
+    setIsUploadModalOpen(false);
+  };
+
   return (
     <>
       <div
@@ -418,6 +484,9 @@ function StudentManagement() {
           <p className={styles.title}>Student List</p>
           <button onClick={handleOpenPopUp} className={styles.addBtn}>
             Add Student
+          </button>
+          <button onClick={handleOpenUploadModal} className={styles.importBtn}>
+            Import file
           </button>
         </div>
         <div className={styles.searchFilter}>
@@ -617,6 +686,8 @@ function StudentManagement() {
           </div>
         </div>
       )}
+
+      <UploadModal isOpen={isUploadModalOpen} onClose={handleCloseUploadModal} />
     </>
   );
 }

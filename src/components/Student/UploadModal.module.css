@@ -1,0 +1,481 @@
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .modalContent {
+    background-color: white;
+    border-radius: 8px;
+    width: 600px;
+    max-width: 95%;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .modalHeader {
+    padding: 20px;
+    border-bottom: 1px solid #eee;
+  }
+
+  .modalHeader h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #333;
+  }
+
+  .modalBody {
+    padding: 20px;
+    max-height: calc(90vh - 140px);
+    overflow-y: auto;
+  }
+
+  .infoContainer {
+    margin-bottom: 20px;
+  }
+
+  .infoSection {
+    margin-bottom: 20px;
+  }
+
+  .infoSection h3 {
+    font-size: 1.1rem;
+    color: #333;
+    margin-bottom: 10px;
+  }
+
+  .infoSection ul {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+  }
+
+  .infoSection li {
+    margin-bottom: 8px;
+    color: #666;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .infoSection li:before {
+    content: "•";
+    color: #666;
+    font-weight: bold;
+    margin-right: 8px;
+  }
+
+  .highlight {
+    font-weight: 600;
+    color: #2196f3;
+  }
+
+  .required {
+    color: #f44336;
+    font-weight: 600;
+  }
+
+  .downloadTemplateBtn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background-color: #f5f5f5;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .downloadTemplateBtn:hover {
+    background-color: #eeeeee;
+  }
+
+  .downloadIcon {
+    width: 20px;
+    height: 20px;
+    fill: currentColor;
+  }
+
+  .dropZone {
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+    padding: 40px 20px;
+    text-align: center;
+    background-color: #fafafa;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .dragOver {
+    border-color: #2196f3;
+    background-color: #e3f2fd;
+  }
+
+  .uploadIcon svg {
+    width: 48px;
+    height: 48px;
+    fill: #999;
+    margin-bottom: 12px;
+  }
+
+  .fileInput {
+    display: none;
+  }
+
+  .fileName {
+    margin-top: 8px;
+    color: #666;
+    font-size: 0.9rem;
+  }
+
+  .uploadSuccess,
+  .uploadError {
+    text-align: center;
+    padding: 40px 20px;
+    border-radius: 8px;
+    margin: 20px 0;
+  }
+
+  .uploadSuccess {
+    background-color: #e8f5e9;
+    border: 1px solid #4caf50;
+  }
+
+  .uploadError {
+    background-color: #ffebee;
+    border: 1px solid #f44336;
+  }
+
+  .successIcon,
+  .errorIcon {
+    margin-bottom: 16px;
+  }
+
+  .successIcon svg {
+    width: 48px;
+    height: 48px;
+    fill: #4caf50;
+  }
+
+  .errorIcon svg {
+    width: 48px;
+    height: 48px;
+    fill: #f44336;
+  }
+
+  .retryText {
+    color: #f44336;
+    margin-top: 12px;
+    font-size: 0.9rem;
+  }
+
+  .modalFooter {
+    padding: 20px;
+    border-top: 1px solid #eee;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+  }
+
+  .confirmBtn,
+  .changeFileBtn,
+  .closeBtn {
+    padding: 8px 16px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s;
+  }
+
+  .confirmBtn {
+    background-color: #4caf50;
+    color: white;
+  }
+
+  .confirmBtn:hover {
+    background-color: #43a047;
+  }
+
+  .confirmBtn:disabled {
+    background-color: #a5d6a7;
+    cursor: not-allowed;
+  }
+
+  .changeFileBtn,
+  .closeBtn {
+    background-color: #f5f5f5;
+    color: #333;
+  }
+
+  .changeFileBtn:hover,
+  .closeBtn:hover {
+    background-color: #eeeeee;
+  }
+
+  .retryBtn {
+    padding: 8px 16px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s;
+    background-color: #f44336;
+    color: white;
+  }
+
+  .retryBtn:hover {
+    background-color: #e53935;
+  }
+
+  .uploadError {
+    text-align: center;
+    padding: 40px 20px;
+    border-radius: 8px;
+    margin: 20px 0;
+    background-color: #ffebee;
+    border: 1px solid #f44336;
+  }
+
+  .uploadError h3 {
+    color: #d32f2f;
+    margin-bottom: 8px;
+  }
+
+  .uploadError p {
+    color: #f44336;
+    margin: 8px 0;
+  }
+
+  .retryText {
+    color: #f44336;
+    margin-top: 12px;
+    font-size: 0.9rem;
+    font-style: italic;
+  }
+
+  .modalFooter button:last-child {
+    margin-left: 8px;
+  }
+
+  .errorTable {
+    margin-top: 20px;
+    width: 100%;
+    overflow-x: auto;
+  }
+
+  .errorTable h4 {
+    color: #d32f2f;
+    margin-bottom: 15px;
+  }
+
+  .errorTable table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+
+  .errorTable th,
+  .errorTable td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+    font-size: 14px;
+  }
+
+  .errorTable th {
+    background-color: #f5f5f5;
+    font-weight: 600;
+    color: #333;
+  }
+
+  .errorTable td {
+    color: #666;
+  }
+
+  .errorTable tr:last-child td {
+    border-bottom: none;
+  }
+
+  .errorTable tr:hover td {
+    background-color: #f9f9f9;
+  }
+
+  .errorTable td:nth-child(4) {
+    color: #d32f2f;
+    max-width: 300px;
+    word-break: break-word;
+  }
+
+  .errorTableContainer {
+    margin-top: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e0e0e0;
+  }
+
+  .errorTableHeader {
+    padding: 16px 20px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f8f8f8;
+    border-radius: 8px 8px 0 0;
+  }
+
+  .errorTableHeader h4 {
+    margin: 0;
+    color: #d32f2f;
+    font-size: 16px;
+    font-weight: 500;
+  }
+
+  .closeErrorBtn {
+    background: none;
+    border: none;
+    color: #666;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+  }
+
+  .closeErrorBtn:hover {
+    background-color: #eee;
+    color: #333;
+  }
+
+  .errorTableWrapper {
+    max-height: 400px;
+    overflow-y: auto;
+    padding: 0 20px;
+  }
+
+  .errorTableWrapper table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+  }
+
+  .errorTableWrapper th,
+  .errorTableWrapper td {
+    padding: 12px 8px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+    font-size: 14px;
+  }
+
+  .errorTableWrapper th {
+    background-color: #fff;
+    font-weight: 600;
+    color: #333;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+  }
+
+  .errorTableWrapper td {
+    color: #666;
+  }
+
+  .errorTableWrapper tr:last-child td {
+    border-bottom: none;
+  }
+
+  .errorTableWrapper tr:hover td {
+    background-color: #f9f9f9;
+  }
+
+  .errorTableWrapper td:nth-child(4) {
+    color: #d32f2f;
+    max-width: 300px;
+    word-break: break-word;
+  }
+
+  .errorTableWrapper::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .errorTableWrapper::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+  }
+
+  .errorTableWrapper::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 4px;
+  }
+
+  .errorTableWrapper::-webkit-scrollbar-thumb:hover {
+    background: #bbb;
+  }
+
+  .loadingSpinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .spinnerIcon {
+    width: 48px;
+    height: 48px;
+    fill: #2196f3;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .uploadLoading {
+    text-align: center;
+    padding: 40px 20px;
+    border-radius: 8px;
+    margin: 20px 0;
+    background-color: #e3f2fd;
+    border: 1px solid #2196f3;
+  }
+
+  .uploadLoading h3 {
+    color: #1976d2;
+    margin: 16px 0 8px;
+    font-size: 1.2rem;
+  }
+
+  .uploadLoading p {
+    color: #666;
+    margin: 8px 0;
+    font-size: 0.9rem;
+  }
+
+  /* Button loading state */
+  .confirmBtn:disabled .loadingSpinner {
+    opacity: 0.8;
+  }
+
+  .confirmBtn:disabled .spinnerIcon {
+    width: 20px;
+    height: 20px;
+  }
