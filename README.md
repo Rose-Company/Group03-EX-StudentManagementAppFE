@@ -1,4 +1,4 @@
-# Exercise 1: Student Management System
+# Exercise 1 + 2: Student Management System
 
 ## 📌 Giới thiệu
 
