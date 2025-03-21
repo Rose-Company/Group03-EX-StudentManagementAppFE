@@ -1,6 +1,9 @@
 import PropTypes from "prop-types";
 import styles from "./UploadModal.module.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { uploadFile, confirmFileImport } from "../../services/studentManagementService";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const UploadModal = ({ isOpen, onClose }) => {
   // 1. State declarations
@@ -8,6 +11,9 @@ const UploadModal = ({ isOpen, onClose }) => {
   const [isDragOver, setIsDragOver] = useState(false);
   const [uploadStatus, setUploadStatus] = useState(null); // 'success' or 'error'
   const [errorMessage, setErrorMessage] = useState("");
+  const [fileData, setFileData] = useState(null);
+  const [importErrors, setImportErrors] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   if (!isOpen) return null;
 
@@ -17,6 +23,8 @@ const UploadModal = ({ isOpen, onClose }) => {
     setIsDragOver(false);
     setUploadStatus(null);
     setErrorMessage("");
+    setFileData(null);
+    setImportErrors(null);
   };
 
   // 3. Validation functions
@@ -53,32 +61,209 @@ const UploadModal = ({ isOpen, onClose }) => {
     setIsDragOver(false);
   };
 
-  const handleDrop = (e) => {
+  const handleDrop = async (e) => {
     e.preventDefault();
     setIsDragOver(false);
     const file = e.dataTransfer.files[0];
+    console.log("handleDrop - Selected file:", file);
+    
     if (file && validateFile(file)) {
       setSelectedFile(file);
+      setIsLoading(true); // Bắt đầu loading
+      try {
+        console.log("handleDrop - Uploading file...");
+        const response = await uploadFile(file);
+        console.log("handleDrop - Upload response:", response);
+        
+        if (response && response.download_url) {
+          console.log("handleDrop - Setting file data with response:", response);
+          setFileData({
+            download_url: response.download_url,
+            file_name: response.file_name,
+          });
+          setUploadStatus('success');
+          toast.success('🎉 Tải file lên thành công!', {
+            position: "top-right",
+            autoClose: 2000,
+          });
+        } else {
+          console.log("handleDrop - Response structure:", response);
+          throw new Error("Không nhận được download URL");
+        }
+      } catch (error) {
+        console.error("handleDrop - Upload error:", error);
+        setUploadStatus('error');
+        setErrorMessage("Lỗi khi tải lên file");
+        toast.error('❌ Lỗi khi tải file lên', {
+          position: "top-right",
+          autoClose: 3000,
+        });
+      } finally {
+        setIsLoading(false); // Kết thúc loading
+      }
     }
   };
-
-  const handleFileChange = (e) => {
+  
+  const handleFileChange = async (e) => {
     const file = e.target.files[0];
+    console.log("handleFileChange - Selected file:", file);
+    
     if (file && validateFile(file)) {
       setSelectedFile(file);
+      setIsLoading(true); // Bắt đầu loading
+      try {
+        console.log("handleFileChange - Uploading file...");
+        const response = await uploadFile(file);
+        console.log("handleFileChange - Upload response:", response);
+        
+        if (response && response.download_url) {
+          console.log("handleFileChange - Setting file data with response:", response);
+          setFileData({
+            download_url: response.download_url,
+            file_name: response.file_name,
+          });
+          setUploadStatus('success');
+          toast.success('🎉 Tải file lên thành công!', {
+            position: "top-right",
+            autoClose: 2000,
+          });
+        } else {
+          console.log("handleFileChange - Response structure:", response);
+          throw new Error("Không nhận được download URL");
+        }
+      } catch (error) {
+        console.error("handleFileChange - Upload error:", error);
+        setUploadStatus('error');
+        setErrorMessage("Lỗi khi tải lên file");
+        toast.error('❌ Lỗi khi tải file lên', {
+          position: "top-right",
+          autoClose: 3000,
+        });
+      } finally {
+        setIsLoading(false); // Kết thúc loading
+      }
     }
   };
+  const handleConfirm = async () => {
+    console.log("1. handleConfirm triggered");
+    console.log("2. Current fileData:", fileData);
+    if (!fileData || !fileData.download_url) {
+      setErrorMessage("Không tìm thấy thông tin file");
+      return;
+    }
+  
+    try {
+      setIsLoading(true); // Bắt đầu loading
+      const response = await confirmFileImport(fileData.download_url);
+      console.log("API Response:", response);
 
-  const handleConfirm = () => {
-    // TO DO: Xử lý upload file lên server
-    console.log("Uploading file:", selectedFile);
+      // Kiểm tra nếu có lỗi import
+      if (response.data && response.data.failed_records && response.data.failed_records.length > 0) {
+        const { successful_count, failed_count, failed_records } = response.data;
+        setImportErrors(response.data);
+        setUploadStatus('error');
+        setErrorMessage(`Import thất bại: ${failed_count} bản ghi lỗi, ${successful_count} bản ghi thành công`);
+        return;
+      }
+      
+      // Nếu không có lỗi, xem như import thành công
+      toast.success('🎉 Import sinh viên thành công!', {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "colored",
+        style: {
+          backgroundColor: '#4caf50',
+          color: 'white',
+        }
+      });
+      
+      resetModalState();
+      onClose();
+
+    } catch (error) {
+      console.error("Import error:", error);
+      setUploadStatus('error');
+      
+      if (error.response?.data?.data?.failed_records) {
+        setImportErrors(error.response.data.data);
+        toast.error('❌ Có lỗi xảy ra khi import sinh viên', {
+          position: "top-right",
+          autoClose: 5000,
+          theme: "colored",
+          style: {
+            backgroundColor: '#f44336',
+            color: 'white',
+          }
+        });
+      } else {
+        toast.error(error.response?.data?.message || '❌ Lỗi kết nối server', {
+          position: "top-right",
+          autoClose: 5000,
+          theme: "colored",
+          style: {
+            backgroundColor: '#f44336',
+            color: 'white',
+          }
+        });
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
-
+  
   const handleChangeFile = () => {
     // Reset trạng thái để chọn file mới
     setSelectedFile(null);
     setUploadStatus(null);
     setErrorMessage("");
+  };
+
+  // 5. Render helper functions
+  const renderImportErrors = () => {
+    if (!importErrors || !importErrors.failed_records) return null;
+
+    return (
+      <div className={styles.errorTableContainer}>
+        <div className={styles.errorTableHeader}>
+          <h4>
+            Chi tiết lỗi import: {importErrors.failed_count} bản ghi lỗi, 
+            {importErrors.successful_count} bản ghi thành công
+          </h4>
+          <button 
+            className={styles.closeErrorBtn}
+            onClick={() => setImportErrors(null)}
+          >
+            ✕
+          </button>
+        </div>
+        <div className={styles.errorTableWrapper}>
+          <table>
+            <thead>
+              <tr>
+                <th>STT</th>
+                <th>Mã số sinh viên</th>
+                <th>Email</th>
+                <th>Lỗi</th>
+              </tr>
+            </thead>
+            <tbody>
+              {importErrors.failed_records.map((record, index) => (
+                <tr key={index}>
+                  <td>{record.row_number}</td>
+                  <td>{record.student_code}</td>
+                  <td>{record.email}</td>
+                  <td>{record.error}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    );
   };
 
   // 5. Render helper functions
@@ -103,6 +288,20 @@ const UploadModal = ({ isOpen, onClose }) => {
   );
 
   const renderUploadStatus = () => {
+    if (isLoading) {
+      return (
+        <div className={styles.uploadLoading}>
+          <div className={styles.loadingSpinner}>
+            <svg className={styles.spinnerIcon} viewBox="0 0 24 24">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/>
+            </svg>
+          </div>
+          <h3>Đang tải file lên...</h3>
+          <p>Vui lòng đợi trong giây lát</p>
+        </div>
+      );
+    }
+
     if (uploadStatus === 'success') {
       return (
         <div className={styles.uploadSuccess}>
@@ -166,8 +365,21 @@ const UploadModal = ({ isOpen, onClose }) => {
           <button className={styles.changeFileBtn} onClick={handleChangeFile}>
             Thay đổi tệp
           </button>
-          <button className={styles.confirmBtn} onClick={handleConfirm}>
-            Xác nhận giao dịch
+          <button 
+            className={styles.confirmBtn} 
+            onClick={handleConfirm}
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <span className={styles.loadingSpinner}>
+                <svg className={styles.spinnerIcon} viewBox="0 0 24 24">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/>
+                </svg>
+                Đang xử lý...
+              </span>
+            ) : (
+              'Xác nhận giao dịch'
+            )}
           </button>
         </>
       );
@@ -222,6 +434,7 @@ const UploadModal = ({ isOpen, onClose }) => {
         <div className={styles.modalBody}>
           {renderInfoSection()}
           {renderUploadStatus()}
+          {importErrors && renderImportErrors()}
         </div>
 
         <div className={styles.modalFooter}>
