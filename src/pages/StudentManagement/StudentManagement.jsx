@@ -12,15 +12,14 @@ import {
   sortStudent,
   searchStudentByID,
   createAStudent,
-  getStudentByNameAndFacutly
+  getStudentByNameAndFacutly,
 } from "../../services/studentManagementService";
 import UploadModal from "../../components/Student/UploadModal";
+import ExportModal from "../../components/Student/ExportModal";
 
 function StudentManagement() {
   const [isPopUpOpened, setIsPopUpOpened] = useState(false);
-  const [isImportModalOpen, setIsImportModalOpen] = useState(false);
-  const [importStatus, setImportStatus] = useState({ success: false, error: false });
-  const [selectedFile, setSelectedFile] = useState(null);
+
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [faculties, setFaculties] = useState([]);
@@ -33,6 +32,7 @@ function StudentManagement() {
   const [sortField, setSortField] = useState("");
   const [facultyFilter, setFacultyFilter] = useState("");
   const [sortOrder, setSortOrder] = useState("");
+  const [isExportModalOpen, setIsExportModalOpen] = useState(false);
   const createAddress = () => ({
     street: "",
     ward: "",
@@ -64,11 +64,6 @@ function StudentManagement() {
     program: "",
     status_id: "",
     user_id: "",
-
-  });
-  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
-
-
     // Địa chỉ
     permanent_address: createAddress(),
     temp_address: createAddress(),
@@ -79,6 +74,8 @@ function StudentManagement() {
     cmnd: createDocument(),
     passPort: createDocument(),
   });
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+
   const studentColumns = [
     { key: "fullname", label: "Name" },
     { key: "student_code", label: "Student ID" },
@@ -88,7 +85,6 @@ function StudentManagement() {
   ];
   // Hàm tính tổng số trang
   const getTotalPages = (total, pageSize) => Math.ceil(total / pageSize);
-
 
   useEffect(() => {
     const delayDebounce = setTimeout(async () => {
@@ -114,7 +110,12 @@ function StudentManagement() {
         }
         //Trường hợp tìm kiếm theo khoa hoặc theo tên
         else if (facultyFilter.trim() !== "" || searchText.trim() !== "") {
-          const data = await getStudentByNameAndFacutly(searchText, page, 10, facultyFilter);
+          const data = await getStudentByNameAndFacutly(
+            searchText,
+            page,
+            10,
+            facultyFilter
+          );
           if (data) {
             const studentsWithFacultyName = data.items.map((student) => {
               const faculty = faculties.find(
@@ -130,7 +131,6 @@ function StudentManagement() {
           } else {
             setStudents([]);
           }
-
         }
       } catch (error) {
         console.error("Error searching students:", error);
@@ -234,7 +234,7 @@ function StudentManagement() {
   const handleNextPage = () => setPage(page + 1);
 
   const handleStudentClick = (student) => {
-    setSelectedStudent(String(student.student_code));
+    setSelectedStudent(String(student.id));
     setIsModalOpen(true);
   };
 
@@ -324,12 +324,11 @@ function StudentManagement() {
     setSearchText(event.target.value);
   };
 
-
   const handleFilterByFaculty = (e) => {
     //chỗ này đổi thành set theo tên khoa chứ ko phải khoa id
     setFacultyFilter(e.target.value);
     console.log("Selected Faculty ID: ", facultyFilter);
-  }
+  };
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setNewStudent((prev) => ({
@@ -361,7 +360,7 @@ function StudentManagement() {
   };
   const handleOpenFilter = () => {
     setIsFilterOpen(!isFilterOpen);
-  }
+  };
 
   useEffect(() => {
     const currentUser = localStorage.getItem("user_id");
@@ -438,7 +437,6 @@ function StudentManagement() {
     };
 
     try {
-
       const response = await createAStudent(studentData);
       console.log("Add student response:", response);
       if (response.code === 200) {
@@ -473,65 +471,20 @@ function StudentManagement() {
     }
   };
 
-  // Hàm xử lý mở/đóng modal import
-  const handleOpenImportModal = () => setIsImportModalOpen(true);
-  const handleCloseImportModal = () => {
-    setIsImportModalOpen(false);
-    setImportStatus({ success: false, error: false });
-    setSelectedFile(null);
-  };
-
-  // Hàm xử lý khi file được chọn
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      // Kiểm tra định dạng file (CSV hoặc JSON)
-      const fileExt = file.name.split('.').pop().toLowerCase();
-      if (fileExt === 'csv' || fileExt === 'json') {
-        setSelectedFile(file);
-        setImportStatus({ success: false, error: false });
-      } else {
-        setImportStatus({ success: false, error: true });
-        setSelectedFile(null);
-      }
-    }
-  };
-
-  // Hàm xử lý khi kéo file vào khu vực drop
-  const handleDragOver = (e) => {
-    e.preventDefault();
-  };
-
-  const handleDrop = (e) => {
-    e.preventDefault();
-    const file = e.dataTransfer.files[0];
-    if (file) {
-      const fileExt = file.name.split('.').pop().toLowerCase();
-      if (fileExt === 'csv' || fileExt === 'json') {
-        setSelectedFile(file);
-        setImportStatus({ success: false, error: false });
-      } else {
-        setImportStatus({ success: false, error: true });
-        setSelectedFile(null);
-      }
-    }
-  };
-
-  // Hàm xử lý khi submit file
-  const handleImportFile = () => {
-    // Giả lập thành công
-    // Trong thực tế, bạn sẽ gọi API để upload file
-    if (selectedFile) {
-      setImportStatus({ success: true, error: false });
-    }
-  };
-
   const handleOpenUploadModal = () => {
     setIsUploadModalOpen(true);
   };
 
   const handleCloseUploadModal = () => {
     setIsUploadModalOpen(false);
+  };
+
+  const handleOpenExportModal = () => {
+    setIsExportModalOpen(true);
+  };
+
+  const handleCloseExportModal = () => {
+    setIsExportModalOpen(false);
   };
 
   return (
@@ -549,11 +502,14 @@ function StudentManagement() {
           <button onClick={handleOpenUploadModal} className={styles.importBtn}>
             Import file
           </button>
+          <button onClick={handleOpenExportModal} className={styles.exportBtn}>
+            Export file
+          </button>
         </div>
 
         <div className={styles.searchFilter}>
           <button onClick={handleOpenFilter} className={styles.filterDrop}>
-            <i className='bx bx-filter-alt'></i>
+            <i className="bx bx-filter-alt"></i>
           </button>
           <input
             onChange={handleSearchStudent}
@@ -598,7 +554,9 @@ function StudentManagement() {
                       type="radio"
                       name="sort"
                       value="id-asc"
-                      checked={sortField === "student_code" && sortOrder === "asc"}
+                      checked={
+                        sortField === "student_code" && sortOrder === "asc"
+                      }
                       onChange={() => {
                         setSortField("student_code");
                         setSortOrder("asc");
@@ -611,7 +569,9 @@ function StudentManagement() {
                       type="radio"
                       name="sort"
                       value="id-desc"
-                      checked={sortField === "student_code" && sortOrder === "desc"}
+                      checked={
+                        sortField === "student_code" && sortOrder === "desc"
+                      }
                       onChange={() => {
                         setSortField("student_code");
                         setSortOrder("desc");
@@ -667,10 +627,12 @@ function StudentManagement() {
           )}
         </div>
 
-
         <div className={styles.studentList}>
-
-          <Table columns={studentColumns} data={students} onRowClick={handleStudentClick} />
+          <Table
+            columns={studentColumns}
+            data={students}
+            onRowClick={handleStudentClick}
+          />
           <div className={styles.pagination}>
             {page > 1 ? <button onClick={handlePrevPage}>Prev</button> : <></>}
             <span>Page {page}</span>
@@ -706,7 +668,14 @@ function StudentManagement() {
         />
       )}
 
-      <UploadModal isOpen={isUploadModalOpen} onClose={handleCloseUploadModal} />
+      <UploadModal
+        isOpen={isUploadModalOpen}
+        onClose={handleCloseUploadModal}
+      />
+      <ExportModal
+        isOpen={isExportModalOpen}
+        onClose={handleCloseExportModal}
+      />
     </>
   );
 }

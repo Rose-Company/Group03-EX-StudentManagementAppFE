@@ -11,7 +11,7 @@ export const createAStudent = async (studentData) => {
       faculty_id: parseInt(studentData.faculty_id),
       batch: studentData.batch,
       program: studentData.program,
-      program_id:1,
+      program_id: 1,
       address: "",
       email: studentData.email,
       phone: studentData.phone,
@@ -41,7 +41,7 @@ export const createAStudent = async (studentData) => {
           district: studentData.temp_address.district,
           city: studentData.temp_address.city,
           country: studentData.temp_address.country,
-        }
+        },
       ],
       documents: [
         {
@@ -52,7 +52,7 @@ export const createAStudent = async (studentData) => {
           expiry_date: new Date(studentData.cccd.expiry_date).toISOString(),
           country_of_issue: studentData.cccd.country_of_issue,
           has_chip: studentData.cccd.has_chip,
-          notes: ""
+          notes: "",
         },
         {
           document_type: "CMND",
@@ -62,7 +62,7 @@ export const createAStudent = async (studentData) => {
           expiry_date: new Date(studentData.cmnd.expiry_date).toISOString(),
           country_of_issue: studentData.cmnd.country_of_issue,
           has_chip: studentData.cmnd.has_chip,
-          notes: ""
+          notes: "",
         },
         {
           document_type: "Passport",
@@ -72,9 +72,9 @@ export const createAStudent = async (studentData) => {
           expiry_date: new Date(studentData.passPort.expiry_date).toISOString(),
           country_of_issue: studentData.passPort.country_of_issue,
           has_chip: studentData.passPort.has_chip,
-          notes: ""
-        }
-      ]
+          notes: "",
+        },
+      ],
     };
 
     console.log("Request Data:", JSON.stringify(requestData, null, 2));
@@ -90,7 +90,6 @@ export const createAStudent = async (studentData) => {
     throw error;
   }
 };
-
 
 // Search student by ID
 export const searchStudentByID = async (id, page, pageSize) => {
@@ -148,13 +147,13 @@ export const getStudentByNameAndFacutly = async (
   fullname,
   page = 1,
   pageSize = 10,
-  faculty_name,
+  faculty_name
 ) => {
   try {
     const response = await api.get("/v1/students", {
       params: {
-
-        faculty_name, fullname
+        faculty_name,
+        fullname,
       },
     });
     return response.data;
@@ -261,12 +260,12 @@ export const sortStudent = async (field, type, page = 1, pageSize = 10) => {
 // Upload file
 export const uploadFile = async (file) => {
   const formData = new FormData();
-  formData.append('file', file);
+  formData.append("file", file);
 
   try {
-    const response = await api.post('/v1/admins/imported-file', formData, {
+    const response = await api.post("/v1/admins/imported-file", formData, {
       headers: {
-        'Content-Type': 'multipart/form-data',
+        "Content-Type": "multipart/form-data",
       },
     });
 
@@ -280,15 +279,15 @@ export const uploadFile = async (file) => {
 // Confirm file import
 export const confirmFileImport = async (downloadUrl) => {
   try {
-    const response = await api.post('/v1/students/import-from-file', 
+    const response = await api.post(
+      "/v1/students/import-from-file",
       {
-        "file": downloadUrl // Đảm bảo gửi đúng format với key "file"
+        file: downloadUrl, // Đảm bảo gửi đúng format với key "file"
       },
       {
         headers: {
-          'Content-Type': 'application/json',
-    
-        }
+          "Content-Type": "application/json",
+        },
       }
     );
     return response.data;
@@ -298,6 +297,24 @@ export const confirmFileImport = async (downloadUrl) => {
   }
 };
 
+export const exportFile = async (type) => {
+  try {
+    const response = await api.get(`/v1/students/exported-file?type=${type}`, {
+      responseType: "blob", // Đảm bảo response trả về Blob
+      headers: {
+        Accept: type === "csv" ? "text/csv" : "application/json",
+      },
+    });
+
+    if (!response || !response.data) {
+      throw new Error("Empty response from server");
+    }
+
+    return response.data;
+  } catch (error) {
+    console.error("Export Error:", error.response?.data || error.message);
+    throw error;
+  }
+};
+
 export default api;
-
-
