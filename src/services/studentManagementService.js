@@ -11,73 +11,12 @@ export const createAStudent = async (studentData) => {
       faculty_id: parseInt(studentData.faculty_id),
       batch: studentData.batch,
       program: studentData.program,
-      program_id:1,
-      address: "",
+      address: studentData.address,
       email: studentData.email,
       phone: studentData.phone,
-      nationality: "Vietnam",
       status_id: parseInt(studentData.status_id),
-      addresses: [
-        {
-          address_type: "Permanent",
-          street: studentData.permanent_address.street,
-          ward: studentData.permanent_address.ward,
-          district: studentData.permanent_address.district,
-          city: studentData.permanent_address.city,
-          country: studentData.permanent_address.country,
-        },
-        {
-          address_type: "Temporary",
-          street: studentData.temp_address.street,
-          ward: studentData.temp_address.ward,
-          district: studentData.temp_address.district,
-          city: studentData.temp_address.city,
-          country: studentData.temp_address.country,
-        },
-        {
-          address_type: "Mailing",
-          street: studentData.mailing_address.street,
-          ward: studentData.temp_address.ward,
-          district: studentData.temp_address.district,
-          city: studentData.temp_address.city,
-          country: studentData.temp_address.country,
-        }
-      ],
-      documents: [
-        {
-          document_type: "CCCD",
-          document_number: studentData.cccd.document_number,
-          issue_date: new Date(studentData.cccd.issue_date).toISOString(),
-          issue_place: studentData.cccd.issue_place,
-          expiry_date: new Date(studentData.cccd.expiry_date).toISOString(),
-          country_of_issue: studentData.cccd.country_of_issue,
-          has_chip: studentData.cccd.has_chip,
-          notes: ""
-        },
-        {
-          document_type: "CMND",
-          document_number: studentData.cmnd.document_number,
-          issue_date: new Date(studentData.cmnd.issue_date).toISOString(),
-          issue_place: studentData.cmnd.issue_place,
-          expiry_date: new Date(studentData.cmnd.expiry_date).toISOString(),
-          country_of_issue: studentData.cmnd.country_of_issue,
-          has_chip: studentData.cmnd.has_chip,
-          notes: ""
-        },
-        {
-          document_type: "Passport",
-          document_number: studentData.passPort.document_number,
-          issue_date: new Date(studentData.passPort.issue_date).toISOString(),
-          issue_place: studentData.passPort.issue_place,
-          expiry_date: new Date(studentData.passPort.expiry_date).toISOString(),
-          country_of_issue: studentData.passPort.country_of_issue,
-          has_chip: studentData.passPort.has_chip,
-          notes: ""
-        }
-      ]
     };
 
-    console.log("Request Data:", JSON.stringify(requestData, null, 2));
     const response = await api.post("/v1/students/create", requestData);
 
     if (response.data.code === 400) {
@@ -87,10 +26,12 @@ export const createAStudent = async (studentData) => {
     return response.data;
   } catch (error) {
     console.error("API Error:", error.response?.data || error.message);
+    if (error.response?.data) {
+      console.error("Detailed error:", error.response.data);
+    }
     throw error;
   }
 };
-
 
 // Search student by ID
 export const searchStudentByID = async (id, page, pageSize) => {
@@ -134,27 +75,6 @@ export const getStudentByFullName = async (
         fullname,
         page_size: pageSize,
         page,
-      },
-    });
-    return response.data;
-  } catch (error) {
-    console.error("Error fetching student by fullname:", error);
-    return null;
-  }
-};
-
-//Get student by name, faculty
-export const getStudentByNameAndFacutly = async (
-  fullname,
-  page = 1,
-  pageSize = 10,
-  faculty_name,
-) => {
-  try {
-    const response = await api.get("/v1/students", {
-      params: {
-
-        faculty_name, fullname
       },
     });
     return response.data;

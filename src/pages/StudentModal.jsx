@@ -1,12 +1,10 @@
-// src/components/Student/StudentModal.jsx
 import { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import {
   getStudentById,
   getStatuses,
-} from "../../services/studentManagementService";
-import StudentForm from "./StudentForm";
-import styles from "./StudentModal.module.css";
+} from "../services/studentManagementService";
+import "./StudentModal.css";
 
 const StudentModal = ({
   studentId,
@@ -93,6 +91,7 @@ const StudentModal = ({
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    console.log("Input changed:", name, value);
     setFormData((prev) => ({
       ...prev,
       [name]: value,
@@ -187,11 +186,11 @@ const StudentModal = ({
       }
 
       // Show loading state
-      const deleteButton = document.querySelector(`.${styles.deleteButton}`);
+      const deleteButton = document.querySelector(".delete-button");
       if (deleteButton) {
         deleteButton.disabled = true;
         deleteButton.innerHTML =
-          '<i className="bx bx-loader-alt bx-spin"></i> Deleting...';
+          '<i class="bx bx-loader-alt bx-spin"></i> Deleting...';
       }
 
       await onDelete(studentId);
@@ -199,16 +198,18 @@ const StudentModal = ({
       window.location.reload(); // Làm mới trang
     } catch (error) {
       console.error("Error deleting student:", error);
+      // Show more specific error message
       const errorMessage =
         error.response?.data?.message ||
         error.message ||
         "Failed to delete student. Please try again.";
       alert(errorMessage);
     } finally {
-      const deleteButton = document.querySelector(`.${styles.deleteButton}`);
+      // Reset button state if modal is still open
+      const deleteButton = document.querySelector(".delete-button");
       if (deleteButton) {
         deleteButton.disabled = false;
-        deleteButton.innerHTML = '<i className="bx bx-trash"></i> Delete';
+        deleteButton.innerHTML = '<i class="bx bx-trash"></i> Delete';
       }
     }
   };
@@ -220,7 +221,7 @@ const StudentModal = ({
     }
 
     if (JSON.stringify(formData) !== JSON.stringify(initialFormData.current)) {
-      window.location.reload();
+      window.location.reload(); // Làm mới trang nếu dữ liệu đã thay đổi
     }
     onClose();
   };
@@ -229,61 +230,208 @@ const StudentModal = ({
 
   return (
     <div
-      className={styles.modalOverlay}
+      className="modal-overlay"
       onClick={(e) => {
-        if (e.target.className === styles.modalOverlay) {
+        // Chỉ đóng modal khi click trực tiếp vào overlay
+        if (e.target.className === "modal-overlay") {
           handleClose(e);
         }
       }}
     >
       <div
-        className={`${styles.modalContent} ${isEditing ? styles.editMode : ""}`}
+        className={`modal-content ${isEditing ? "edit-mode" : ""}`}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className={styles.editModeIndicator}>Editing Mode</div>
-        <button className={styles.closeButton} onClick={handleClose}>
+        <div className="edit-mode-indicator">Editing Mode</div>
+        <button className="close-button" onClick={handleClose}>
           &times;
         </button>
 
         <h2>{isEditing ? "Edit Student" : "Student Details"}</h2>
 
         <form onSubmit={handleSubmit}>
-          <StudentForm
-            initialData={formData}
-            faculties={faculties}
-            statuses={statuses}
-            onChange={handleInputChange}
-            isDisabled={!isEditing}
-            styles={styles} // Truyền styles xuống component con
-          />
+          <div className={`form-group ${isEditing ? "editable" : ""}`}>
+            <div>
+              <label>Student Code</label>
+              <input
+                type="number"
+                name="student_code"
+                value={formData.student_code}
+                onChange={handleInputChange}
+                disabled={!isEditing}
+                min="0"
+              />
+            </div>
 
-          <div className={styles.modalActions}>
+            <div>
+              <label>Full Name</label>
+              <input
+                type="text"
+                name="fullname"
+                value={formData.fullname}
+                onChange={handleInputChange}
+                disabled={!isEditing}
+              />
+            </div>
+
+            <div>
+              <label>Date of Birth</label>
+              <input
+                type="date"
+                name="date_of_birth"
+                value={formData.date_of_birth}
+                onChange={handleInputChange}
+                disabled={!isEditing}
+              />
+            </div>
+
+            <div>
+              <label>Gender</label>
+              <select
+                name="gender"
+                value={formData.gender}
+                onChange={handleInputChange}
+                disabled={!isEditing}
+              >
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+
+            <div>
+              <label>Faculty</label>
+              <select
+                name="faculty_id"
+                value={formData.faculty_id}
+                onChange={handleInputChange}
+                disabled={!isEditing}
+              >
+                <option value="">Select Faculty</option>
+                {faculties?.map((faculty) => (
+                  <option key={faculty.id} value={faculty.id}>
+                    {faculty.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label>Batch</label>
+              <input
+                type="text"
+                name="batch"
+                value={formData.batch}
+                onChange={handleInputChange}
+                disabled={!isEditing}
+              />
+            </div>
+
+            <div>
+              <label>Program</label>
+              <input
+                type="text"
+                name="program"
+                value={formData.program}
+                onChange={handleInputChange}
+                disabled={!isEditing}
+              />
+            </div>
+
+            <div>
+              <label>Address</label>
+              <input
+                type="text"
+                name="address"
+                value={formData.address}
+                onChange={handleInputChange}
+                disabled={!isEditing}
+              />
+            </div>
+
+            <div>
+              <label>Email</label>
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleInputChange}
+                disabled={!isEditing}
+              />
+            </div>
+
+            <div>
+              <label>Phone</label>
+              <input
+                type="tel"
+                name="phone"
+                value={formData.phone}
+                onChange={handleInputChange}
+                disabled={!isEditing}
+              />
+            </div>
+
+            <div>
+              <label>Status</label>
+              <select
+                name="status_id"
+                value={formData.status_id}
+                onChange={handleInputChange}
+                disabled={!isEditing}
+                required
+              >
+                <option value="">Select Status</option>
+                {statuses.map((status) => (
+                  <option key={status.id} value={status.id}>
+                    {status.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          <div className="modal-actions">
             {!isEditing ? (
-              // Buttons for view mode
               <>
                 <button
                   type="button"
-                  className={styles.editButton}
-                  onClick={handleFieldClick}
+                  className="edit-button"
+                  onClick={(e) => {
+                    e.preventDefault(); // Ngăn hành vi mặc định
+                    e.stopPropagation(); // Ngăn sự kiện lan ra ngoài modal
+                    handleFieldClick(e);
+                  }}
                 >
-                  <i className="bx bx-edit"></i> Edit
+                  <i className="bx bx-edit"></i>
+                  Edit
                 </button>
                 <button
                   type="button"
-                  onClick={handleDelete}
-                  className={styles.deleteButton}
+                  onClick={(e) => {
+                    e.stopPropagation(); // Ngăn sự kiện lan ra ngoài modal
+                    handleDelete();
+                  }}
+                  className="delete-button"
                 >
-                  <i className="bx bx-trash"></i> Delete
+                  <i className="bx bx-trash"></i>
+                  Delete
                 </button>
               </>
             ) : (
-              // Buttons for edit mode
               <>
                 <button type="submit" onClick={handleSubmit}>
-                  <i className="bx bx-check"></i> Save
+                  <i className="bx bx-check"></i>
+                  Save
                 </button>
-                <button type="button" onClick={handleCancel}>
-                  <i className="bx bx-x"></i> Cancel
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation(); // Ngăn sự kiện lan ra ngoài modal
+                    handleCancel();
+                  }}
+                >
+                  <i className="bx bx-x"></i>
+                  Cancel
                 </button>
               </>
             )}

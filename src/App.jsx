@@ -4,11 +4,11 @@
 // import './App.css'
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Login from "./pages/Login/Login";
-import Home from "./pages/Home/Home";
+import Login from "./pages/Login";
+import Home from "./pages/Home";
 import Header from "./components/Header/Header";
-import StudentManagement from "./pages/StudentManagement/StudentManagement";
-import AboutGroup from "./pages/About/About";
+import StudentManagement from "./pages/StudentManagement";
+import AboutGroup from "./pages/About";
 import ProtectedRoute from "./components/common/ProtectedRoute";
 import "./App.css";
 
@@ -30,7 +30,7 @@ function App() {
           path="/management"
           element={
             <ProtectedRoute>
-              <Header />
+              <Header/>
               <StudentManagement />
             </ProtectedRoute>
           }

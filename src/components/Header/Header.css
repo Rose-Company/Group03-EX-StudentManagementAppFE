@@ -1,4 +1,3 @@
-/* Header.module.css */
 .header {
   background-color: #1a1a2e;
   color: white;
@@ -10,15 +9,15 @@
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-.headerScrolled {
+.header.scrolled {
   background-color: rgba(26, 26, 46, 0.95);
   padding: 10px 0;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
 }
 
-.headerContainer {
+.header-container {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-between; /* This already pushes items to opposite ends */
   align-items: center;
   padding: 0 40px 0 50px;
   max-width: 100%;
@@ -26,7 +25,7 @@
   height: 70px;
 }
 
-.logoContainer {
+.logo-container {
   display: flex;
   align-items: center;
   margin-right: auto;
@@ -39,7 +38,7 @@
   color: white;
 }
 
-.logoText {
+.logo-text {
   font-size: 24px;
   font-weight: 700;
   background: linear-gradient(45deg, #4facfe 0%, #00f2fe 100%);
@@ -48,13 +47,13 @@
   margin-left: 10px;
 }
 
-.navContainer {
+.nav-container {
   display: flex;
   align-items: center;
   margin-left: auto;
 }
 
-.navLinks {
+.nav-links {
   display: flex;
   list-style-type: none;
   padding: 0;
@@ -62,11 +61,11 @@
   align-items: center;
 }
 
-.navLinks li {
+.nav-links li {
   margin: 0 15px;
 }
 
-.navLinks li a {
+.nav-links li a {
   color: white;
   text-decoration: none;
   font-size: 16px;
@@ -77,7 +76,7 @@
   position: relative;
 }
 
-.navLinks li a:after {
+.nav-links li a:after {
   content: "";
   position: absolute;
   width: 0;
@@ -89,20 +88,20 @@
   transform: translateX(-50%);
 }
 
-.navLinks li a:hover:after,
-.navLinks li a.active:after {
+.nav-links li a:hover:after,
+.nav-links li a.active:after {
   width: 80%;
 }
 
-.navLinks li a:hover {
+.nav-links li a:hover {
   color: #4facfe;
 }
 
-.navLinks li a.active {
+.nav-links li a.active {
   color: #4facfe;
 }
 
-.loginButton {
+.login-button {
   background: linear-gradient(45deg, #4facfe 0%, #00f2fe 100%);
   color: white !important;
   padding: 10px 20px !important;
@@ -111,17 +110,17 @@
   box-shadow: 0 4px 15px rgba(79, 172, 254, 0.4);
 }
 
-.loginButton:hover {
+.login-button:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(79, 172, 254, 0.6);
   color: white !important;
 }
 
-.loginButton:after {
+.login-button:after {
   display: none;
 }
 
-.menuToggle {
+.menu-toggle {
   display: none;
   cursor: pointer;
 }
@@ -178,7 +177,7 @@
   color: #fff;
 }
 
-.logoutButton {
+.logout-button {
   background-color: #ff4d4d;
   color: #fff;
   border: none;
@@ -187,34 +186,34 @@
   cursor: pointer;
 }
 
-.logoutButton:hover {
+.logout-button:hover {
   background-color: #ff1a1a;
 }
 
-.userDropdown .dropdownMenu {
+.user-dropdown .dropdown-menu {
   background-color: white;
   border: 1px solid #ddd;
 }
 
-.userDropdown .dropdownItem {
+.user-dropdown .dropdown-item {
   color: black !important;
   font-size: 14px;
   padding: 8px 16px;
   transition: background 0.3s;
 }
 
-.userDropdown .dropdownItem:hover {
+.user-dropdown .dropdown-item:hover {
   background-color: #f0f0f0;
 }
 
 /* Responsive styles */
 @media (max-width: 768px) {
-  .menuToggle {
+  .menu-toggle {
     display: block;
     z-index: 1001;
   }
 
-  .navContainer {
+  .nav-container {
     position: fixed;
     top: 0;
     right: -100%;
@@ -227,16 +226,16 @@
     box-shadow: -5px 0 15px rgba(0, 0, 0, 0.2);
   }
 
-  .navContainer.active {
+  .nav-container.active {
     right: 0;
   }
 
-  .navLinks {
+  .nav-links {
     flex-direction: column;
     width: 100%;
   }
 
-  .navLinks li {
+  .nav-links li {
     margin: 15px 0;
     width: 100%;
     text-align: center;
@@ -248,17 +247,17 @@
     justify-content: center;
   }
 
-  .navLinks li a {
+  .nav-links li a {
     display: block;
     padding: 15px;
     font-size: 18px;
   }
 
-  .loginButton {
+  .login-button {
     margin-top: 20px;
     width: 80%;
   }
-  .logoutButton {
+  .logout-button {
     width: 80%;
   }
 }

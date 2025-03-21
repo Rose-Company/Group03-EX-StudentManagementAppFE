@@ -1,4 +1,4 @@
-.modalOverlay {
+.modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -12,7 +12,7 @@
   animation: fadeIn 0.2s ease-out;
 }
 
-.modalContent {
+.modal-content {
   background-color: white;
   padding: 2.5rem;
   border-radius: 12px;
@@ -25,25 +25,25 @@
   animation: slideIn 0.3s ease-out;
 }
 
-.modalContent::-webkit-scrollbar {
+.modal-content::-webkit-scrollbar {
   width: 8px;
 }
 
-.modalContent::-webkit-scrollbar-track {
+.modal-content::-webkit-scrollbar-track {
   background: #f1f1f1;
   border-radius: 4px;
 }
 
-.modalContent::-webkit-scrollbar-thumb {
+.modal-content::-webkit-scrollbar-thumb {
   background: #888;
   border-radius: 4px;
 }
 
-.modalContent::-webkit-scrollbar-thumb:hover {
+.modal-content::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
 
-.closeButton {
+.close-button {
   position: absolute;
   top: 1.25rem;
   right: 1.25rem;
@@ -62,13 +62,13 @@
   color: #666;
 }
 
-.closeButton:hover {
+.close-button:hover {
   background-color: #f0f0f0;
   color: #333;
   transform: rotate(90deg);
 }
 
-.modalContent h2 {
+h2 {
   margin-bottom: 2rem;
   color: #2c3e50;
   font-size: 1.75rem;
@@ -77,22 +77,22 @@
   padding-bottom: 1rem;
 }
 
-.formGroup {
+.form-group {
   margin-bottom: 1.5rem;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 1.5rem;
 }
 
-.formGroup > div {
+.form-group > div {
   grid-column: span 2;
 }
 
-.formGroup > div:not(.studentStatus) {
+.form-group > div:not(.student-status) {
   grid-column: span 1;
 }
 
-.formGroup label {
+.form-group label {
   display: block;
   margin-bottom: 0.5rem;
   font-weight: 500;
@@ -104,7 +104,7 @@
 }
 
 /* Add edit icon for editable fields */
-.formGroup label::after {
+.form-group label::after {
   content: "✎";
   opacity: 0;
   font-size: 0.9rem;
@@ -113,12 +113,12 @@
 }
 
 /* Show edit icon when form is in edit mode */
-.editable label::after {
+.form-group.editable label::after {
   opacity: 1;
 }
 
-.formGroup input,
-.formGroup select {
+.form-group input,
+.form-group select {
   width: 100%;
   padding: 0.75rem 1rem;
   border: 1.5px solid #e0e0e0;
@@ -130,8 +130,8 @@
 }
 
 /* Style for view mode */
-.formGroup input:disabled,
-.formGroup select:disabled {
+.form-group input:disabled,
+.form-group select:disabled {
   background-color: #f8f9fa;
   cursor: pointer;
   color: #2c3e50;
@@ -141,34 +141,34 @@
 }
 
 /* Hover effect for disabled fields to indicate clickable */
-.formGroup input:disabled:hover,
-.formGroup select:disabled:hover {
+.form-group input:disabled:hover,
+.form-group select:disabled:hover {
   background-color: #e9ecef;
   border-color: #e0e0e0;
 }
 
 /* Style for edit mode */
-.formGroup input:enabled,
-.formGroup select:enabled {
+.form-group input:enabled,
+.form-group select:enabled {
   background-color: #fff;
   border-color: #e0e0e0;
   cursor: text;
 }
 
-.formGroup input:focus,
-.formGroup select:focus {
+.form-group input:focus,
+.form-group select:focus {
   outline: none;
   border-color: #3498db;
   box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
 }
 
 /* Add subtle highlight effect on hover in view mode */
-.formGroup:hover input:disabled,
-.formGroup:hover select:disabled {
+.form-group:hover input:disabled,
+.form-group:hover select:disabled {
   background-color: #f0f4f8;
 }
 
-.modalActions {
+.modal-actions {
   margin-top: 2.5rem;
   display: flex;
   gap: 1rem;
@@ -177,7 +177,7 @@
   padding-top: 1.5rem;
 }
 
-.modalActions button {
+.modal-actions button {
   padding: 0.75rem 1.5rem;
   border: none;
   border-radius: 8px;
@@ -190,42 +190,42 @@
   gap: 0.5rem;
 }
 
-.modalActions button[type="submit"] {
+.modal-actions button[type="submit"] {
   background-color: #2ecc71;
   color: white;
 }
 
-.modalActions button[type="submit"]:hover {
+.modal-actions button[type="submit"]:hover {
   background-color: #27ae60;
   transform: translateY(-1px);
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-.modalActions button[type="button"] {
+.modal-actions button[type="button"] {
   background-color: #f8f9fa;
   color: #2c3e50;
   border: 1.5px solid #e0e0e0;
 }
 
-.modalActions button[type="button"]:hover {
+.modal-actions button[type="button"]:hover {
   background-color: #e9ecef;
   border-color: #dee2e6;
   transform: translateY(-1px);
 }
 
-.deleteButton {
-  background-color: #e74c3c !important;
-  color: white !important;
+.modal-actions .delete-button {
+  background-color: #e74c3c;
+  color: white;
 }
 
-.deleteButton:hover {
-  background-color: #c0392b !important;
+.modal-actions .delete-button:hover {
+  background-color: #c0392b;
   transform: translateY(-1px);
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 /* Edit mode indicator */
-.editModeIndicator {
+.edit-mode-indicator {
   position: absolute;
   top: 1.25rem;
   left: 1.25rem;
@@ -239,12 +239,12 @@
   transition: all 0.3s ease;
 }
 
-.editMode .editModeIndicator {
+.edit-mode .edit-mode-indicator {
   opacity: 1;
   transform: translateY(0);
 }
 
-/* Animations - Global keyframes */
+/* Animations */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -267,34 +267,34 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  .modalContent {
+  .modal-content {
     padding: 1.5rem;
     width: 95%;
   }
 
-  .formGroup {
+  .form-group {
     grid-template-columns: 1fr;
     gap: 1rem;
   }
 
-  .formGroup > div:not(.studentStatus) {
+  .form-group > div:not(.student-status) {
     grid-column: span 2;
   }
 
-  .modalContent h2 {
+  h2 {
     font-size: 1.5rem;
   }
 
-  .modalActions {
+  .modal-actions {
     flex-direction: column;
   }
 
-  .modalActions button {
+  .modal-actions button {
     width: 100%;
     justify-content: center;
   }
 
-  .editModeIndicator {
+  .edit-mode-indicator {
     top: auto;
     bottom: 1.25rem;
     left: 50%;

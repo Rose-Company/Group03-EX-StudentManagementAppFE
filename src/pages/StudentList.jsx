@@ -1,23 +1,21 @@
-// src/components/Student/StudentList.jsx
+import "./StudentManagement.css";
 import PropTypes from "prop-types";
-import styles from "../../pages/StudentManagement/StudentManagement.module.css";
 
 function StudentList({ students, onStudentClick }) {
   if (students.length === 0) {
     return (
-      <div className={styles.emptyList}>
+      <div className="empty-list">
         <img
           src="/images/list_empty.png"
           alt="empty"
-          className={styles.emptyListImg}
+          className="empty-list__img"
         />
-        <p className={styles.emptyListTitle}>There is no students!</p>
+        <p className="empty-list__title">There is no students!</p>
       </div>
     );
   }
-
   return (
-    <div className={styles.studentTable}>
+    <div className="student-table">
       <table>
         <thead>
           <tr>
@@ -32,12 +30,12 @@ function StudentList({ students, onStudentClick }) {
           {students.map((student) => (
             <tr
               key={student.id}
-              className={styles.highlightRow}
+              className="highlight-row"
               onClick={() => onStudentClick(student)}
               style={{ cursor: "pointer" }}
             >
-              <td className={styles.studentName}>
-                <button className={styles.studentAvatar}>
+              <td className="student-name">
+                <button className="student-avatar">
                   {student.fullname
                     .split(" ")
                     .map((word) => word[0])
