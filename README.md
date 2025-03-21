@@ -5,6 +5,20 @@
 Dự án này được xây dựng bằng **ReactJS** với mục tiêu hiển thị giao diện quản lý sinh viên một cách đơn giản.  
 Dự án sử dụng **React Router, Axios, vite** để tối ưu hóa trải nghiệm người dùng.
 
+Một số màn hình của app: https://drive.google.com/drive/folders/1P-8liODDr7JbQ5q_wrI-3WQLFU9IXwrQ?usp=drive_link
+
+**Các chức năng đã làm**:
+1. **Thêm sinh viên mới**: Nhập thông tin của một sinh viên và lưu vào danh sách.
+2. **Xóa sinh viên**: Xóa thông tin sinh viên dựa trên Mã số sinh viên (MSSV).
+3. **Cập nhật thông tin sinh viên**: Cập nhật thông tin của sinh viên dựa trên MSSV.
+4. **Tìm kiếm sinh viên**: Tìm kiếm sinh viên theo họ tên hoặc MSSV.
+5. Cho phép đổi tên & thêm mới: khoa, tình trạng sinh viên, chương trình
+6. Thêm chức năng tìm kiếm:  tìm theo khoa, khoa + tên
+7. Hỗ trợ import/export dữ liệu: CSV, JSON, XML, Excel (chọn ít nhất 2)
+8 Thêm logging mechanism để troubleshooting production issue & audit purposes
+
+**Ảnh minh họa về app**: https://drive.google.com/drive/folders/1P-8liODDr7JbQ5q_wrI-3WQLFU9IXwrQ?usp=sharing
+
 ---
 
 ## 📂 Cấu trúc source code
