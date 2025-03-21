@@ -10,7 +10,7 @@ Dự án sử dụng **React Router, Axios, vite** để tối ưu hóa trải n
 ## 📂 Cấu trúc source code
 
 Dự án có cấu trúc thư mục như sau:
-
+<pre>
 Group03-EX-StudentManagementAppFE/
 ├── public/                           # Static assets
 │   └── images/                       # Image files
@@ -62,7 +62,7 @@ Group03-EX-StudentManagementAppFE/
 ├── package.json                      # Project dependencies
 ├── README.md                         # Frontend documentation
 └── vite.config.js                    # Vite configuration
-
+</pre>
 ### Môi trường chạy dự án: Node.js v20.14.0
 
 https://nodejs.org/download/release/v20.14.0/
