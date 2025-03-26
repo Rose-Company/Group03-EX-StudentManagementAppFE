@@ -227,18 +227,6 @@ export const deleteStudent = async (id) => {
   }
 };
 
-// Get all faculties
-export const getFaculties = async () => {
-  const response = await api.get("/v1/faculties");
-  return response.data.data;
-};
-
-// Get all statuses
-export const getStatuses = async () => {
-  const response = await api.get("/v1/students/statuses");
-  return response.data.data;
-};
-
 //Sort Student
 export const sortStudent = async (field, type, page = 1, pageSize = 10) => {
   try {
@@ -275,7 +263,6 @@ export const uploadFile = async (file) => {
   }
 };
 
-// Confirm file import
 // Confirm file import
 export const confirmFileImport = async (downloadUrl) => {
   try {

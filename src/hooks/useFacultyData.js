@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getFaculties } from "../services/studentManagementService";
+import { getFaculties } from "../services/informationManagementService";
 
 export const useFacultyData = () => {
   const [faculties, setFaculties] = useState([]);
@@ -19,5 +19,5 @@ export const useFacultyData = () => {
     fetchFaculties();
   }, []);
 
-  return faculties;
+  return { faculties, setFaculties };
 };
