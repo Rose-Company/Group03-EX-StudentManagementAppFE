@@ -183,7 +183,7 @@ export const updateStudent = async (id, studentData) => {
 
     console.log("Request data:", requestData);
 
-    const response = await api.put(`/v1/students/${id}`, requestData);
+    const response = await api.patch(`/v1/students/${id}`, requestData);
 
     if (response.data.code === 400) {
       throw new Error(response.data.message || "Bad request");
@@ -202,7 +202,6 @@ export const updateStudent = async (id, studentData) => {
 // Delete student
 export const deleteStudent = async (id) => {
   try {
-    console.log("Deleting student with ID:", id);
     const response = await api.delete(`/v1/students/${id}`);
 
     console.log("Delete response:", response);
@@ -283,7 +282,7 @@ export const confirmFileImport = async (downloadUrl) => {
     const response = await api.post(
       "/v1/students/import-from-file",
       {
-        file: downloadUrl, 
+        file: downloadUrl,
       },
       {
         headers: {
@@ -291,13 +290,13 @@ export const confirmFileImport = async (downloadUrl) => {
         },
       }
     );
-    
+
     console.log("Import API response:", response);
-    
+
     if (response.data.code !== 0 && response.data.data) {
-      return response.data.data; 
+      return response.data.data;
     }
-    
+
     return response.data;
   } catch (error) {
     console.error("Import Error:", error);
