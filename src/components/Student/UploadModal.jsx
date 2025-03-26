@@ -167,6 +167,7 @@ const UploadModal = ({ isOpen, onClose }) => {
       }
     }
   };
+  
   const handleConfirm = async () => {
     console.log("1. handleConfirm triggered");
     console.log("2. Current fileData:", fileData);
@@ -174,34 +175,38 @@ const UploadModal = ({ isOpen, onClose }) => {
       setErrorMessage("Không tìm thấy thông tin file");
       return;
     }
-
+  
     try {
       setIsLoading(true);
       setLoadingText("Đang xử lý import...");
       const response = await confirmFileImport(fileData.download_url);
       console.log("API Response:", response);
-
-      if (
-        response.data &&
-        response.data.failed_records &&
-        response.data.failed_records.length > 0
-      ) {
-        const { successful_count, failed_count } = response.data;
-        setImportErrors(response.data);
+  
+      // Check if there are failed records in the response
+      if (response && response.failed_records && response.failed_records.length > 0) {
+        const { successful_count, failed_count } = response;
+        setImportErrors({
+          data: response,
+          failed_records: response.failed_records,
+          failed_count: failed_count,
+          successful_count: successful_count
+        });
         setUploadStatus("error");
         setErrorMessage(
           `Import thất bại: ${failed_count} bản ghi lỗi, ${successful_count} bản ghi thành công`
         );
+        showToast("error", "❌ Có lỗi xảy ra khi import sinh viên");
         return;
       }
-
+  
       showToast("success", "🎉 Import sinh viên thành công!");
       resetModalState();
       onClose();
     } catch (error) {
       console.error("Import error:", error);
       setUploadStatus("error");
-
+  
+      // Handle error response format
       if (error.response?.data?.data?.failed_records) {
         setImportErrors(error.response.data.data);
         showToast("error", "❌ Có lỗi xảy ra khi import sinh viên");
@@ -215,7 +220,7 @@ const UploadModal = ({ isOpen, onClose }) => {
       setIsLoading(false);
       setLoadingText("");
     }
-  };
+  }
 
   const handleChangeFile = () => {
     // Reset trạng thái để chọn file mới

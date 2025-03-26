@@ -20,15 +20,15 @@ function InformationManagement() {
 
     useEffect(() => {
         const fetchFaculties = async () => {
-            try {
+              try {
                 const data = await getFaculties();
-                if (data.code === 200 && data.data?.items) {
-                    setFaculties(data.data.items);
+                if (Array.isArray(data)) {
+                  setFaculties(data);
                 }
-            } catch (error) {
+              } catch (error) {
                 console.error("Error fetching faculties:", error);
-            }
-        };
+              }
+            };
         fetchFaculties();
     }, []);
 
@@ -81,8 +81,8 @@ function InformationManagement() {
     
             // Load lại danh sách Faculty sau khi cập nhật
             const data = await getFaculties();
-            if (data.code === 200 && data.data?.items) {
-                setFaculties(data.data.items);
+            if (Array.isArray(data)) {
+                setFaculties(data);
             }
             handleCloseModal();
         } catch (error) {
