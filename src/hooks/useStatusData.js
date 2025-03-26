@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getStatuses } from "../services/studentManagementService";
+import { getStatuses } from "../services/informationManagementService";
 
 export const useStatusData = () => {
   const [statuses, setStatuses] = useState([]);
@@ -19,5 +19,5 @@ export const useStatusData = () => {
     fetchStatuses();
   }, []);
 
-  return statuses;
+  return { statuses, setStatuses };
 };
