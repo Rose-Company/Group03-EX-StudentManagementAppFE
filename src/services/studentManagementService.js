@@ -84,7 +84,7 @@ export const createAStudent = async (studentData) => {
       throw new Error(response.data.message || "Bad request");
     }
 
-    return response.data;
+    return response.data.data;
   } catch (error) {
     console.error("API Error:", error.response?.data || error.message);
     throw error;
@@ -101,14 +101,14 @@ export const searchStudentByID = async (id, page, pageSize) => {
       page_size: pageSize,
     },
   });
-  return response.data;
+  return response.data.data;
 };
 
 // Search student by ID
 export const getStudentById = async (id) => {
   console.log("Fetching student with ID:", id);
   const response = await api.get(`/v1/students/${id}`);
-  return response.data;
+  return response.data.data;
 };
 
 // Get all students with pagination
@@ -119,7 +119,7 @@ export const getStudents = async (page = 1, pageSize = 10) => {
       page_size: pageSize,
     },
   });
-  return response.data;
+  return response.data.data;
 };
 
 export const getStudentByFullName = async (
@@ -135,7 +135,7 @@ export const getStudentByFullName = async (
         page,
       },
     });
-    return response.data;
+    return response.data.data;
   } catch (error) {
     console.error("Error fetching student by fullname:", error);
     return null;
@@ -156,7 +156,7 @@ export const getStudentByNameAndFacutly = async (
         fullname,
       },
     });
-    return response.data;
+    return response.data.data;
   } catch (error) {
     console.error("Error fetching student by fullname:", error);
     return null;
@@ -189,7 +189,7 @@ export const updateStudent = async (id, studentData) => {
       throw new Error(response.data.message || "Bad request");
     }
 
-    return response.data;
+    return response.data.data;
   } catch (error) {
     console.error("API Error:", error.response?.data || error.message);
     if (error.response?.data) {
@@ -217,7 +217,7 @@ export const deleteStudent = async (id) => {
       throw new Error(response.data.message || "Failed to delete student");
     }
 
-    return response.data;
+    return response.data.data;
   } catch (error) {
     console.error("Delete failed:", {
       error: error.message,
@@ -231,13 +231,13 @@ export const deleteStudent = async (id) => {
 // Get all faculties
 export const getFaculties = async () => {
   const response = await api.get("/v1/faculties");
-  return response.data;
+  return response.data.data;
 };
 
 // Get all statuses
 export const getStatuses = async () => {
   const response = await api.get("/v1/students/statuses");
-  return response.data;
+  return response.data.data;
 };
 
 //Sort Student
@@ -250,7 +250,7 @@ export const sortStudent = async (field, type, page = 1, pageSize = 10) => {
         sort: `${field}.${type}`,
       },
     });
-    return response.data;
+    return response.data.data;
   } catch (error) {
     console.error("Error fetching sorted students:", error);
     return null;
@@ -269,7 +269,7 @@ export const uploadFile = async (file) => {
       },
     });
 
-    return response.data;
+    return response.data.data;
   } catch (error) {
     console.error("Upload Error:", error.response?.data || error.message);
     throw error;
@@ -277,12 +277,13 @@ export const uploadFile = async (file) => {
 };
 
 // Confirm file import
+// Confirm file import
 export const confirmFileImport = async (downloadUrl) => {
   try {
     const response = await api.post(
       "/v1/students/import-from-file",
       {
-        file: downloadUrl, // Đảm bảo gửi đúng format với key "file"
+        file: downloadUrl, 
       },
       {
         headers: {
@@ -290,9 +291,20 @@ export const confirmFileImport = async (downloadUrl) => {
         },
       }
     );
+    
+    console.log("Import API response:", response);
+    
+    if (response.data.code !== 0 && response.data.data) {
+      return response.data.data; 
+    }
+    
     return response.data;
   } catch (error) {
-    console.error("Import Error:", error.response?.data || error.message);
+    console.error("Import Error:", error);
+    // If the error response has a structured data field, throw that
+    if (error.response?.data?.data) {
+      throw { response: { data: error.response.data } };
+    }
     throw error;
   }
 };
