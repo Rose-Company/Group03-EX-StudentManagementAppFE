@@ -75,6 +75,7 @@ export const useStudentManagement = (faculties) => {
 
   const handleUpdateStudent = async (studentId, updatedStudent) => {
     try {
+      console.log("Updating student with ID:", studentId);
       const response = await updateStudent(studentId, updatedStudent);
       if (response && response.code === 200) {
         await fetchStudents();
@@ -89,6 +90,7 @@ export const useStudentManagement = (faculties) => {
 
   const handleDeleteStudent = async (studentId) => {
     try {
+      console.log("Deleting student with ID:", studentId);
       const response = await deleteStudent(studentId);
       if (response && response.code === 200) {
         await fetchStudents();

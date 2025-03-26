@@ -4,14 +4,14 @@ import api from "./api";
 export const getFaculties = async () => {
   const response = await api.get("/v1/faculties");
 
-  return response.data;
+  return response.data.data;
 };
 
 // Get all statuses
 export const getStatuses = async () => {
   const response = await api.get("v1/students/statuses");
   console.log(response.data);
-  return response.data;
+  return response.data.data;
 };
 
 // Create faculty
@@ -32,7 +32,7 @@ export const createFaculty = async (facultyName) => {
 export const createStatus = async (statusName) => {
   try {
     const response = await api.post("/v1/statuses", { name: statusName });
-    return response.data;
+    return response.data.data;
   } catch (error) {
     console.error(
       "Error creating status:",
@@ -49,7 +49,7 @@ export const updateFaculty = async (id, facultyname) => {
     const response = await api.patch(`/v1/faculties/${id}`, {
       name: facultyname,
     });
-    return response.data;
+    return response.data.data;
   } catch (error) {
     console.error(
       "Error updating faculty:",
@@ -65,7 +65,7 @@ export const updateStatus = async (id, statusname) => {
     const response = await api.patch(`/v1/students/statuses/${id}`, {
       name: statusname,
     });
-    return response.data;
+    return response.data.data;
   } catch (error) {
     console.error(
       "Error updating status:",

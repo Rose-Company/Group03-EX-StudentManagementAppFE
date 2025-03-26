@@ -8,8 +8,8 @@ export const useFacultyData = () => {
     const fetchFaculties = async () => {
       try {
         const data = await getFaculties();
-        if (data.code === 200) {
-          setFaculties(data.data.items);
+        if (Array.isArray(data)) {
+          setFaculties(data);
         }
       } catch (error) {
         console.error("Error fetching faculties:", error);

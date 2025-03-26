@@ -156,13 +156,14 @@ const StudentModal = ({
         date_of_birth: new Date(formData.date_of_birth).toISOString(),
       };
 
-      await onSave(updatedData);
+      console.log("Submitting form data:", updatedData);
+      await onSave(updatedData.id, updatedData);
       setStudent(updatedData); // Cập nhật trạng thái student với dữ liệu mới
       setIsEditing(false);
-      setTimeout(() => {
-        onClose();
-        window.location.reload();
-      }, 1000);
+      // setTimeout(() => {
+      //   onClose();
+      //   window.location.reload();
+      // }, 1000);
       initialFormData.current = updatedData; // Cập nhật dữ liệu ban đầu sau khi lưu
     } catch (error) {
       console.error("Error in form submission:", error);
@@ -196,7 +197,6 @@ const StudentModal = ({
 
       await onDelete(studentId);
       onClose(); // Close the modal after successful deletion
-      window.location.reload(); // Làm mới trang
     } catch (error) {
       console.error("Error deleting student:", error);
       const errorMessage =
