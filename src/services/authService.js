@@ -7,7 +7,6 @@ export const login = async (email, password) => {
       password,
     });
 
-    console.log(response.data);
     if (response.data?.code === 200 && response.data?.token) {
       return {
         user_id: response.data.id,

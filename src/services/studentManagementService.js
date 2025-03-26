@@ -229,16 +229,6 @@ export const deleteStudent = async (id) => {
 };
 
 // Get all faculties
-export const getFaculties = async () => {
-  const response = await api.get("/v1/faculties");
-  return response.data;
-};
-
-// Get all statuses
-export const getStatuses = async () => {
-  const response = await api.get("/v1/students/statuses");
-  return response.data;
-};
 
 //Sort Student
 export const sortStudent = async (field, type, page = 1, pageSize = 10) => {

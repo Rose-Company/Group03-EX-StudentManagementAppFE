@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getStatuses } from "../services/studentManagementService";
+import { getStatuses } from "../services/informationManagementService";
 
 export const useStatusData = () => {
   const [statuses, setStatuses] = useState([]);
@@ -8,6 +8,7 @@ export const useStatusData = () => {
     const fetchStatuses = async () => {
       try {
         const data = await getStatuses();
+        console.log("array", Array.isArray(data));
         if (Array.isArray(data)) {
           setStatuses(data);
         }

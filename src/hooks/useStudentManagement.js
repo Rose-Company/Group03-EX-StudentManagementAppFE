@@ -22,24 +22,25 @@ export const useStudentManagement = (faculties) => {
 
   const fetchStudents = useCallback(async () => {
     try {
-      let data;
+      let response;
       if (/^\d+$/.test(searchText)) {
-        data = await searchStudentByID(searchText, page, 10);
+        response = await searchStudentByID(searchText, page, 10);
       } else if (facultyFilter.trim() !== "" || searchText.trim() !== "") {
-        data = await getStudentByNameAndFacutly(
+        response = await getStudentByNameAndFacutly(
           searchText,
           page,
           10,
           facultyFilter
         );
       } else if (sortField.trim() !== "") {
-        data = await sortStudent(sortField, sortOrder, page, 10);
+        response = await sortStudent(sortField, sortOrder, page, 10);
       } else {
-        data = await getStudents(page, 10);
+        response = await getStudents(page, 10);
       }
 
-      if (data && data.items) {
-        const studentsWithFacultyName = data.items.map((student) => {
+      console.log("res", response);
+      if (response?.data?.items?.length > 0) {
+        const studentsWithFacultyName = response.data.items.map((student) => {
           const faculty = faculties.find(
             (faculty) => faculty.id === student.faculty_id
           );
@@ -48,8 +49,9 @@ export const useStudentManagement = (faculties) => {
             faculty_name: faculty ? faculty.name : "Unknown",
           };
         });
+
         setStudents(studentsWithFacultyName);
-        setTotalPages(getTotalPages(data.total, 10));
+        setTotalPages(getTotalPages(response.data.total, 10));
       } else {
         setStudents([]);
       }

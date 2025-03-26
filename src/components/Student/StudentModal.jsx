@@ -1,10 +1,8 @@
 // src/components/Student/StudentModal.jsx
 import { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
-import {
-  getStudentById,
-  getStatuses,
-} from "../../services/studentManagementService";
+import { getStudentById } from "../../services/studentManagementService";
+import { getStatuses } from "../../services/informationManagementService";
 import StudentForm from "./StudentForm";
 import styles from "./StudentModal.module.css";
 
