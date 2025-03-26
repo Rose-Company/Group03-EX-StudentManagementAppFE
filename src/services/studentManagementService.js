@@ -101,7 +101,7 @@ export const searchStudentByID = async (id, page, pageSize) => {
       page_size: pageSize,
     },
   });
-  return response.data;
+  return response.data.data;
 };
 
 // Search student by ID
@@ -119,7 +119,11 @@ export const getStudents = async (page = 1, pageSize = 10) => {
       page_size: pageSize,
     },
   });
-  return response.data;
+  console.log("response", response);
+  console.log("response.data", response.data);
+  console.log("response.data.data", response.data.data);
+  // return response.data;
+  return response.data.data;
 };
 
 export const getStudentByFullName = async (
