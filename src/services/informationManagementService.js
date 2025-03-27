@@ -4,12 +4,19 @@ import api from "./api";
 export const getFaculties = async () => {
   const response = await api.get("/v1/faculties");
 
-  return response.data;
+  return response.data.data;
 };
 
 // Get all statuses
 export const getStatuses = async () => {
   const response = await api.get("v1/students/statuses");
+  console.log(response.data);
+  return response.data.data;
+};
+
+// Get all student program
+export const getPrograms = async () => {
+  const response = await api.get("v1/students/programs");
   console.log(response.data);
   return response.data;
 };
@@ -31,8 +38,11 @@ export const createFaculty = async (facultyName) => {
 // Create status
 export const createStatus = async (statusName) => {
   try {
-    const response = await api.post("/v1/statuses", { name: statusName });
-    return response.data;
+    console.log("name", statusName);
+    const response = await api.post("/v1/students/statuses", {
+      name: statusName,
+    });
+    return response.data.data;
   } catch (error) {
     console.error(
       "Error creating status:",
@@ -43,13 +53,29 @@ export const createStatus = async (statusName) => {
 };
 export default api;
 
+//Create student program
+export const createProgram = async (programName) => {
+  try {
+    const response = await api.post("/v1/students/programs", {
+      name: programName,
+    });
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Error creating program:",
+      error.response?.data || error.message
+    );
+    throw error;
+  }
+};
+
 // Update faculty
 export const updateFaculty = async (id, facultyname) => {
   try {
     const response = await api.patch(`/v1/faculties/${id}`, {
       name: facultyname,
     });
-    return response.data;
+    return response.data.data;
   } catch (error) {
     console.error(
       "Error updating faculty:",
@@ -65,10 +91,27 @@ export const updateStatus = async (id, statusname) => {
     const response = await api.patch(`/v1/students/statuses/${id}`, {
       name: statusname,
     });
-    return response.data;
+    return response.data.data;
   } catch (error) {
     console.error(
       "Error updating status:",
+      error.response?.data || error.message
+    );
+    throw error;
+  }
+};
+
+export const updateProgram = async (id, programname) => {
+  try {
+    console.log("id", id);
+    console.log("name", programname);
+    const response = await api.patch(`/v1/students/programs/${id}`, {
+      name: programname,
+    });
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Error updating program:",
       error.response?.data || error.message
     );
     throw error;

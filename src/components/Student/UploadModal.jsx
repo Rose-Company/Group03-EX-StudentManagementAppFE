@@ -95,7 +95,7 @@ const UploadModal = ({ isOpen, onClose }) => {
       setErrorMessage("Không tìm thấy thông tin file");
       return;
     }
-
+  
     try {
       setIsLoading(true);
       setLoadingText("Đang xử lý import...");
@@ -156,7 +156,7 @@ const UploadModal = ({ isOpen, onClose }) => {
       setIsLoading(false);
       setLoadingText("");
     }
-  };
+  }
 
   const handleChangeFile = () => {
     setSelectedFile(null);
