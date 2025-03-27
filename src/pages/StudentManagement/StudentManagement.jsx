@@ -15,8 +15,8 @@ import { useStudentManagement } from "../../hooks/useStudentManagement";
 
 function StudentManagement() {
   // Fetch faculties and statuses
-  const faculties = useFacultyData();
-  const statuses = useStatusData();
+  const { faculties } = useFacultyData();
+  const { statuses } = useStatusData();
 
   // Student management hook
   const {
@@ -134,7 +134,7 @@ function StudentManagement() {
           sortField={sortField}
           sortOrder={sortOrder}
           facultyFilter={facultyFilter}
-          faculties={faculties}
+          faculties={Array.isArray(faculties) ? faculties : []}
           onClearFilters={() => {
             setSortField("");
             setSortOrder("");
@@ -164,7 +164,7 @@ function StudentManagement() {
         onClose={handleModalClose}
         onSave={handleUpdateStudent}
         onDelete={handleDeleteStudent}
-        faculties={faculties}
+        faculties={Array.isArray(faculties) ? faculties : []}
       />
 
       {isPopUpOpened && (

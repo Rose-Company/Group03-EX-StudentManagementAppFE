@@ -158,10 +158,6 @@ const StudentModal = ({
       await onSave(updatedData.id, updatedData);
       setStudent(updatedData); // Cập nhật trạng thái student với dữ liệu mới
       setIsEditing(false);
-      // setTimeout(() => {
-      //   onClose();
-      //   window.location.reload();
-      // }, 1000);
       initialFormData.current = updatedData; // Cập nhật dữ liệu ban đầu sau khi lưu
     } catch (error) {
       console.error("Error in form submission:", error);

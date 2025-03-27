@@ -181,8 +181,6 @@ export const updateStudent = async (id, studentData) => {
       status_id: parseInt(studentData.status_id),
     };
 
-    console.log("Request data:", requestData);
-
     const response = await api.patch(`/v1/students/${id}`, requestData);
 
     if (response.data.code === 400) {

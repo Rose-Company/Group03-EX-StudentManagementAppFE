@@ -18,7 +18,6 @@ import { useFacultyData } from "../../hooks/useFacultyData";
 import { useStatusData } from "../../hooks/useStatusData";
 import { useProgramData } from "../../hooks/useProgramData";
 
-
 function InformationManagement() {
   const [activeTab, setActiveTab] = useState("faculty");
 
