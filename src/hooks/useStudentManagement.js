@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import {
   getStudents,
   updateStudent,
@@ -9,7 +9,7 @@ import {
   getStudentByNameAndFacutly,
 } from "../services/studentManagementService";
 
-export const useStudentManagement = (faculties) => {
+export const useStudentManagement = (faculties = []) => {
   const [students, setStudents] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -18,9 +18,14 @@ export const useStudentManagement = (faculties) => {
   const [sortOrder, setSortOrder] = useState("");
   const [facultyFilter, setFacultyFilter] = useState("");
 
+  const isFetching = useRef(false); // Trạng thái kiểm tra có đang fetch không
+
   const getTotalPages = (total, pageSize) => Math.ceil(total / pageSize);
 
   const fetchStudents = useCallback(async () => {
+    if (isFetching.current) return; // Nếu đang fetch, không gọi tiếp
+    isFetching.current = true;
+
     try {
       let data;
       if (/^\d+$/.test(searchText)) {
@@ -40,9 +45,9 @@ export const useStudentManagement = (faculties) => {
 
       if (data && data.items) {
         const studentsWithFacultyName = data.items.map((student) => {
-          const faculty = faculties.find(
-            (faculty) => faculty.id === student.faculty_id
-          );
+          const faculty = Array.isArray(faculties)
+            ? faculties.find((faculty) => faculty.id === student.faculty_id)
+            : null;
           return {
             ...student,
             faculty_name: faculty ? faculty.name : "Unknown",
@@ -56,6 +61,8 @@ export const useStudentManagement = (faculties) => {
     } catch (error) {
       console.error("Error fetching students:", error);
       setStudents([]);
+    } finally {
+      isFetching.current = false; // Reset trạng thái sau khi fetch xong
     }
   }, [searchText, page, sortField, sortOrder, facultyFilter, faculties]);
 
@@ -78,9 +85,9 @@ export const useStudentManagement = (faculties) => {
       console.log("Updating student with ID:", studentId);
       const response = await updateStudent(studentId, updatedStudent);
       if (response && response.code === 200) {
-        await fetchStudents();
         return true;
       }
+
       return false;
     } catch (error) {
       console.error("Error updating student:", error);
@@ -104,7 +111,11 @@ export const useStudentManagement = (faculties) => {
   };
 
   useEffect(() => {
-    fetchStudents();
+    const delayFetch = setTimeout(() => {
+      fetchStudents();
+    }, 300); // Thêm delay tránh gọi liên tục khi user nhập liệu
+
+    return () => clearTimeout(delayFetch);
   }, [fetchStudents]);
 
   return {
