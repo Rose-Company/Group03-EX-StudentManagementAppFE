@@ -16,6 +16,8 @@ Một số màn hình của app: https://drive.google.com/drive/folders/1P-8liOD
 6. Thêm chức năng tìm kiếm:  tìm theo khoa, khoa + tên
 7. Hỗ trợ import/export dữ liệu: CSV, JSON, XML, Excel (chọn ít nhất 2)
 8 Thêm logging mechanism để troubleshooting production issue & audit purposes
+9. Cập nhật màn hình listing khoa, tình trạng sinh viên và chương trình sinh viên
+10. Tái cấu trúc mã nguồn để dễ duy trì và phát triển.
 
 **Ảnh minh họa về app**: https://drive.google.com/drive/folders/1P-8liODDr7JbQ5q_wrI-3WQLFU9IXwrQ?usp=sharing
 
