@@ -254,7 +254,12 @@ export const uploadFile = async (file) => {
       },
     });
 
-    return response.data.data;
+    // Kiểm tra response code trước khi return data
+    if (response.data.code === 0 && response.data.data) {
+      return response.data.data;
+    } else {
+      throw new Error(response.data.message || "Lỗi khi tải file");
+    }
   } catch (error) {
     console.error("Upload Error:", error.response?.data || error.message);
     throw error;

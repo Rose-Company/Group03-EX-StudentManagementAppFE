@@ -55,22 +55,24 @@ const UploadModal = ({ isOpen, onClose }) => {
       setIsLoading(true);
       setLoadingText("Đang tải file lên...");
       try {
-        const response = await uploadFile(file);
-        if (response?.data?.download_url) {
+        const fileData = await uploadFile(file);
+        
+        if (fileData) {
           setFileData({
-            download_url: response.data.download_url,
-            file_name: response.data.file_name,
+            download_url: fileData.download_url,
+            file_name: fileData.file_name,
           });
           setUploadStatus("success");
           showToast("success", "🎉 Tải file lên thành công!");
         } else {
-          throw new Error("Không nhận được download URL");
+          throw new Error("Không nhận được thông tin file");
         }
       } catch (error) {
         console.error("Upload error:", error);
         setUploadStatus("error");
-        setErrorMessage(error.response?.data?.message || "Lỗi khi tải lên file");
-        showToast("error", "❌ Lỗi khi tải file lên");
+        const errorMessage = error.response?.data?.message || error.message || "Lỗi khi tải lên file";
+        setErrorMessage(errorMessage);
+        showToast("error", `❌ ${errorMessage}`);
       } finally {
         setIsLoading(false);
         setLoadingText("");
